@@ -1,7 +1,16 @@
 import { BrowserWindow, app, globalShortcut } from 'electron';
+import Store from 'electron-store';
 
 let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
+
+const schema = {
+  overlayKeyCombination: {
+    type: 'string',
+    default: 'CommandOrControl+Shift+]',
+  },
+} as const;
+const store = new Store({ schema });
 
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
@@ -36,7 +45,10 @@ function toggleOverlayWindow() {
 
 app.whenReady().then(() => {
   createSettingsWindow();
-  globalShortcut.register('CommandOrControl+Shift+]', toggleOverlayWindow);
+  globalShortcut.register(
+    store.get('overlayKeyCombination') as string,
+    toggleOverlayWindow
+  );
 });
 
 app.on('window-all-closed', () => {
