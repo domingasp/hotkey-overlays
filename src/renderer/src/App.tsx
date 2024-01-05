@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Box } from '@mantine/core';
 import Overlay from '../../shared/types/Overlay';
 import Settings from './views/Settings';
 
@@ -16,9 +17,9 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <Box w="100%" pb="lg">
       <Settings overlays={overlays} />
-    </div>
+    </Box>
   );
 }
 
