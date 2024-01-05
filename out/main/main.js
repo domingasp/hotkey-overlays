@@ -7,6 +7,7 @@ const require$$3$1 = require("crypto");
 const require$$4 = require("assert");
 const require$$5 = require("events");
 const require$$1 = require("os");
+const path$6 = require("node:path");
 const _interopDefaultLegacy = (e) => e && typeof e === "object" && "default" in e ? e : { default: e };
 const require$$1__default$2 = /* @__PURE__ */ _interopDefaultLegacy(require$$1$2);
 const require$$0__default$1 = /* @__PURE__ */ _interopDefaultLegacy(require$$0$1);
@@ -16,6 +17,7 @@ const require$$3__default = /* @__PURE__ */ _interopDefaultLegacy(require$$3$1);
 const require$$4__default = /* @__PURE__ */ _interopDefaultLegacy(require$$4);
 const require$$5__default = /* @__PURE__ */ _interopDefaultLegacy(require$$5);
 const require$$1__default = /* @__PURE__ */ _interopDefaultLegacy(require$$1);
+const path__default = /* @__PURE__ */ _interopDefaultLegacy(path$6);
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var source = { exports: {} };
 var isObj$1 = (value) => {
@@ -10111,18 +10113,27 @@ class ElectronStore extends Conf {
   }
 }
 var electronStore = ElectronStore;
+const channels = {
+  getOverlayHotkey: "getOverlayHotkey"
+};
 let settingsWindow;
 let overlayWindow;
 const schema = {
   overlayKeyCombination: {
     type: "string",
-    default: "CommandOrControl+Shift+="
+    default: "CommandOrControl+Shift+]"
   }
 };
 const store = new electronStore({ schema });
+async function getOverlayHotkey() {
+  return store.get("overlayKeyCombination");
+}
 function createSettingsWindow() {
   settingsWindow = new require$$1$2.BrowserWindow({
-    autoHideMenuBar: true
+    autoHideMenuBar: true,
+    webPreferences: {
+      preload: path__default.default.join(__dirname, "../preload", "preload.js")
+    }
   });
   settingsWindow.loadURL("http://localhost:5173");
   settingsWindow.on("closed", () => {
@@ -10147,6 +10158,7 @@ function toggleOverlayWindow() {
   }
 }
 require$$1$2.app.whenReady().then(() => {
+  require$$1$2.ipcMain.handle(channels.getOverlayHotkey, getOverlayHotkey);
   createSettingsWindow();
   require$$1$2.globalShortcut.register(
     store.get("overlayKeyCombination"),

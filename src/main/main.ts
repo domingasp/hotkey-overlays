@@ -1,5 +1,7 @@
-import { BrowserWindow, app, globalShortcut } from 'electron';
+import { BrowserWindow, app, globalShortcut, ipcMain } from 'electron';
 import Store from 'electron-store';
+import path from 'node:path';
+import channels from '../shared/channels';
 
 let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
@@ -12,9 +14,16 @@ const schema = {
 } as const;
 const store = new Store({ schema });
 
+async function getOverlayHotkey() {
+  return store.get('overlayKeyCombination') as string;
+}
+
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
     autoHideMenuBar: true,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload', 'preload.js'),
+    },
   });
 
   settingsWindow.loadURL('http://localhost:5173');
@@ -44,7 +53,10 @@ function toggleOverlayWindow() {
 }
 
 app.whenReady().then(() => {
+  ipcMain.handle(channels.getOverlayHotkey, getOverlayHotkey);
+
   createSettingsWindow();
+
   globalShortcut.register(
     store.get('overlayKeyCombination') as string,
     toggleOverlayWindow
