@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Kbd } from '@mantine/core';
 
 function App() {
   const [overlayKeybind, setOverlayKeybind] = useState('NONE');
@@ -13,7 +14,11 @@ function App() {
     getOverlayHotkey();
   }, []);
 
-  return <div>Current Overlay HotKey = {overlayKeybind}</div>;
+  return (
+    <div>
+      <Kbd>Ctrl</Kbd>
+    </div>
+  );
 }
 
 export default App;
