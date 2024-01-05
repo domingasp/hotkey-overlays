@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Kbd } from '@mantine/core';
 import Overlay from '../../shared/types/Overlay';
+import Settings from './views/Settings';
 
 function App() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);
@@ -17,7 +17,7 @@ function App() {
 
   return (
     <div>
-      <Kbd>{overlays.length}</Kbd>
+      <Settings overlays={overlays} />
     </div>
   );
 }
