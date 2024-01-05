@@ -1,18 +1,40 @@
-import { BrowserWindow, app } from 'electron';
+import { BrowserWindow, app, globalShortcut } from 'electron';
 
-let mainWindow;
+let settingsWindow;
+let overlayWindow;
 
-function createWindow() {
-  mainWindow = new BrowserWindow({ autoHideMenuBar: true });
+function createSettingsWindow() {
+  settingsWindow = new BrowserWindow({
+    autoHideMenuBar: true,
+  });
 
-  mainWindow.loadURL('http://localhost:5173');
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  settingsWindow.loadURL('http://localhost:5173');
+  settingsWindow.on('closed', () => {
+    settingsWindow = null;
   });
 }
 
+function toggleOverlayWindow() {
+  if (overlayWindow == null) {
+    overlayWindow = new BrowserWindow({
+      autoHideMenuBar: true,
+      transparent: true,
+      frame: false,
+      fullscreen: true,
+    });
+    overlayWindow.setAlwaysOnTop(true, 'screen');
+    overlayWindow.setIgnoreMouseEvents(true);
+
+    overlayWindow.loadURL('http://localhost:5173');
+  } else {
+    overlayWindow.close();
+    overlayWindow = null;
+  }
+}
+
 app.whenReady().then(() => {
-  createWindow();
+  createSettingsWindow();
+  globalShortcut.register('CommandOrControl+Shift+]', toggleOverlayWindow);
 });
 
 app.on('window-all-closed', () => {
@@ -22,7 +44,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainWindow == null) {
-    createWindow();
+  if (settingsWindow == null) {
+    createSettingsWindow();
   }
 });
