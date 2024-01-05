@@ -79,6 +79,7 @@ function toggleOverlayWindow() {
       frame: false,
       hasShadow: false,
       alwaysOnTop: true,
+      skipTaskbar: true,
     });
     overlayWindow.setIgnoreMouseEvents(true);
 
