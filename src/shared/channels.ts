@@ -1,5 +1,5 @@
 const channels = {
-  getOverlayHotkey: 'getOverlayHotkey',
+  getOverlays: 'getOverlays',
 };
 
 export default channels;

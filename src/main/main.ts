@@ -7,10 +7,11 @@ import {
   ipcMain,
   nativeImage,
 } from 'electron';
-import Store from 'electron-store';
+import Store, { Schema } from 'electron-store';
 import path from 'node:path';
 import channels from '../shared/channels';
 import iconPng from '../images/icons/hotkey-overlays-logo.png';
+import Overlay from '../shared/types/Overlay';
 
 const icon = nativeImage.createFromDataURL(iconPng);
 
@@ -18,16 +19,50 @@ let tray;
 let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 
-const schema = {
-  overlayHotkey: {
-    type: 'string',
-    default: 'CommandOrControl+Shift+]',
+interface SchemaInterface {
+  overlays: Overlay[];
+}
+const schema: Schema<SchemaInterface> = {
+  overlays: {
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'number',
+        },
+        name: {
+          type: 'string',
+        },
+        hotkey: {
+          type: 'string',
+        },
+        imagePath: {
+          type: 'string',
+        },
+      },
+      required: ['name', 'hotkey'],
+    },
+    default: [],
   },
-} as const;
+};
 const store = new Store({ schema });
 
-async function getOverlayHotkey() {
-  return store.get('overlayHotkey') as string;
+function createDefaultOverlay() {
+  const overlays = store.get('overlays');
+  if (overlays.length === 0) {
+    overlays.push({
+      id: 1,
+      name: 'Default',
+      hotkey: 'ControlOrCommand+Shift+]',
+    });
+
+    store.set('overlays', overlays);
+  }
+}
+
+async function getOverlays() {
+  return store.get('overlays');
 }
 
 function createTrayIron() {
@@ -93,13 +128,14 @@ function toggleOverlayWindow() {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle(channels.getOverlayHotkey, getOverlayHotkey);
+  ipcMain.handle(channels.getOverlays, getOverlays);
 
+  createDefaultOverlay();
   createTrayIron();
   createSettingsWindow();
 
   globalShortcut.register(
-    store.get('overlayHotkey') as string,
+    store.get('overlays')[0].hotkey as string,
     toggleOverlayWindow
   );
 });
