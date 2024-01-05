@@ -54,7 +54,7 @@ function createDefaultOverlay() {
     overlays.push({
       id: 1,
       name: 'Default',
-      hotkey: 'CommandOrControl+Shift+]',
+      hotkey: 'CmdOrCtrl+Shift+]',
     });
 
     store.set('overlays', overlays);
@@ -118,7 +118,7 @@ function toggleOverlayWindow() {
     });
     overlayWindow.setIgnoreMouseEvents(true);
 
-    overlayWindow.loadURL('http://localhost:5173');
+    overlayWindow.loadURL('http://localhost:5173/overlay');
 
     overlayWindow.setPosition(0, 0);
   } else {
@@ -134,10 +134,9 @@ app.whenReady().then(() => {
   createTrayIron();
   createSettingsWindow();
 
-  globalShortcut.register(
-    store.get('overlays')[0].hotkey as string,
-    toggleOverlayWindow
-  );
+  const keyToReg = store.get('overlays')[0].hotkey;
+  console.log(keyToReg);
+  globalShortcut.register('CmdOrCtrl+Shift+]', toggleOverlayWindow);
 });
 
 app.on('window-all-closed', () => {
