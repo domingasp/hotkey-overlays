@@ -1,6 +1,7 @@
-import { Kbd } from '@mantine/core';
+import { Box, Divider, SimpleGrid, Title } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import Overlay from '../../../shared/types/Overlay';
+import OverlayConfigurationCard from '../components/OverlayConfigurationCard';
 
 function Settings() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);
@@ -16,9 +17,15 @@ function Settings() {
   }, []);
 
   return (
-    <div>
-      settings <Kbd>{overlays.length}</Kbd>
-    </div>
+    <Box>
+      <Title order={2}>Overlay Configurations</Title>
+      <Divider my="sm" color="gray" />
+      <SimpleGrid cols={{ base: 1, sm: 2 }}>
+        {overlays.map((overlay) => (
+          <OverlayConfigurationCard key={overlay.id} overlay={overlay} />
+        ))}
+      </SimpleGrid>
+    </Box>
   );
 }
 

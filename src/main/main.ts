@@ -89,6 +89,9 @@ function createTrayIron() {
 
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
+    height: 750,
+    width: 500,
+    minWidth: 500,
     icon,
     autoHideMenuBar: true,
     webPreferences: {
@@ -134,9 +137,7 @@ app.whenReady().then(() => {
   createTrayIron();
   createSettingsWindow();
 
-  const keyToReg = store.get('overlays')[0].hotkey;
-  console.log(keyToReg);
-  globalShortcut.register('CmdOrCtrl+Shift+]', toggleOverlayWindow);
+  // globalShortcut.register('CmdOrCtrl+Shift+]', toggleOverlayWindow);
 });
 
 app.on('window-all-closed', () => {

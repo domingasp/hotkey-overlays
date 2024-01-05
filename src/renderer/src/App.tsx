@@ -1,4 +1,5 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Box } from '@mantine/core';
 import Settings from './views/Settings';
 import Overlay from './views/Overlay';
 
@@ -14,7 +15,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Box w="100%" p="lg">
+      <RouterProvider router={router} />
+    </Box>
+  );
 }
 
 export default App;
