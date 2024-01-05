@@ -1,7 +1,7 @@
 import { BrowserWindow, app, globalShortcut } from 'electron';
 
-let settingsWindow;
-let overlayWindow;
+let settingsWindow: BrowserWindow | null;
+let overlayWindow: BrowserWindow | null;
 
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
@@ -20,12 +20,14 @@ function toggleOverlayWindow() {
       autoHideMenuBar: true,
       transparent: true,
       frame: false,
-      fullscreen: true,
+      hasShadow: false,
+      alwaysOnTop: true,
     });
-    overlayWindow.setAlwaysOnTop(true, 'screen');
     overlayWindow.setIgnoreMouseEvents(true);
 
     overlayWindow.loadURL('http://localhost:5173');
+
+    overlayWindow.setPosition(0, 0);
   } else {
     overlayWindow.close();
     overlayWindow = null;
