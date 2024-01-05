@@ -19,7 +19,7 @@ let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 
 const schema = {
-  overlayKeyCombination: {
+  overlayHotkey: {
     type: 'string',
     default: 'CommandOrControl+Shift+]',
   },
@@ -27,7 +27,7 @@ const schema = {
 const store = new Store({ schema });
 
 async function getOverlayHotkey() {
-  return store.get('overlayKeyCombination') as string;
+  return store.get('overlayHotkey') as string;
 }
 
 function createTrayIron() {
@@ -99,7 +99,7 @@ app.whenReady().then(() => {
   createSettingsWindow();
 
   globalShortcut.register(
-    store.get('overlayKeyCombination') as string,
+    store.get('overlayHotkey') as string,
     toggleOverlayWindow
   );
 });
