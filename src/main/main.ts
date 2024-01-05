@@ -1,8 +1,20 @@
-import { BrowserWindow, app, globalShortcut, ipcMain } from 'electron';
+import {
+  BrowserWindow,
+  Menu,
+  Tray,
+  app,
+  globalShortcut,
+  ipcMain,
+  nativeImage,
+} from 'electron';
 import Store from 'electron-store';
 import path from 'node:path';
 import channels from '../shared/channels';
+import iconPng from '../images/icons/hotkey-overlays-logo.png';
 
+const icon = nativeImage.createFromDataURL(iconPng);
+
+let tray;
 let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 
@@ -18,8 +30,31 @@ async function getOverlayHotkey() {
   return store.get('overlayKeyCombination') as string;
 }
 
+function createTrayIron() {
+  tray = new Tray(icon);
+  tray.setToolTip('Hotkey Overlays');
+
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      {
+        label: 'Settings',
+        click: () => settingsWindow?.show(),
+      },
+      {
+        label: 'Quit',
+        click: () => {
+          app.quit();
+        },
+      },
+    ])
+  );
+
+  tray.on('double-click', () => settingsWindow?.show());
+}
+
 function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
+    icon,
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, '../preload', 'preload.js'),
@@ -29,6 +64,10 @@ function createSettingsWindow() {
   settingsWindow.loadURL('http://localhost:5173');
   settingsWindow.on('closed', () => {
     settingsWindow = null;
+  });
+
+  settingsWindow.on('minimize', () => {
+    settingsWindow?.hide();
   });
 }
 
@@ -55,6 +94,7 @@ function toggleOverlayWindow() {
 app.whenReady().then(() => {
   ipcMain.handle(channels.getOverlayHotkey, getOverlayHotkey);
 
+  createTrayIron();
   createSettingsWindow();
 
   globalShortcut.register(
