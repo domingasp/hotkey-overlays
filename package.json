@@ -1,12 +1,12 @@
 {
-  "name": "bin-day",
+  "name": "hotkey-overlays",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "main": "./out/main/main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "electron-vite dev -w",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview"
   },
   "dependencies": {
     "@babel/core": "^7.18.10",
@@ -20,6 +20,8 @@
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "@vitejs/plugin-react": "^2.0.0",
+    "electron": "^28.1.1",
+    "electron-vite": "^1.0.29",
     "eslint": "^8.21.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
