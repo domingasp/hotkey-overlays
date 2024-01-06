@@ -1,12 +1,4 @@
-import {
-  BrowserWindow,
-  Menu,
-  Tray,
-  app,
-  globalShortcut,
-  ipcMain,
-  nativeImage,
-} from 'electron';
+import { BrowserWindow, Menu, Tray, app, ipcMain, nativeImage } from 'electron';
 import Store, { Schema } from 'electron-store';
 import path from 'node:path';
 import channels from '../shared/channels';
@@ -18,6 +10,8 @@ const icon = nativeImage.createFromDataURL(iconPng);
 let tray;
 let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
+
+let isQuiting = false;
 
 interface SchemaInterface {
   overlays: Overlay[];
@@ -89,6 +83,7 @@ function createTrayIron() {
       {
         label: 'Quit',
         click: () => {
+          isQuiting = true;
           app.quit();
         },
       },
@@ -117,6 +112,14 @@ function createSettingsWindow() {
 
   settingsWindow.on('minimize', () => {
     settingsWindow?.hide();
+  });
+
+  settingsWindow.on('close', (event) => {
+    if (!isQuiting) {
+      event.preventDefault();
+      settingsWindow?.hide();
+    }
+    return false;
   });
 }
 
