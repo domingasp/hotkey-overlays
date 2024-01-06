@@ -1,6 +1,6 @@
 import { ActionIcon, Box, Text, TextInput, rem } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
-import { createRef, useEffect, useState } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 
 type NameInputProps = {
   value: string;
@@ -12,6 +12,7 @@ function NameInput({ value, setValue }: NameInputProps) {
 
   const [width, setWidth] = useState(0);
   const span = createRef<HTMLParagraphElement>();
+  const inputFieldBlurTimer = useRef<NodeJS.Timeout>();
 
   const saveNameField = () => {
     setIsSavingNameField(true);
@@ -25,6 +26,10 @@ function NameInput({ value, setValue }: NameInputProps) {
     const newValue = event.currentTarget.value;
     setValue(newValue);
   };
+
+  useEffect(() => {
+    return () => clearTimeout(inputFieldBlurTimer.current);
+  }, []);
 
   useEffect(() => {
     if (span.current) {
@@ -59,8 +64,16 @@ function NameInput({ value, setValue }: NameInputProps) {
         fw="bold"
         size="md"
         pl={0}
-        onFocus={() => setIsNameFieldFocused(true)}
-        onBlur={() => setTimeout(() => setIsNameFieldFocused(false), 100)}
+        onFocus={() => {
+          clearTimeout(inputFieldBlurTimer.current);
+          setIsNameFieldFocused(true);
+        }}
+        onBlur={() => {
+          inputFieldBlurTimer.current = setTimeout(
+            () => setIsNameFieldFocused(false),
+            100
+          );
+        }}
         disabled={isSavingNameField}
         rightSection={
           (isNameFieldFocused || isSavingNameField) && (
