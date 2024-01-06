@@ -11,14 +11,24 @@ type NameInputProps = {
 function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
   const [originalValue, setOriginalValue] = useState(value);
   const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
+  const [isValid, setIsValid] = useState(true);
 
   const [width, setWidth] = useState(0);
   const span = createRef<HTMLParagraphElement>();
   const inputFieldBlurTimer = useRef<NodeJS.Timeout>();
 
+  const validateField = (val: string) => {
+    if (val.trim() === '') {
+      setIsValid(false);
+    } else {
+      setIsValid(true);
+    }
+  };
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.currentTarget.value;
     setValue(newValue);
+    validateField(newValue);
   };
 
   useEffect(() => {
@@ -65,14 +75,9 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
       </Text>
 
       <TextInput
-        variant="unstyled"
+        /* FUNCTIONS */
         value={value}
         onChange={onChange}
-        bg={isNameFieldFocused || isSaving ? 'dark' : undefined}
-        px={isNameFieldFocused || isSaving ? 'xs' : undefined}
-        w={width}
-        fw="bold"
-        size="md"
         onFocus={() => {
           clearTimeout(inputFieldBlurTimer.current);
           setIsNameFieldFocused(true);
@@ -84,6 +89,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
           );
         }}
         disabled={isSaving}
+        /* RIGHT SECTION */
         rightSection={
           (isNameFieldFocused || isSaving) && (
             <ActionIcon
@@ -92,6 +98,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
               aria-label="Save Name"
               onClick={onSave}
               loading={isSaving}
+              disabled={!isValid}
             >
               <IconCheck
                 pointerEvents="none"
@@ -100,9 +107,16 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
             </ActionIcon>
           )
         }
-        rightSectionPointerEvents="all"
+        rightSectionPointerEvents={isValid ? 'all' : 'none'}
         rightSectionWidth="36px"
         rightSectionProps={{ style: { justifyContent: 'flex-end' } }}
+        /* STYLE */
+        variant="unstyled"
+        bg={isNameFieldFocused || isSaving ? 'dark' : undefined}
+        px={isNameFieldFocused || isSaving ? 'xs' : undefined}
+        w={width}
+        fw="bold"
+        size="md"
         style={{
           borderRadius: 'var(--mantine-radius-md)',
           transition: 'background-color 0.15s, padding 0.15s',
