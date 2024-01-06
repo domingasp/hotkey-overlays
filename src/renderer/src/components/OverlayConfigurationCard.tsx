@@ -1,18 +1,17 @@
 import {
-  ActionIcon,
   Box,
   Button,
   Group,
   Kbd,
-  Menu,
   Paper,
   Skeleton,
   Stack,
   Text,
   rem,
 } from '@mantine/core';
-import { IconDots, IconPhotoPlus, IconTrash } from '@tabler/icons-react';
+import { IconPhotoPlus } from '@tabler/icons-react';
 import Overlay from '../../../shared/types/Overlay';
+import DeleteMenu from './DeleteMenu';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -20,31 +19,12 @@ type OverlayConfigurationCardProps = {
 function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
-      <Menu withinPortal position="left" shadow="sm">
-        <Menu.Target>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            pos="absolute"
-            right="0.25rem"
-            top="0.25rem"
-          >
-            <IconDots style={{ width: rem(14), height: rem(14) }} />
-          </ActionIcon>
-        </Menu.Target>
-
-        <Menu.Dropdown>
-          <Menu.Item
-            color="red"
-            leftSection={
-              <IconTrash style={{ width: rem(14), height: rem(14) }} />
-            }
-            style={{ fontSize: '0.8rem' }}
-          >
-            Delete Overlay
-          </Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
+      <DeleteMenu
+        id={overlay.id}
+        pos="absolute"
+        top="0.25rem"
+        right="0.25rem"
+      />
 
       <Group>
         <Box>
