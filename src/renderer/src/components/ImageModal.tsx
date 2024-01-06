@@ -13,29 +13,51 @@ import {
   SimpleGrid,
   Text,
   Divider,
+  Center,
+  ActionIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   IconDeviceFloppy,
+  IconPhotoOff,
   IconPhotoPlus,
   IconPhotoSearch,
+  IconX,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
 
-function ImageModal() {
+type ImageModalProps = {
+  imagePath: string | undefined;
+  setImagePath: (imagePath: string | undefined) => void;
+  onSave: (path: string | undefined) => void;
+};
+function ImageModal({ imagePath, setImagePath, onSave }: ImageModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [failedToLoadImage, setFailedToLoadImage] = useState(false);
+
   const [localDriveValue, setLocalDriveValue] = useState<File | null>(null);
-  const [urlValue, setUrlValue] = useState<string | undefined>(undefined);
+  const [urlValue, setUrlValue] = useState<string>('');
+
+  const save = () => {
+    const path = localDriveValue?.path ?? urlValue ?? undefined;
+    setImagePath(localDriveValue?.path ?? urlValue ?? undefined);
+    onSave(path);
+  };
 
   useEffect(() => {
-    console.log(localDriveValue?.path);
-  }, [localDriveValue]);
+    setFailedToLoadImage(false);
 
-  useEffect(() => {
-    console.log(urlValue);
-  }, [urlValue]);
+    if (imagePath === undefined) {
+      setLocalDriveValue(null);
+      setUrlValue('');
+      setFailedToLoadImage(true);
+    } else if (imagePath.startsWith('http')) {
+      setUrlValue(imagePath);
+    } else {
+      // local drive
+    }
+  }, [imagePath, opened]);
 
   return (
     <>
@@ -103,7 +125,23 @@ function ImageModal() {
                 <TextInput
                   label="From Url:"
                   value={urlValue}
-                  onChange={(event) => setUrlValue(event.currentTarget.value)}
+                  placeholder="https://url..."
+                  onChange={(event) => {
+                    setFailedToLoadImage(false);
+                    setUrlValue(event.currentTarget.value);
+                  }}
+                  rightSection={
+                    urlValue.length > 0 && (
+                      <ActionIcon
+                        color="dark.1"
+                        variant="transparent"
+                        onClick={() => setUrlValue('')}
+                        aria-label="Clear Url Field"
+                      >
+                        <IconX size={19.6} />
+                      </ActionIcon>
+                    )
+                  }
                 />
               </SimpleGrid>
 
@@ -118,6 +156,8 @@ function ImageModal() {
                   leftSection={
                     <IconDeviceFloppy size={18} style={{ marginTop: '2px' }} />
                   }
+                  onClick={save}
+                  disabled={localDriveValue === null && urlValue.length === 0}
                 >
                   Save
                 </Button>
@@ -129,14 +169,26 @@ function ImageModal() {
                 justify="center"
                 bg="dark.8"
                 p="xs"
-                style={{ borderRadius: 'var(--mantine-radius-sm)' }}
+                pos="relative"
+                style={{
+                  borderRadius: 'var(--mantine-radius-sm)',
+                }}
               >
+                {failedToLoadImage && (
+                  <Center>
+                    <IconPhotoOff
+                      color="var(--mantine-color-dark-3)"
+                      size={48}
+                      stroke={1.5}
+                    />
+                  </Center>
+                )}
                 <Image
                   radius="sm"
                   h={194}
                   w="auto"
                   fit="contain"
-                  src="https://c8.alamy.com/comp/2PJK4N2/instagram-icon-vector-instagram-icon-design-social-media-icons-design-2PJK4N2.jpg"
+                  src={urlValue}
                   onError={() => setFailedToLoadImage(true)}
                 />
               </Flex>

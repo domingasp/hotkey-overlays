@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Group, Kbd, Paper, Stack, Text } from '@mantine/core';
 import { useState } from 'react';
 import Overlay from '../../../shared/types/Overlay';
@@ -10,13 +11,24 @@ type OverlayConfigurationCardProps = {
 };
 function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   const [name, setName] = useState(overlay.name);
-  const [isSavingName, setIsSavingName] = useState(false);
+  const [imagePath, setImagePath] = useState(overlay.imagePath);
 
-  async function updateOverlayName(id: number) {
+  const [isSavingName, setIsSavingName] = useState(false);
+  const [isSavingImage, setIsSavingImage] = useState(false);
+
+  async function updateOverlayName() {
     setIsSavingName(true);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (window as any).hotkeyOverlaysAPI.updateOverlayName(id, name);
+    await (window as any).hotkeyOverlaysAPI.updateOverlayName(overlay.id, name);
     setIsSavingName(false);
+  }
+
+  async function updateOverlayImage(path: string | undefined) {
+    setIsSavingImage(true);
+    await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
+      overlay.id,
+      path
+    );
+    setIsSavingImage(false);
   }
 
   return (
@@ -29,16 +41,18 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
       />
 
       <Group>
-        <ImageModal />
+        <ImageModal
+          imagePath={imagePath}
+          setImagePath={setImagePath}
+          onSave={(path) => updateOverlayImage(path)}
+        />
 
         <Stack gap="xs">
           <NameInput
             value={name}
             setValue={setName}
             isSaving={isSavingName}
-            onSave={() => {
-              updateOverlayName(overlay.id);
-            }}
+            onSave={() => updateOverlayName()}
           />
 
           <Text size="md">
