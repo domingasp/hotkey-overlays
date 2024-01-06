@@ -10,13 +10,17 @@ import {
   rem,
 } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons-react';
+import { useState } from 'react';
 import Overlay from '../../../shared/types/Overlay';
 import DeleteMenu from './DeleteMenu';
+import NameInput from './NameInput';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
 };
 function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
+  const [name, setName] = useState(overlay.name);
+
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
       <DeleteMenu
@@ -53,8 +57,8 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
           </Button>
         </Box>
 
-        <Stack>
-          <Text fw="bold">{overlay.name}</Text>
+        <Stack gap="xs">
+          <NameInput value={name} setValue={setName} />
 
           <Text size="md">
             <Kbd size="md">Ctrl</Kbd> + <Kbd size="md">Shift</Kbd> +{' '}
