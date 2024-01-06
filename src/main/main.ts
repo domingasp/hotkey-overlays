@@ -65,6 +65,17 @@ async function getOverlays() {
   return store.get('overlays');
 }
 
+async function updateOverlayName(id: number, name: string) {
+  const overlays = store.get('overlays');
+  const overlayToUpdate = overlays.find((x) => x.id === id);
+
+  if (overlayToUpdate) {
+    overlayToUpdate.name = name;
+
+    store.set('overlays', overlays);
+  }
+}
+
 function createTrayIron() {
   tray = new Tray(icon);
   tray.setToolTip('Hotkey Overlays');
@@ -132,6 +143,9 @@ function toggleOverlayWindow() {
 
 app.whenReady().then(() => {
   ipcMain.handle(channels.getOverlays, getOverlays);
+  ipcMain.handle(channels.updateOverlayName, (_event, id, name) =>
+    updateOverlayName(id, name)
+  );
 
   createDefaultOverlay();
   createTrayIron();

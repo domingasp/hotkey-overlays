@@ -5,22 +5,16 @@ import { createRef, useEffect, useRef, useState } from 'react';
 type NameInputProps = {
   value: string;
   setValue: (value: string) => void;
+  isSaving: boolean;
+  onSave: () => void;
 };
-function NameInput({ value, setValue }: NameInputProps) {
+function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
+  const [originalValue, setOriginalValue] = useState(value);
   const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
-  const [isSavingNameField, setIsSavingNameField] = useState(false);
 
   const [width, setWidth] = useState(0);
   const span = createRef<HTMLParagraphElement>();
   const inputFieldBlurTimer = useRef<NodeJS.Timeout>();
-
-  const saveNameField = () => {
-    setIsSavingNameField(true);
-    console.log('Name saved');
-    setTimeout(() => {
-      setIsSavingNameField(false);
-    }, 2000);
-  };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.currentTarget.value;
@@ -40,6 +34,16 @@ function NameInput({ value, setValue }: NameInputProps) {
       setWidth(calculatedWidth);
     }
   }, [value]);
+
+  useEffect(() => {
+    if (!isNameFieldFocused && !isSaving) {
+      setValue(originalValue);
+    }
+  }, [isNameFieldFocused]);
+
+  useEffect(() => {
+    setOriginalValue(value);
+  }, [isSaving]);
 
   return (
     <Box pos="relative" style={{ overflow: 'hidden' }}>
@@ -74,15 +78,15 @@ function NameInput({ value, setValue }: NameInputProps) {
             100
           );
         }}
-        disabled={isSavingNameField}
+        disabled={isSaving}
         rightSection={
-          (isNameFieldFocused || isSavingNameField) && (
+          (isNameFieldFocused || isSaving) && (
             <ActionIcon
               variant="light"
               color="green"
               aria-label="Save Name"
-              onClick={saveNameField}
-              loading={isSavingNameField}
+              onClick={onSave}
+              loading={isSaving}
             >
               <IconCheck
                 pointerEvents="none"

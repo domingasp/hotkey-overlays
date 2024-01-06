@@ -20,6 +20,14 @@ type OverlayConfigurationCardProps = {
 };
 function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   const [name, setName] = useState(overlay.name);
+  const [isSavingName, setIsSavingName] = useState(false);
+
+  async function updateOverlayName(id: number) {
+    setIsSavingName(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (window as any).hotkeyOverlaysAPI.updateOverlayName(id, name);
+    setIsSavingName(false);
+  }
 
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
@@ -58,7 +66,14 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
         </Box>
 
         <Stack gap="xs">
-          <NameInput value={name} setValue={setName} />
+          <NameInput
+            value={name}
+            setValue={setName}
+            isSaving={isSavingName}
+            onSave={() => {
+              updateOverlayName(overlay.id);
+            }}
+          />
 
           <Text size="md">
             <Kbd size="md">Ctrl</Kbd> + <Kbd size="md">Shift</Kbd> +{' '}
