@@ -27,9 +27,11 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
 
   useEffect(() => {
     if (span.current) {
+      const minWidth = 115;
+      const maxWidth = 253;
       let calculatedWidth = span.current.offsetWidth + 40;
-      if (calculatedWidth < 100) calculatedWidth = 100;
-      else if (calculatedWidth > 253) calculatedWidth = 253;
+      if (calculatedWidth < minWidth) calculatedWidth = minWidth;
+      else if (calculatedWidth > maxWidth) calculatedWidth = maxWidth;
 
       setWidth(calculatedWidth);
     }
@@ -51,6 +53,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
         ref={span}
         size="md"
         fw="bold"
+        px="xs"
         style={{
           visibility: 'hidden',
           pointerEvents: 'none',
@@ -60,14 +63,16 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
       >
         {value}
       </Text>
+
       <TextInput
         variant="unstyled"
         value={value}
         onChange={onChange}
+        bg={isNameFieldFocused || isSaving ? 'dark' : undefined}
+        px={isNameFieldFocused || isSaving ? 'xs' : undefined}
         w={width}
         fw="bold"
         size="md"
-        pl={0}
         onFocus={() => {
           clearTimeout(inputFieldBlurTimer.current);
           setIsNameFieldFocused(true);
@@ -98,6 +103,10 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
         rightSectionPointerEvents="all"
         rightSectionWidth="36px"
         rightSectionProps={{ style: { justifyContent: 'flex-end' } }}
+        style={{
+          borderRadius: 'var(--mantine-radius-md)',
+          transition: 'background-color 0.15s, padding 0.15s',
+        }}
       />
     </Box>
   );
