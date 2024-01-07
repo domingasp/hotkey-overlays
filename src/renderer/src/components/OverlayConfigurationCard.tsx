@@ -12,7 +12,8 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { IconPhotoPlus } from '@tabler/icons-react';
+import { IconCheck, IconPhotoPlus } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import Overlay from '../../../shared/types/Overlay';
 import DeleteMenu from './DeleteMenu';
 import NameInput from './NameInput';
@@ -41,6 +42,24 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
       overlay.id,
       path
     );
+    closeImageModel();
+
+    notifications.clean();
+    notifications.show({
+      color: 'green',
+      message: (
+        <Text size="sm">
+          Updated image for{' '}
+          <Text span fw="bold">
+            {name}
+          </Text>
+        </Text>
+      ),
+      withCloseButton: false,
+      icon: (
+        <IconCheck stroke={4} style={{ width: rem(14), height: rem(14) }} />
+      ),
+    });
   }
 
   return (

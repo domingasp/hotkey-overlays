@@ -10,7 +10,12 @@ import App from './App';
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <MantineProvider defaultColorScheme="dark">
-      <Notifications position="bottom-right" limit={5} maw="250px" />
+      <Notifications
+        position="bottom-right"
+        limit={1}
+        maw="250px"
+        autoClose={1000}
+      />
       <App />
     </MantineProvider>
   </React.StrictMode>

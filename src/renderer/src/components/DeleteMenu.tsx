@@ -27,14 +27,15 @@ function DeleteMenu({ id, pos, top, right }: DeleteMenuProps) {
             <IconTrash style={{ width: rem(14), height: rem(14) }} />
           }
           style={{ fontSize: '0.8rem' }}
-          onClick={() =>
+          onClick={() => {
+            notifications.clean();
             notifications.show({
               color: 'red',
               message: `Deleted overlay - ${id}`,
               withCloseButton: false,
               icon: <IconTrash style={{ width: rem(14), height: rem(14) }} />,
-            })
-          }
+            });
+          }}
         >
           Delete Overlay
         </Menu.Item>
