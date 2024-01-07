@@ -15,6 +15,7 @@ import {
   Divider,
   Center,
   ActionIcon,
+  LoadingOverlay,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -24,7 +25,7 @@ import {
   IconPhotoSearch,
   IconX,
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
 
 type ImageModalProps = {
@@ -39,11 +40,35 @@ function ImageModal({ imagePath, setImagePath, onSave }: ImageModalProps) {
   const [localDriveValue, setLocalDriveValue] = useState<File | null>(null);
   const [urlValue, setUrlValue] = useState<string>('');
 
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const imagePreviewTimerId = useRef<NodeJS.Timeout>();
+  const urlInputFieldRef = createRef<HTMLInputElement>();
+
   const save = () => {
     const path = localDriveValue?.path ?? urlValue ?? undefined;
     setImagePath(localDriveValue?.path ?? urlValue ?? undefined);
     onSave(path);
   };
+
+  const updateImagePreviewState = (setIsLoading: boolean) => {
+    setFailedToLoadImage(false);
+    setIsLoadingImage(setIsLoading);
+
+    clearTimeout(imagePreviewTimerId.current);
+    imagePreviewTimerId.current = setTimeout(() => {
+      setIsLoadingImage(false);
+    }, 250);
+  };
+
+  const onChangeUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newUrlValue = event.currentTarget.value;
+    updateImagePreviewState(newUrlValue.trim().length > 0);
+    setUrlValue(newUrlValue);
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(imagePreviewTimerId.current);
+  }, []);
 
   useEffect(() => {
     setFailedToLoadImage(false);
@@ -125,17 +150,18 @@ function ImageModal({ imagePath, setImagePath, onSave }: ImageModalProps) {
                 <TextInput
                   label="From Url:"
                   value={urlValue}
+                  ref={urlInputFieldRef}
                   placeholder="https://url..."
-                  onChange={(event) => {
-                    setFailedToLoadImage(false);
-                    setUrlValue(event.currentTarget.value);
-                  }}
+                  onChange={onChangeUrl}
                   rightSection={
                     urlValue.length > 0 && (
                       <ActionIcon
                         color="dark.1"
                         variant="transparent"
-                        onClick={() => setUrlValue('')}
+                        onClick={() => {
+                          urlInputFieldRef.current?.focus();
+                          setUrlValue('');
+                        }}
                         aria-label="Clear Url Field"
                       >
                         <IconX size={19.6} />
@@ -157,7 +183,7 @@ function ImageModal({ imagePath, setImagePath, onSave }: ImageModalProps) {
                     <IconDeviceFloppy size={18} style={{ marginTop: '2px' }} />
                   }
                   onClick={save}
-                  disabled={localDriveValue === null && urlValue.length === 0}
+                  disabled={isLoadingImage || failedToLoadImage}
                 >
                   Save
                 </Button>
@@ -174,23 +200,34 @@ function ImageModal({ imagePath, setImagePath, onSave }: ImageModalProps) {
                   borderRadius: 'var(--mantine-radius-sm)',
                 }}
               >
-                {failedToLoadImage && (
-                  <Center>
+                <LoadingOverlay
+                  visible={isLoadingImage}
+                  overlayProps={{
+                    backgroundOpacity: 1,
+                    color: 'var(--mantine-color-dark-8)',
+                    radius: 'sm',
+                  }}
+                  loaderProps={{ color: 'green' }}
+                />
+
+                {failedToLoadImage ? (
+                  <Center h={194}>
                     <IconPhotoOff
                       color="var(--mantine-color-dark-3)"
                       size={48}
                       stroke={1.5}
                     />
                   </Center>
+                ) : (
+                  <Image
+                    radius="sm"
+                    h={194}
+                    w="auto"
+                    fit="contain"
+                    src={urlValue}
+                    onError={() => setFailedToLoadImage(true)}
+                  />
                 )}
-                <Image
-                  radius="sm"
-                  h={194}
-                  w="auto"
-                  fit="contain"
-                  src={urlValue}
-                  onError={() => setFailedToLoadImage(true)}
-                />
               </Flex>
             </Stack>
           </Modal.Body>

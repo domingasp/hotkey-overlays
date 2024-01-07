@@ -14,7 +14,6 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   const [imagePath, setImagePath] = useState(overlay.imagePath);
 
   const [isSavingName, setIsSavingName] = useState(false);
-  const [isSavingImage, setIsSavingImage] = useState(false);
 
   async function updateOverlayName() {
     setIsSavingName(true);
@@ -23,12 +22,10 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   }
 
   async function updateOverlayImage(path: string | undefined) {
-    setIsSavingImage(true);
     await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
       overlay.id,
       path
     );
-    setIsSavingImage(false);
   }
 
   return (
