@@ -17,11 +17,13 @@ import {
 } from '@mantine/core';
 import {
   IconDeviceFloppy,
+  IconPhotoCancel,
   IconPhotoOff,
   IconPhotoSearch,
   IconX,
 } from '@tabler/icons-react';
 import { createRef, useEffect, useRef, useState } from 'react';
+import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
 
 type ImageModalProps = {
@@ -39,8 +41,9 @@ function ImageModal({
   setImagePath,
   onSave,
 }: ImageModalProps) {
-  const [failedToLoadImage, setFailedToLoadImage] = useState(false);
+  const acceptedImageFileTypes = 'image/png,image/jpeg,image/svg+xml,image/gif';
 
+  const [failedToLoadImage, setFailedToLoadImage] = useState(false);
   const [localDriveValue, setLocalDriveValue] = useState<File | null>(null);
   const [urlValue, setUrlValue] = useState<string>('');
 
@@ -68,6 +71,24 @@ function ImageModal({
     const newUrlValue = event.currentTarget.value;
     updateImagePreviewState(newUrlValue.trim().length > 0);
     setUrlValue(newUrlValue);
+  };
+
+  const onChangeLocalDriveValue = (payload: File | null) => {
+    let file = payload;
+
+    if (payload !== null && !acceptedImageFileTypes.includes(payload.type)) {
+      file = null;
+      notifications.clean();
+      notifications.show({
+        color: 'red',
+        message: 'Unsupported image type',
+        withCloseButton: false,
+        icon: <IconPhotoCancel style={{ width: rem(14), height: rem(14) }} />,
+        autoClose: 3000,
+      });
+    }
+
+    setLocalDriveValue(file);
   };
 
   useEffect(() => {
@@ -103,7 +124,12 @@ function ImageModal({
                 label="From Local Drive:"
                 clearable
                 value={localDriveValue}
-                onChange={setLocalDriveValue}
+                onChange={onChangeLocalDriveValue}
+                fileInputProps={{
+                  onClick: (event) => {
+                    event.currentTarget.value = '';
+                  },
+                }}
                 placeholder="Find image"
                 leftSection={
                   <IconPhotoSearch
@@ -112,6 +138,7 @@ function ImageModal({
                   />
                 }
                 leftSectionPointerEvents="none"
+                accept={acceptedImageFileTypes}
               />
 
               <HorizontalDividerWithLabel

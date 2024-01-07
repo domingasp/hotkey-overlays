@@ -30,6 +30,7 @@
       "error",
       { "singleQuote": true, "endOfLine": "auto" }
     ],
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "no-param-reassign": ["error", { "props": false }]
   }
 }
