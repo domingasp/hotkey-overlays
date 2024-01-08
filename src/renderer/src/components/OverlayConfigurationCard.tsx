@@ -19,6 +19,7 @@ import DeleteMenu from './DeleteMenu';
 import NameInput from './NameInput';
 import ImageModal from './ImageModal';
 import ImagePath from '../../../shared/types/ImagePath';
+import ConfigureImageButton from './ConfigureImageButton';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -73,32 +74,7 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
       />
 
       <Group>
-        <Box>
-          <Button
-            component={Skeleton}
-            height={100}
-            width={100}
-            color="green"
-            animate={false}
-            pos="relative"
-            onClick={openImageModel}
-          >
-            <IconPhotoPlus
-              style={{
-                width: rem(32),
-                height: rem(32),
-                color: 'var(--mantine-color-green-filled)',
-                position: 'absolute',
-                top: '0',
-                bottom: '0',
-                left: '0',
-                right: '0',
-                margin: 'auto',
-                zIndex: 50,
-              }}
-            />
-          </Button>
-        </Box>
+        <ConfigureImageButton imagePath={imagePath} onClick={openImageModel} />
 
         <ImageModal
           opened={imageModalOpened}

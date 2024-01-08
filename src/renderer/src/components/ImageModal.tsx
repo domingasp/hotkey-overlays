@@ -24,14 +24,7 @@ import UrlInput from './image-configuration/UrlInput';
 import LocalDriveInput from './image-configuration/LocalDriveInput';
 import CancelConfirmButtons from './CancelConfirmButtons';
 import ImagePath from '../../../shared/types/ImagePath';
-
-const fileToBase64 = async (path: string, type: string) => {
-  const encodedImage: string = await (
-    window as any
-  ).hotkeyOverlaysAPI.base64FromImagePath(path);
-
-  return `data:${type};base64, ${encodedImage}`;
-};
+import fileToBase64 from '../services/utils';
 
 type ImageModalProps = {
   opened: boolean;
