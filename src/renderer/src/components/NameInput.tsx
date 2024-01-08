@@ -15,6 +15,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
 
   const [width, setWidth] = useState(0);
   const span = createRef<HTMLParagraphElement>();
+  const inputFieldRef = createRef<HTMLInputElement>();
   const inputFieldBlurTimer = useRef<NodeJS.Timeout>();
 
   const validateField = (val: string) => {
@@ -75,6 +76,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
       </Text>
 
       <TextInput
+        ref={inputFieldRef}
         /* FUNCTIONS */
         value={value}
         onChange={onChange}
@@ -87,6 +89,14 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
             () => setIsNameFieldFocused(false),
             100
           );
+        }}
+        onKeyUp={(event) => {
+          if (!isSaving && isValid && event.key === 'Enter') {
+            onSave();
+            inputFieldRef.current?.blur();
+          } else if (!isSaving && event.key === 'Escape') {
+            inputFieldRef.current?.blur();
+          }
         }}
         disabled={isSaving}
         /* RIGHT SECTION */
