@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   FileInput,
@@ -26,6 +27,15 @@ import {
 import { createRef, useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
+import UrlInput from './image-configuration/UrlInput';
+
+const filePathToUrl = async (path: string, type: string) => {
+  const encodedImage: string = await (
+    window as any
+  ).hotkeyOverlaysAPI.base64FromImagePath(path);
+
+  return `data:${type};base64, ${encodedImage}`;
+};
 
 type ImageModalProps = {
   opened: boolean;
@@ -45,12 +55,13 @@ function ImageModal({
   const acceptedImageFileTypes = 'image/png,image/jpeg,image/svg+xml,image/gif';
 
   const [failedToLoadImage, setFailedToLoadImage] = useState(false);
+
   const [localDriveValue, setLocalDriveValue] = useState<File | null>(null);
   const [urlValue, setUrlValue] = useState<string>('');
+  const [imgSrc, setImgSrc] = useState('');
 
   const [isLoadingImage, setIsLoadingImage] = useState(false);
   const imagePreviewTimerId = useRef<NodeJS.Timeout>();
-  const urlInputFieldRef = createRef<HTMLInputElement>();
 
   const save = () => {
     const path = localDriveValue?.path ?? urlValue ?? undefined;
@@ -58,14 +69,17 @@ function ImageModal({
     onSave(path);
   };
 
-  const updateImagePreviewState = (setIsLoading: boolean) => {
+  const updateImagePreviewState = (
+    setIsLoading: boolean,
+    loadingTimeout = 5000
+  ) => {
     setFailedToLoadImage(false);
     setIsLoadingImage(setIsLoading);
 
     clearTimeout(imagePreviewTimerId.current);
     imagePreviewTimerId.current = setTimeout(() => {
       setIsLoadingImage(false);
-    }, 250);
+    }, loadingTimeout);
   };
 
   const onChangeUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,6 +101,8 @@ function ImageModal({
         icon: <IconPhotoCancel style={{ width: rem(14), height: rem(14) }} />,
         autoClose: 3000,
       });
+    } else if (payload !== null) {
+      filePathToUrl(payload.path, payload.type);
     }
 
     setLocalDriveValue(file);
@@ -104,11 +120,33 @@ function ImageModal({
       setUrlValue('');
       setFailedToLoadImage(true);
     } else if (imagePath.startsWith('http')) {
+      setLocalDriveValue(null);
       setUrlValue(imagePath);
     } else {
-      // local drive
+      setUrlValue('');
     }
   }, [imagePath, opened]);
+
+  useEffect(() => {
+    setImgSrc(urlValue);
+  }, [urlValue]);
+
+  useEffect(() => {
+    async function base64Image() {
+      let newImgSrc = null;
+      if (localDriveValue) {
+        newImgSrc = await filePathToUrl(
+          localDriveValue.path,
+          localDriveValue.type
+        );
+        updateImagePreviewState(true, 250);
+      }
+
+      setImgSrc(newImgSrc ?? '');
+    }
+
+    base64Image();
+  }, [localDriveValue]);
 
   return (
     <Modal.Root opened={opened} onClose={close} centered>
@@ -167,28 +205,10 @@ function ImageModal({
                 position="bottom"
                 withArrow
               >
-                <TextInput
-                  label="From Url:"
+                <UrlInput
                   value={urlValue}
-                  ref={urlInputFieldRef}
-                  placeholder="https://url..."
+                  setValue={setUrlValue}
                   onChange={onChangeUrl}
-                  rightSection={
-                    urlValue.length > 0 && (
-                      <ActionIcon
-                        color="dark.1"
-                        variant="transparent"
-                        onClick={() => {
-                          urlInputFieldRef.current?.focus();
-                          setUrlValue('');
-                        }}
-                        aria-label="Clear Url Field"
-                        disabled={localDriveValue !== null}
-                      >
-                        <IconX size={19.6} />
-                      </ActionIcon>
-                    )
-                  }
                   disabled={localDriveValue !== null}
                 />
               </Tooltip>
@@ -234,7 +254,7 @@ function ImageModal({
               />
 
               {failedToLoadImage ? (
-                <Center h={194}>
+                <Center h={218}>
                   <IconPhotoOff
                     color="var(--mantine-color-dark-3)"
                     size={48}
@@ -244,11 +264,14 @@ function ImageModal({
               ) : (
                 <Image
                   radius="sm"
-                  h={194}
+                  h={218}
                   w="auto"
                   fit="contain"
-                  src={urlValue}
-                  onError={() => setFailedToLoadImage(true)}
+                  src={imgSrc}
+                  onError={() => {
+                    setIsLoadingImage(false);
+                    setFailedToLoadImage(true);
+                  }}
                 />
               )}
             </Flex>

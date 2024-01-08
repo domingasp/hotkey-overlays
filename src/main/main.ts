@@ -1,6 +1,7 @@
 import { BrowserWindow, Menu, Tray, app, ipcMain, nativeImage } from 'electron';
 import Store, { Schema } from 'electron-store';
 import path from 'node:path';
+import fs from 'fs';
 import channels from '../shared/channels';
 import iconPng from '../images/icons/hotkey-overlays-logo.png';
 import Overlay from '../shared/types/Overlay';
@@ -79,6 +80,11 @@ async function updateOverlayImage(id: number, imagePath: string | undefined) {
 
     store.set('overlays', overlays);
   }
+}
+
+async function base64FromImagePath(imagePath: string) {
+  const base64Img = fs.readFileSync(imagePath).toString('base64');
+  return base64Img;
 }
 
 function createTrayIron() {
@@ -162,6 +168,9 @@ app.whenReady().then(() => {
   );
   ipcMain.handle(channels.updateOverlayImage, (_event, id, imagePath) =>
     updateOverlayImage(id, imagePath)
+  );
+  ipcMain.handle(channels.base64FromImagePath, (_event, imagePath) =>
+    base64FromImagePath(imagePath)
   );
 
   createDefaultOverlay();
