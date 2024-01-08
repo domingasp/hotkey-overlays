@@ -14,6 +14,7 @@ import {
   Center,
   ActionIcon,
   LoadingOverlay,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconDeviceFloppy,
@@ -120,26 +121,35 @@ function ImageModal({
         <Modal.Body>
           <Stack>
             <SimpleGrid pos="relative" cols={2} spacing="3rem">
-              <FileInput
-                label="From Local Drive:"
-                clearable
-                value={localDriveValue}
-                onChange={onChangeLocalDriveValue}
-                fileInputProps={{
-                  onClick: (event) => {
-                    event.currentTarget.value = '';
-                  },
-                }}
-                placeholder="Find image"
-                leftSection={
-                  <IconPhotoSearch
-                    style={{ width: rem(18), height: rem(18) }}
-                    stroke={1.5}
-                  />
-                }
-                leftSectionPointerEvents="none"
-                accept={acceptedImageFileTypes}
-              />
+              <Tooltip
+                label={<Text size="xs">Url field must be empty</Text>}
+                disabled={urlValue === ''}
+                color="dark"
+                position="bottom"
+                withArrow
+              >
+                <FileInput
+                  label="From Local Drive:"
+                  clearable
+                  value={localDriveValue}
+                  onChange={onChangeLocalDriveValue}
+                  fileInputProps={{
+                    onClick: (event) => {
+                      event.currentTarget.value = '';
+                    },
+                  }}
+                  placeholder="Find image"
+                  leftSection={
+                    <IconPhotoSearch
+                      style={{ width: rem(18), height: rem(18) }}
+                      stroke={1.5}
+                    />
+                  }
+                  leftSectionPointerEvents="none"
+                  accept={acceptedImageFileTypes}
+                  disabled={urlValue !== ''}
+                />
+              </Tooltip>
 
               <HorizontalDividerWithLabel
                 text="Or"
@@ -150,28 +160,38 @@ function ImageModal({
                 my="auto"
               />
 
-              <TextInput
-                label="From Url:"
-                value={urlValue}
-                ref={urlInputFieldRef}
-                placeholder="https://url..."
-                onChange={onChangeUrl}
-                rightSection={
-                  urlValue.length > 0 && (
-                    <ActionIcon
-                      color="dark.1"
-                      variant="transparent"
-                      onClick={() => {
-                        urlInputFieldRef.current?.focus();
-                        setUrlValue('');
-                      }}
-                      aria-label="Clear Url Field"
-                    >
-                      <IconX size={19.6} />
-                    </ActionIcon>
-                  )
-                }
-              />
+              <Tooltip
+                label={<Text size="xs">Local Drive field must be empty</Text>}
+                disabled={localDriveValue === null}
+                color="dark"
+                position="bottom"
+                withArrow
+              >
+                <TextInput
+                  label="From Url:"
+                  value={urlValue}
+                  ref={urlInputFieldRef}
+                  placeholder="https://url..."
+                  onChange={onChangeUrl}
+                  rightSection={
+                    urlValue.length > 0 && (
+                      <ActionIcon
+                        color="dark.1"
+                        variant="transparent"
+                        onClick={() => {
+                          urlInputFieldRef.current?.focus();
+                          setUrlValue('');
+                        }}
+                        aria-label="Clear Url Field"
+                        disabled={localDriveValue !== null}
+                      >
+                        <IconX size={19.6} />
+                      </ActionIcon>
+                    )
+                  }
+                  disabled={localDriveValue !== null}
+                />
+              </Tooltip>
             </SimpleGrid>
 
             <Group justify="space-between">
