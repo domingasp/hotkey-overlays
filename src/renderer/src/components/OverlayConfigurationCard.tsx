@@ -1,18 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Box,
-  Button,
-  Group,
-  Kbd,
-  Paper,
-  Skeleton,
-  Stack,
-  Text,
-  rem,
-} from '@mantine/core';
+import { Group, Kbd, Paper, Stack, Text, rem } from '@mantine/core';
 import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCheck, IconPhotoPlus } from '@tabler/icons-react';
+import { IconCheck } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import Overlay from '../../../shared/types/Overlay';
 import DeleteMenu from './DeleteMenu';
