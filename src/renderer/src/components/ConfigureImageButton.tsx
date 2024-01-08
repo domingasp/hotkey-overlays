@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Image,
-  Skeleton,
-  UnstyledButton,
-  rem,
-} from '@mantine/core';
+import { Box, Image, UnstyledButton } from '@mantine/core';
 import { IconPhotoEdit, IconPhotoPlus } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import ImagePath from '../../../shared/types/ImagePath';
