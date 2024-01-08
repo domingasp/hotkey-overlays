@@ -1,6 +1,16 @@
-import { Box, Button, Skeleton, rem } from '@mantine/core';
-import { IconPhotoPlus } from '@tabler/icons-react';
+import {
+  Box,
+  Button,
+  Image,
+  Skeleton,
+  UnstyledButton,
+  rem,
+} from '@mantine/core';
+import { IconPhotoEdit, IconPhotoPlus } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import ImagePath from '../../../shared/types/ImagePath';
+import fileToBase64 from '../services/utils';
+import '../styles/configureImageButton.css';
 
 type ConfigureImageButtonProps = {
   imagePath: ImagePath | undefined;
@@ -10,32 +20,45 @@ function ConfigureImageButton({
   imagePath,
   onClick,
 }: ConfigureImageButtonProps) {
+  const [imgSrc, setImgSrc] = useState('');
+
+  useEffect(() => {
+    async function setImageSrcFromImagePath() {
+      if (imagePath) {
+        setImgSrc(await fileToBase64(imagePath.path, imagePath.type));
+      }
+    }
+    if (imagePath && imagePath.type !== 'url') {
+      setImageSrcFromImagePath();
+    } else {
+      setImgSrc(imagePath?.path ?? '');
+    }
+  }, [imagePath]);
+
   return (
     <Box>
-      <Button
-        component={Skeleton}
-        height={100}
-        width={100}
-        color="green"
-        animate={false}
-        pos="relative"
+      <UnstyledButton
+        aria-label="Configure Image"
         onClick={onClick}
+        className={`btn${imgSrc === '' ? ' add-img-btn' : ' edit-img-btn'}`}
+        style={{ position: 'relative' }}
       >
-        <IconPhotoPlus
-          style={{
-            width: rem(32),
-            height: rem(32),
-            color: 'var(--mantine-color-green-filled)',
-            position: 'absolute',
-            top: '0',
-            bottom: '0',
-            left: '0',
-            right: '0',
-            margin: 'auto',
-            zIndex: 50,
-          }}
-        />
-      </Button>
+        <Image src={imgSrc} fit="contain" />
+
+        {imgSrc === '' && (
+          <IconPhotoPlus
+            className={`icon${imgSrc === '' ? ' add-img-icon' : ''}`}
+          />
+        )}
+
+        {imgSrc !== '' && (
+          <IconPhotoEdit
+            className={`icon${
+              imgSrc === '' ? ' add-img-icon' : ' edit-img-icon'
+            }`}
+          />
+        )}
+      </UnstyledButton>
     </Box>
   );
 }
