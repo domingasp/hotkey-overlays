@@ -5,6 +5,7 @@ import fs from 'fs';
 import channels from '../shared/channels';
 import iconPng from '../images/icons/hotkey-overlays-logo.png';
 import Overlay from '../shared/types/Overlay';
+import ImagePath from '../shared/types/ImagePath';
 
 const icon = nativeImage.createFromDataURL(iconPng);
 
@@ -33,7 +34,11 @@ const schema: Schema<SchemaInterface> = {
           type: 'string',
         },
         imagePath: {
-          type: 'string',
+          type: 'object',
+          properties: {
+            path: { type: 'string' },
+            type: { type: 'string' },
+          },
         },
       },
       required: ['name', 'hotkey'],
@@ -41,6 +46,7 @@ const schema: Schema<SchemaInterface> = {
     default: [],
   },
 };
+
 const store = new Store({ schema });
 
 function createDefaultOverlay() {
@@ -71,7 +77,10 @@ async function updateOverlayName(id: number, name: string) {
   }
 }
 
-async function updateOverlayImage(id: number, imagePath: string | undefined) {
+async function updateOverlayImage(
+  id: number,
+  imagePath: ImagePath | undefined
+) {
   const overlays = store.get('overlays');
   const overlayToUpdate = overlays.find((x) => x.id === id);
 

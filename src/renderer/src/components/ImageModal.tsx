@@ -17,12 +17,13 @@ import {
   IconPhotoCancel,
   IconPhotoOff,
 } from '@tabler/icons-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
 import UrlInput from './image-configuration/UrlInput';
 import LocalDriveInput from './image-configuration/LocalDriveInput';
 import CancelConfirmButtons from './CancelConfirmButtons';
+import ImagePath from '../../../shared/types/ImagePath';
 
 const fileToBase64 = async (file: File) => {
   const encodedImage: string = await (
@@ -36,9 +37,9 @@ type ImageModalProps = {
   opened: boolean;
   close: () => void;
 
-  imagePath: string | undefined;
-  setImagePath: (imagePath: string | undefined) => void;
-  onSave: (path: string | undefined) => void;
+  imagePath: ImagePath | undefined;
+  setImagePath: (imagePath: ImagePath | undefined) => void;
+  onSave: (path: ImagePath | undefined) => void;
 };
 function ImageModal({
   opened,
@@ -58,7 +59,19 @@ function ImageModal({
   const [isLoadingImage, setIsLoadingImage] = useState(false);
 
   const save = () => {
-    const path = localDriveValue?.path ?? urlValue ?? undefined;
+    let path: ImagePath | undefined;
+    if (localDriveValue) {
+      path = {
+        path: localDriveValue.path,
+        type: localDriveValue.type,
+      };
+    } else if (urlValue !== '') {
+      path = {
+        path: urlValue,
+        type: 'url',
+      };
+    }
+
     setImagePath(path);
     onSave(path);
   };
@@ -98,9 +111,9 @@ function ImageModal({
       setLocalDriveValue(null);
       setUrlValue('');
       setFailedToLoadImage(true);
-    } else if (imagePath.startsWith('http')) {
+    } else if (imagePath.type === 'url') {
       setLocalDriveValue(null);
-      setUrlValue(imagePath);
+      setUrlValue(imagePath.path);
     } else {
       setUrlValue('');
     }
@@ -117,7 +130,7 @@ function ImageModal({
   return (
     <Modal.Root opened={opened} onClose={close} centered>
       <Modal.Overlay backgroundOpacity={0.55} blur={2} />
-      <Modal.Content>
+      <Modal.Content maw={398}>
         <Modal.Header>
           <Modal.Title fw="bold">Configure Image</Modal.Title>
           <Modal.CloseButton />
@@ -180,11 +193,12 @@ function ImageModal({
             <Flex
               justify="center"
               bg="dark.8"
-              p="xs"
+              p={6}
               pos="relative"
               style={{
                 borderRadius: 'var(--mantine-radius-sm)',
               }}
+              h={211}
             >
               <LoadingOverlay
                 visible={isLoadingImage}
@@ -197,7 +211,7 @@ function ImageModal({
               />
 
               {failedToLoadImage && (
-                <Center h={218}>
+                <Center h="100%">
                   <IconPhotoOff
                     color="var(--mantine-color-dark-3)"
                     size={48}
@@ -207,9 +221,7 @@ function ImageModal({
               )}
 
               <Image
-                radius="sm"
-                h={218}
-                w="auto"
+                h="100%"
                 fit="contain"
                 src={imgSrc}
                 onLoad={() => {
@@ -219,10 +231,6 @@ function ImageModal({
                 onError={() => {
                   setIsLoadingImage(false);
                   setFailedToLoadImage(true);
-                }}
-                style={{
-                  visibility: failedToLoadImage ? 'hidden' : 'visible',
-                  position: failedToLoadImage ? 'absolute' : 'relative',
                 }}
               />
             </Flex>

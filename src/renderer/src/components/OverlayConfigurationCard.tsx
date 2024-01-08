@@ -18,6 +18,7 @@ import Overlay from '../../../shared/types/Overlay';
 import DeleteMenu from './DeleteMenu';
 import NameInput from './NameInput';
 import ImageModal from './ImageModal';
+import ImagePath from '../../../shared/types/ImagePath';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -37,7 +38,7 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
     setIsSavingName(false);
   }
 
-  async function updateOverlayImage(path: string | undefined) {
+  async function updateOverlayImage(path: ImagePath | undefined) {
     await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
       overlay.id,
       path
