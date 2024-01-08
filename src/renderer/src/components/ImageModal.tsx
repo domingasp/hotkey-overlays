@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Button,
-  FileInput,
   Modal,
   rem,
   Image,
   Flex,
   Stack,
-  Group,
   SimpleGrid,
   Text,
   Divider,
@@ -19,20 +16,20 @@ import {
   IconDeviceFloppy,
   IconPhotoCancel,
   IconPhotoOff,
-  IconPhotoSearch,
 } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
 import UrlInput from './image-configuration/UrlInput';
 import LocalDriveInput from './image-configuration/LocalDriveInput';
+import CancelConfirmButtons from './CancelConfirmButtons';
 
-const filePathToUrl = async (path: string, type: string) => {
+const fileToBase64 = async (file: File) => {
   const encodedImage: string = await (
     window as any
-  ).hotkeyOverlaysAPI.base64FromImagePath(path);
+  ).hotkeyOverlaysAPI.base64FromImagePath(file.path);
 
-  return `data:${type};base64, ${encodedImage}`;
+  return `data:${file.type};base64, ${encodedImage}`;
 };
 
 type ImageModalProps = {
@@ -59,34 +56,20 @@ function ImageModal({
   const [imgSrc, setImgSrc] = useState('');
 
   const [isLoadingImage, setIsLoadingImage] = useState(false);
-  const imagePreviewTimerId = useRef<NodeJS.Timeout>();
 
   const save = () => {
     const path = localDriveValue?.path ?? urlValue ?? undefined;
-    setImagePath(localDriveValue?.path ?? urlValue ?? undefined);
+    setImagePath(path);
     onSave(path);
   };
 
-  const updateImagePreviewState = (
-    setIsLoading: boolean,
-    loadingTimeout = 5000
-  ) => {
-    setFailedToLoadImage(false);
-    setIsLoadingImage(setIsLoading);
-
-    clearTimeout(imagePreviewTimerId.current);
-    imagePreviewTimerId.current = setTimeout(() => {
-      setIsLoadingImage(false);
-    }, loadingTimeout);
+  const onChangeUrl = (newUrl: string) => {
+    setIsLoadingImage(true);
+    setUrlValue(newUrl);
+    setImgSrc(newUrl);
   };
 
-  const onChangeUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newUrlValue = event.currentTarget.value;
-    updateImagePreviewState(newUrlValue.trim().length > 0);
-    setUrlValue(newUrlValue);
-  };
-
-  const onChangeLocalDrive = (payload: File | null) => {
+  const onChangeLocalDrive = async (payload: File | null) => {
     let file = payload;
 
     if (payload !== null && !acceptedImageFileTypes.includes(payload.type)) {
@@ -100,15 +83,13 @@ function ImageModal({
         autoClose: 3000,
       });
     } else if (payload !== null) {
-      filePathToUrl(payload.path, payload.type);
+      setImgSrc(await fileToBase64(payload));
+    } else {
+      setImgSrc('');
     }
 
     setLocalDriveValue(file);
   };
-
-  useEffect(() => {
-    return () => clearTimeout(imagePreviewTimerId.current);
-  }, []);
 
   useEffect(() => {
     setFailedToLoadImage(false);
@@ -126,24 +107,11 @@ function ImageModal({
   }, [imagePath, opened]);
 
   useEffect(() => {
-    setImgSrc(urlValue);
+    onChangeUrl(urlValue);
   }, [urlValue]);
 
   useEffect(() => {
-    async function base64Image() {
-      let newImgSrc = null;
-      if (localDriveValue) {
-        newImgSrc = await filePathToUrl(
-          localDriveValue.path,
-          localDriveValue.type
-        );
-        updateImagePreviewState(true, 250);
-      }
-
-      setImgSrc(newImgSrc ?? '');
-    }
-
-    base64Image();
+    onChangeLocalDrive(localDriveValue);
   }, [localDriveValue]);
 
   return (
@@ -198,23 +166,14 @@ function ImageModal({
               </Tooltip>
             </SimpleGrid>
 
-            <Group justify="space-between">
-              <Button variant="default" onClick={close} size="sm">
-                Cancel
-              </Button>
-
-              <Button
-                variant="light"
-                color="green"
-                leftSection={
-                  <IconDeviceFloppy size={18} style={{ marginTop: '2px' }} />
-                }
-                onClick={save}
-                disabled={isLoadingImage || failedToLoadImage}
-              >
-                Save
-              </Button>
-            </Group>
+            <CancelConfirmButtons
+              onCancel={close}
+              onConfirm={save}
+              confirmIcon={
+                <IconDeviceFloppy size={18} style={{ marginTop: '2px' }} />
+              }
+              confirmDisabled={isLoadingImage || failedToLoadImage}
+            />
 
             <Divider size="md" label={<Text size="xs">Image Preview</Text>} />
 
@@ -237,7 +196,7 @@ function ImageModal({
                 loaderProps={{ color: 'green' }}
               />
 
-              {failedToLoadImage ? (
+              {failedToLoadImage && (
                 <Center h={218}>
                   <IconPhotoOff
                     color="var(--mantine-color-dark-3)"
@@ -245,19 +204,27 @@ function ImageModal({
                     stroke={1.5}
                   />
                 </Center>
-              ) : (
-                <Image
-                  radius="sm"
-                  h={218}
-                  w="auto"
-                  fit="contain"
-                  src={imgSrc}
-                  onError={() => {
-                    setIsLoadingImage(false);
-                    setFailedToLoadImage(true);
-                  }}
-                />
               )}
+
+              <Image
+                radius="sm"
+                h={218}
+                w="auto"
+                fit="contain"
+                src={imgSrc}
+                onLoad={() => {
+                  setIsLoadingImage(false);
+                  setFailedToLoadImage(false);
+                }}
+                onError={() => {
+                  setIsLoadingImage(false);
+                  setFailedToLoadImage(true);
+                }}
+                style={{
+                  visibility: failedToLoadImage ? 'hidden' : 'visible',
+                  position: failedToLoadImage ? 'absolute' : 'relative',
+                }}
+              />
             </Flex>
           </Stack>
         </Modal.Body>

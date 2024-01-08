@@ -5,7 +5,7 @@ import { createRef, forwardRef, useImperativeHandle } from 'react';
 type UrlInputProps = {
   value: string;
   setValue: (newVal: string) => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (newVal: string) => void;
 
   disabled?: boolean;
 };
@@ -24,7 +24,7 @@ const UrlInput = forwardRef<HTMLInputElement, UrlInputProps>(function UrlInput(
       value={value}
       ref={fieldRef}
       placeholder="https://url..."
-      onChange={onChange}
+      onChange={(event) => onChange(event.target.value)}
       rightSection={
         value.length > 0 && (
           <ActionIcon

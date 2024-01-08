@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 
 type LocalDriveInputProps = {
   value: File | null;
-  onChange: ((payload: File | null) => void) | undefined;
+  onChange: (payload: File | null) => void;
   acceptedFileTypes: string;
   disabled?: boolean;
 };
