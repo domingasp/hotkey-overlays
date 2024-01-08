@@ -25,12 +25,12 @@ import LocalDriveInput from './image-configuration/LocalDriveInput';
 import CancelConfirmButtons from './CancelConfirmButtons';
 import ImagePath from '../../../shared/types/ImagePath';
 
-const fileToBase64 = async (file: File) => {
+const fileToBase64 = async (path: string, type: string) => {
   const encodedImage: string = await (
     window as any
-  ).hotkeyOverlaysAPI.base64FromImagePath(file.path);
+  ).hotkeyOverlaysAPI.base64FromImagePath(path);
 
-  return `data:${file.type};base64, ${encodedImage}`;
+  return `data:${type};base64, ${encodedImage}`;
 };
 
 type ImageModalProps = {
@@ -52,6 +52,8 @@ function ImageModal({
 
   const [failedToLoadImage, setFailedToLoadImage] = useState(false);
 
+  const [initialLocalDriveValueLabel, setInitialLocalDriveValueLabel] =
+    useState('');
   const [localDriveValue, setLocalDriveValue] = useState<File | null>(null);
   const [urlValue, setUrlValue] = useState<string>('');
   const [imgSrc, setImgSrc] = useState('');
@@ -61,10 +63,17 @@ function ImageModal({
   const save = () => {
     let path: ImagePath | undefined;
     if (localDriveValue) {
-      path = {
-        path: localDriveValue.path,
-        type: localDriveValue.type,
-      };
+      if (localDriveValue.path !== '') {
+        path = {
+          path: localDriveValue.path,
+          type: localDriveValue.type,
+        };
+      } else if (imagePath) {
+        path = {
+          path: imagePath.path,
+          type: imagePath.type,
+        };
+      }
     } else if (urlValue !== '') {
       path = {
         path: urlValue,
@@ -96,7 +105,7 @@ function ImageModal({
         autoClose: 3000,
       });
     } else if (payload !== null) {
-      setImgSrc(await fileToBase64(payload));
+      setImgSrc(await fileToBase64(payload.path, payload.type));
     } else {
       setImgSrc('');
     }
@@ -105,7 +114,25 @@ function ImageModal({
   };
 
   useEffect(() => {
-    setFailedToLoadImage(false);
+    async function setImageFromFile(path: string, type: string) {
+      const imageAsString = await fileToBase64(path, type);
+      setImgSrc(imageAsString);
+
+      if (imageAsString === `data:${type};base64, undefined`) {
+        notifications.clean();
+        notifications.show({
+          color: 'red',
+          message: 'Image not found',
+          withCloseButton: false,
+          icon: <IconPhotoCancel style={{ width: rem(14), height: rem(14) }} />,
+          autoClose: 3000,
+        });
+      }
+    }
+
+    if (imgSrc === undefined || imgSrc === '') {
+      setFailedToLoadImage(false);
+    }
 
     if (imagePath === undefined) {
       setLocalDriveValue(null);
@@ -116,6 +143,16 @@ function ImageModal({
       setUrlValue(imagePath.path);
     } else {
       setUrlValue('');
+      setLocalDriveValue(new File([], ''));
+      setInitialLocalDriveValueLabel(imagePath.path.split('\\').pop() ?? '');
+
+      if (opened || localDriveValue?.path !== '') {
+        setImageFromFile(imagePath.path, imagePath.type);
+      }
+
+      if (!opened && localDriveValue?.path === '') {
+        notifications.clean();
+      }
     }
   }, [imagePath, opened]);
 
@@ -124,7 +161,10 @@ function ImageModal({
   }, [urlValue]);
 
   useEffect(() => {
-    onChangeLocalDrive(localDriveValue);
+    if (initialLocalDriveValueLabel !== '' && localDriveValue?.path !== '') {
+      setInitialLocalDriveValueLabel('');
+      onChangeLocalDrive(localDriveValue);
+    }
   }, [localDriveValue]);
 
   return (
@@ -147,6 +187,7 @@ function ImageModal({
                 withArrow
               >
                 <LocalDriveInput
+                  initialValueLabel={initialLocalDriveValueLabel}
                   value={localDriveValue}
                   onChange={onChangeLocalDrive}
                   acceptedFileTypes={acceptedImageFileTypes}
@@ -221,7 +262,7 @@ function ImageModal({
               )}
 
               <Image
-                h="100%"
+                h={200}
                 fit="contain"
                 src={imgSrc}
                 onLoad={() => {
