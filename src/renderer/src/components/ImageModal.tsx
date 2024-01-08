@@ -6,14 +6,12 @@ import {
   rem,
   Image,
   Flex,
-  TextInput,
   Stack,
   Group,
   SimpleGrid,
   Text,
   Divider,
   Center,
-  ActionIcon,
   LoadingOverlay,
   Tooltip,
 } from '@mantine/core';
@@ -22,12 +20,12 @@ import {
   IconPhotoCancel,
   IconPhotoOff,
   IconPhotoSearch,
-  IconX,
 } from '@tabler/icons-react';
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
 import UrlInput from './image-configuration/UrlInput';
+import LocalDriveInput from './image-configuration/LocalDriveInput';
 
 const filePathToUrl = async (path: string, type: string) => {
   const encodedImage: string = await (
@@ -88,7 +86,7 @@ function ImageModal({
     setUrlValue(newUrlValue);
   };
 
-  const onChangeLocalDriveValue = (payload: File | null) => {
+  const onChangeLocalDrive = (payload: File | null) => {
     let file = payload;
 
     if (payload !== null && !acceptedImageFileTypes.includes(payload.type)) {
@@ -162,29 +160,15 @@ function ImageModal({
               <Tooltip
                 label={<Text size="xs">Url field must be empty</Text>}
                 disabled={urlValue === ''}
-                color="dark"
+                color="red"
                 position="bottom"
+                variant=""
                 withArrow
               >
-                <FileInput
-                  label="From Local Drive:"
-                  clearable
+                <LocalDriveInput
                   value={localDriveValue}
-                  onChange={onChangeLocalDriveValue}
-                  fileInputProps={{
-                    onClick: (event) => {
-                      event.currentTarget.value = '';
-                    },
-                  }}
-                  placeholder="Find image"
-                  leftSection={
-                    <IconPhotoSearch
-                      style={{ width: rem(18), height: rem(18) }}
-                      stroke={1.5}
-                    />
-                  }
-                  leftSectionPointerEvents="none"
-                  accept={acceptedImageFileTypes}
+                  onChange={onChangeLocalDrive}
+                  acceptedFileTypes={acceptedImageFileTypes}
                   disabled={urlValue !== ''}
                 />
               </Tooltip>
@@ -201,7 +185,7 @@ function ImageModal({
               <Tooltip
                 label={<Text size="xs">Local Drive field must be empty</Text>}
                 disabled={localDriveValue === null}
-                color="dark"
+                color="red"
                 position="bottom"
                 withArrow
               >

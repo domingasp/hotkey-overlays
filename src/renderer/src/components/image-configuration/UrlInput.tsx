@@ -10,7 +10,7 @@ type UrlInputProps = {
   disabled?: boolean;
 };
 const UrlInput = forwardRef<HTMLInputElement, UrlInputProps>(function UrlInput(
-  { value, setValue, onChange, disabled = false }: UrlInputProps,
+  { value, setValue, onChange, disabled = false },
   ref
 ) {
   const fieldRef = createRef<HTMLInputElement>();
