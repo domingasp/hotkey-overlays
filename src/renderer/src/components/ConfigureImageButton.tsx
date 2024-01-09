@@ -34,9 +34,20 @@ function ConfigureImageButton({
         aria-label="Configure Image"
         onClick={onClick}
         className={`btn${imgSrc === '' ? ' add-img-btn' : ' edit-img-btn'}`}
-        style={{ position: 'relative' }}
+        style={{
+          position: 'relative',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '0.25rem',
+        }}
       >
-        <Image src={imgSrc} fit="contain" />
+        <Image
+          src={imgSrc}
+          w="100%"
+          fit="contain"
+          style={{ marginRight: '0.03rem' }}
+        />
 
         {imgSrc === '' && (
           <IconPhotoPlus
