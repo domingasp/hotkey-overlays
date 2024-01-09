@@ -32,6 +32,9 @@ dependencies:
   react-hotkeys:
     specifier: ^2.0.0
     version: 2.0.0(react@18.2.0)
+  react-hotkeys-hook:
+    specifier: ^4.4.3
+    version: 4.4.3(react-dom@18.2.0)(react@18.2.0)
   react-router-dom:
     specifier: ^6.21.1
     version: 6.21.1(react-dom@18.2.0)(react@18.2.0)
@@ -3410,6 +3413,16 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-hotkeys-hook@4.4.3(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-G6psp7OUm9xxY4G2vL48tBwWUVJLvD/PeInaPdPvqRJ8GoXBu6Djqr6WIw5gu1M0SbR1epNUlvpccxu2ZzmtFQ==}
+    peerDependencies:
+      react: '>=16.8.1'
+      react-dom: '>=16.8.1'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /react-hotkeys@2.0.0(react@18.2.0):

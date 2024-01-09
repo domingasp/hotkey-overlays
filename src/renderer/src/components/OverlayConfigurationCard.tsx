@@ -20,6 +20,7 @@ import ImageModal from './ImageModal';
 import ImagePath from '../../../shared/types/ImagePath';
 import ConfigureImageButton from './ConfigureImageButton';
 import '../styles/configureHotkeyButton.css';
+import UpdateHotkeyOverlay from './UpdateHotkeyOverlay';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -30,6 +31,11 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   const [imageModalOpened, { open: openImageModel, close: closeImageModel }] =
     useDisclosure(false);
   const [imagePath, setImagePath] = useState(overlay.imagePath);
+
+  const [
+    hotkeyOverlayOpened,
+    { open: openHotkeyOverlay, close: closeHotkeyOverlay },
+  ] = useDisclosure(false);
 
   const [isSavingName, setIsSavingName] = useState(false);
 
@@ -84,6 +90,13 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
           onSave={(path) => updateOverlayImage(path)}
         />
 
+        {hotkeyOverlayOpened && (
+          <UpdateHotkeyOverlay
+            opened={hotkeyOverlayOpened}
+            close={closeHotkeyOverlay}
+          />
+        )}
+
         <Stack gap="xs">
           <NameInput
             value={name}
@@ -101,6 +114,7 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
             <UnstyledButton
               aria-label="Change Hotkey"
               className="configure-hotkey-btn"
+              onClick={openHotkeyOverlay}
             >
               <Kbd size="md">Ctrl</Kbd> + <Kbd size="md">Ctrl</Kbd>
             </UnstyledButton>
