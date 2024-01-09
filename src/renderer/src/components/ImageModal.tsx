@@ -176,7 +176,6 @@ function ImageModal({
                 disabled={urlValue === ''}
                 color="red"
                 position="bottom"
-                variant=""
                 withArrow
               >
                 <LocalDriveInput

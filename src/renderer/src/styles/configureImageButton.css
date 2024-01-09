@@ -1,4 +1,4 @@
-.btn {
+.configure-img-btn {
   height: 100px;
   width: 100px;
   border-radius: var(--mantine-radius-md);
@@ -6,13 +6,13 @@
   transition: background-color 0.15s;
 }
 
-.icon {
+.configure-img-icon {
   position: absolute;
   z-index: 50;
   transition: background-color 0.15s;
 }
 
-.add-img-btn {
+.configure-img--add-img-btn {
   width: 28px;
   height: 28px;
   top: 0;
@@ -24,27 +24,27 @@
   background-color: var(--mantine-color-dark-7);
   border: solid 1px var(--mantine-color-green-5);
 }
-.add-img-btn:hover {
+.configure-img--add-img-btn:hover {
   background-color: var(--mantine-color-dark-8);
   border: solid 1px var(--mantine-color-green-4);
 }
 
-.edit-img-btn {
+.configure-img--edit-img-btn {
   background-color: var(--mantine-color-dark-7);
   border: solid 1px var(--mantine-color-dark-7);
 }
-.edit-img-btn:hover {
+.configure-img--edit-img-btn:hover {
   background-color: var(--mantine-color-dark-8);
 }
 
-.add-img-icon {
+.configure-img--add-img-icon {
   color: var(--mantine-color-green-5);
 }
-.add-img-btn:hover > .add-img-icon {
+.configure-img--add-img-btn:hover > .add-img-icon {
   color: var(--mantine-color-green-4);
 }
 
-.edit-img-icon {
+.configure-img--edit-img-icon {
   width: 22px;
   height: 22px;
 
@@ -52,6 +52,6 @@
   bottom: 1px;
   right: 1px;
 }
-.edit-img-btn:hover > .edit-img-icon {
+.configure-img--edit-img-btn:hover > .edit-img-icon {
   color: var(--mantine-color-dark-1);
 }

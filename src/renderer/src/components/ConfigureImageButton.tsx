@@ -33,7 +33,9 @@ function ConfigureImageButton({
       <UnstyledButton
         aria-label="Configure Image"
         onClick={onClick}
-        className={`btn${imgSrc === '' ? ' add-img-btn' : ' edit-img-btn'}`}
+        className={`configure-img-btn configure-img--${
+          imgSrc === '' ? 'add-img-btn' : 'edit-img-btn'
+        }`}
         style={{
           position: 'relative',
           display: 'flex',
@@ -51,14 +53,16 @@ function ConfigureImageButton({
 
         {imgSrc === '' && (
           <IconPhotoPlus
-            className={`icon${imgSrc === '' ? ' add-img-icon' : ''}`}
+            className={`configure-img-icon configure-img--${
+              imgSrc === '' ? 'add-img-icon' : ''
+            }`}
           />
         )}
 
         {imgSrc !== '' && (
           <IconPhotoEdit
-            className={`icon${
-              imgSrc === '' ? ' add-img-icon' : ' edit-img-icon'
+            className={`configure-img-icon configure-img--${
+              imgSrc === '' ? 'add-img-icon' : 'edit-img-icon'
             }`}
           />
         )}

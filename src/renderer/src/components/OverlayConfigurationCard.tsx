@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Group, Kbd, Paper, Stack, Text, rem } from '@mantine/core';
+import {
+  Group,
+  Kbd,
+  Paper,
+  Stack,
+  Text,
+  Tooltip,
+  UnstyledButton,
+  rem,
+} from '@mantine/core';
 import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCheck } from '@tabler/icons-react';
@@ -10,6 +19,8 @@ import NameInput from './NameInput';
 import ImageModal from './ImageModal';
 import ImagePath from '../../../shared/types/ImagePath';
 import ConfigureImageButton from './ConfigureImageButton';
+import KbdBlock from './hotkey-configuration/KbdBlock';
+import '../styles/configureHotkeyButton.css';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -82,10 +93,18 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
             onSave={() => updateOverlayName()}
           />
 
-          <Text size="md">
-            <Kbd size="md">Ctrl</Kbd> + <Kbd size="md">Shift</Kbd> +{' '}
-            <Kbd size="md">]</Kbd>
-          </Text>
+          <Tooltip
+            label={<Text size="xs">Edit Hotkey</Text>}
+            color="blue"
+            withArrow
+          >
+            <UnstyledButton
+              aria-label="Change Hotkey"
+              className="configure-hotkey-btn"
+            >
+              <KbdBlock>Ctrl</KbdBlock> + <KbdBlock>Ctrl</KbdBlock>
+            </UnstyledButton>
+          </Tooltip>
         </Stack>
       </Group>
     </Paper>
