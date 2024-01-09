@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Box,
+  Flex,
   Group,
   Kbd,
   Paper,
@@ -21,6 +23,7 @@ import ImagePath from '../../../shared/types/ImagePath';
 import ConfigureImageButton from './ConfigureImageButton';
 import '../styles/configureHotkeyButton.css';
 import UpdateHotkeyOverlay from './UpdateHotkeyOverlay';
+import formatHotkeyShortcut from '../../../shared/utils';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -31,6 +34,8 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   const [imageModalOpened, { open: openImageModel, close: closeImageModel }] =
     useDisclosure(false);
   const [imagePath, setImagePath] = useState(overlay.imagePath);
+
+  const [hotkey, setHotkey] = useState<string>(overlay.hotkey);
 
   const [
     hotkeyOverlayOpened,
@@ -70,6 +75,33 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
     });
   }
 
+  async function updateOverlayHotkey(newHotkey: string[]) {
+    closeHotkeyOverlay();
+    const electronMapped = formatHotkeyShortcut(newHotkey, true);
+    setHotkey(electronMapped.join('+'));
+  }
+
+  const renderHotkey = (toRender: string) => {
+    const split = toRender.split('+');
+
+    return (
+      <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
+        {formatHotkeyShortcut(split).map((key, i) => (
+          <>
+            <Kbd key={key} size="sm">
+              {key}
+            </Kbd>
+            {split.length > 1 && i < split.length - 1 ? (
+              <Text mx="0.3125rem"> + </Text>
+            ) : (
+              ''
+            )}
+          </>
+        ))}
+      </Flex>
+    );
+  };
+
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
       <DeleteMenu
@@ -94,6 +126,7 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
           <UpdateHotkeyOverlay
             opened={hotkeyOverlayOpened}
             close={closeHotkeyOverlay}
+            onSave={(newHotkey) => updateOverlayHotkey(newHotkey)}
           />
         )}
 
@@ -116,7 +149,7 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
               className="configure-hotkey-btn"
               onClick={openHotkeyOverlay}
             >
-              <Kbd size="md">Ctrl</Kbd> + <Kbd size="md">Ctrl</Kbd>
+              {renderHotkey(hotkey)}
             </UnstyledButton>
           </Tooltip>
         </Stack>

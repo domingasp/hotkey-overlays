@@ -4,6 +4,8 @@ function toTitleCase(str: string) {
   });
 }
 
+function electronHotkeyToMappedShortcut(hotkey: string) {}
+
 function mapKeyCodeToChar(key: string, forElectron = false) {
   switch (key) {
     case 'backquote':
@@ -53,7 +55,7 @@ function mapKeyCodeToChar(key: string, forElectron = false) {
   }
 }
 
-function sortHotkeyShortcut(keys: string[]) {
+function formatHotkeyShortcut(keys: string[], forElectron = false) {
   let sortedKeys: string[] = [...keys];
   const modifiers: string[] = [];
 
@@ -75,9 +77,9 @@ function sortHotkeyShortcut(keys: string[]) {
     modifiers.push('Alt');
   }
 
-  sortedKeys = sortedKeys.map((key) => mapKeyCodeToChar(key));
+  sortedKeys = sortedKeys.map((key) => mapKeyCodeToChar(key, forElectron));
 
   return [...modifiers, ...sortedKeys];
 }
 
-export default sortHotkeyShortcut;
+export default formatHotkeyShortcut;

@@ -13,13 +13,18 @@ import {
 import { IconCheck, IconRotate2, IconX } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { useRecordHotkeys } from 'react-hotkeys-hook';
-import sortHotkeyShortcut from '../../../shared/utils';
+import formatHotkeyShortcut from '../../../shared/utils';
 
 type UpdateHotkeyOverlayProps = {
   opened: boolean;
   close: () => void;
+  onSave: (hotkey: string[]) => void;
 };
-function UpdateHotkeyOverlay({ opened, close }: UpdateHotkeyOverlayProps) {
+function UpdateHotkeyOverlay({
+  opened,
+  close,
+  onSave,
+}: UpdateHotkeyOverlayProps) {
   const MAX_LENGTH = 5;
   const [keys, { start, stop }] = useRecordHotkeys();
 
@@ -58,9 +63,9 @@ function UpdateHotkeyOverlay({ opened, close }: UpdateHotkeyOverlayProps) {
           <Stack align="center">
             <Text size="sm">Press hotkey combination</Text>
 
-            <Flex h="50px" align="center">
+            <Flex justify="center" px="xs" wrap="wrap" rowGap="xs">
               {keys.size === 0 && <Text>...</Text>}
-              {sortHotkeyShortcut(Array.from(keys)).map((key, i) => (
+              {formatHotkeyShortcut(Array.from(keys)).map((key, i) => (
                 <>
                   <Kbd key={key} size="md">
                     {key}
@@ -126,6 +131,7 @@ function UpdateHotkeyOverlay({ opened, close }: UpdateHotkeyOverlayProps) {
                     section: { marginRight: '0.25rem' },
                   }}
                   disabled={!isValidHotkey(keys)}
+                  onClick={() => onSave(Array.from(keys))}
                 >
                   Save
                 </Button>
