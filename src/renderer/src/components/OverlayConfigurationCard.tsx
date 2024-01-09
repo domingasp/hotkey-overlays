@@ -19,7 +19,6 @@ import NameInput from './NameInput';
 import ImageModal from './ImageModal';
 import ImagePath from '../../../shared/types/ImagePath';
 import ConfigureImageButton from './ConfigureImageButton';
-import KbdBlock from './hotkey-configuration/KbdBlock';
 import '../styles/configureHotkeyButton.css';
 
 type OverlayConfigurationCardProps = {
@@ -96,13 +95,14 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
           <Tooltip
             label={<Text size="xs">Edit Hotkey</Text>}
             color="blue"
+            position="bottom"
             withArrow
           >
             <UnstyledButton
               aria-label="Change Hotkey"
               className="configure-hotkey-btn"
             >
-              <KbdBlock>Ctrl</KbdBlock> + <KbdBlock>Ctrl</KbdBlock>
+              <Kbd size="md">Ctrl</Kbd> + <Kbd size="md">Ctrl</Kbd>
             </UnstyledButton>
           </Tooltip>
         </Stack>
