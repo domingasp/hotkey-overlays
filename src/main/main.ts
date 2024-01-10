@@ -182,6 +182,17 @@ async function unregisterOverlayHotkeys() {
   if (settingsWindow) settingsWindow.minimizable = false;
 }
 
+async function deleteOverlay(id: number) {
+  const overlays = store.get('overlays');
+  const overlayToDelete = overlays.findIndex((x) => x.id === id);
+
+  if (overlayToDelete > -1) {
+    overlays.splice(overlayToDelete, 1);
+
+    store.set('overlays', overlays);
+  }
+}
+
 function createTrayIron() {
   tray = new Tray(icon);
   tray.setToolTip('Hotkey Overlays');
@@ -251,6 +262,7 @@ app.whenReady().then(() => {
   ipcMain.handle(channels.updateOverlayHotkey, (_event, id, hotkey) =>
     updateOverlayHotkey(id, hotkey)
   );
+  ipcMain.handle(channels.deleteOverlay, (_event, id) => deleteOverlay(id));
   ipcMain.handle(channels.base64FromImagePath, (_event, imagePath) =>
     base64FromImagePath(imagePath)
   );

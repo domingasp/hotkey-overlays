@@ -5,6 +5,7 @@ const channels = {
   updateOverlayName: 'updateOverlayName',
   updateOverlayImage: 'updateOverlayImage',
   updateOverlayHotkey: 'updateOverlayHotkey',
+  deleteOverlay: 'deleteOverlay',
   base64FromImagePath: 'base64FromImagePath',
   registerOverlayHotkeys: 'registerOverlayHotkeys',
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',

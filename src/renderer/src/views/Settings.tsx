@@ -26,6 +26,11 @@ function Settings() {
     getOverlays();
   }
 
+  async function deleteOverlay(id: number) {
+    await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
+    getOverlays();
+  }
+
   useEffect(() => {
     getOverlays();
   }, []);
@@ -61,7 +66,11 @@ function Settings() {
         }}
       >
         {overlays.map((overlay) => (
-          <OverlayConfigurationCard key={overlay.id} overlay={overlay} />
+          <OverlayConfigurationCard
+            key={overlay.id}
+            overlay={overlay}
+            deleteOverlay={(id) => deleteOverlay(id)}
+          />
         ))}
       </SimpleGrid>
     </Box>

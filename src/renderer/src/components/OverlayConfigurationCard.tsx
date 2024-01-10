@@ -28,8 +28,12 @@ import formatHotkeyShortcut, {
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
+  deleteOverlay: (id: number) => void;
 };
-function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
+function OverlayConfigurationCard({
+  overlay,
+  deleteOverlay,
+}: OverlayConfigurationCardProps) {
   const [name, setName] = useState(overlay.name);
 
   const [imageModalOpened, { open: openImageModel, close: closeImageModel }] =
@@ -125,6 +129,7 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
       <DeleteMenu
         id={overlay.id}
+        onDelete={() => deleteOverlay(overlay.id)}
         pos="absolute"
         top="0.25rem"
         right="0.25rem"

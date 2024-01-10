@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
   ) => ipcRenderer.invoke(channels.updateOverlayImage, id, imagePath),
   [channels.updateOverlayHotkey]: (id: number, hotkey: string) =>
     ipcRenderer.invoke(channels.updateOverlayHotkey, id, hotkey),
+  [channels.deleteOverlay]: (id: number) =>
+    ipcRenderer.invoke(channels.deleteOverlay, id),
   [channels.base64FromImagePath]: (imagePath: string) =>
     ipcRenderer.invoke(channels.base64FromImagePath, imagePath),
   [channels.registerOverlayHotkeys]: () =>

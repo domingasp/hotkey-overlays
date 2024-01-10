@@ -4,8 +4,9 @@ import { notifications } from '@mantine/notifications';
 
 interface DeleteMenuProps extends ActionIconProps {
   id: number;
+  onDelete: () => void;
 }
-function DeleteMenu({ id, pos, top, right }: DeleteMenuProps) {
+function DeleteMenu({ id, onDelete, pos, top, right }: DeleteMenuProps) {
   return (
     <Menu withinPortal position="left" shadow="sm">
       <Menu.Target>
@@ -31,10 +32,11 @@ function DeleteMenu({ id, pos, top, right }: DeleteMenuProps) {
             notifications.clean();
             notifications.show({
               color: 'red',
-              message: `Deleted overlay - ${id}`,
+              message: `Deleted overlay`,
               withCloseButton: false,
               icon: <IconTrash style={{ width: rem(14), height: rem(14) }} />,
             });
+            onDelete();
           }}
         >
           Delete Overlay
