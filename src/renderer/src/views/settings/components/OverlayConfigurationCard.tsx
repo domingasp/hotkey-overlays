@@ -14,17 +14,17 @@ import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCheck } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import Overlay from '../../../shared/types/Overlay';
-import DeleteMenu from './DeleteMenu';
-import NameInput from './NameInput';
-import ImageModal from './ImageModal';
-import ImagePath from '../../../shared/types/ImagePath';
-import ConfigureImageButton from './ConfigureImageButton';
+import Overlay from '../../../../../shared/types/Overlay';
+import DeleteMenu from '../../../components/DeleteMenu';
+import NameInput from './configure-name/NameInput';
+import ImageModal from './configure-image/ImageModal';
+import ImagePath from '../../../../../shared/types/ImagePath';
+import ConfigureImageButton from './configure-image/ConfigureImageButton';
 import '../styles/configureHotkeyButton.css';
-import UpdateHotkeyOverlay from './UpdateHotkeyOverlay';
+import UpdateHotkeyOverlay from './configure-hotkey/UpdateHotkeyOverlay';
 import formatHotkeyShortcut, {
   electronHotkeyToKeys,
-} from '../../../shared/utils';
+} from '../../../../../shared/utils';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;

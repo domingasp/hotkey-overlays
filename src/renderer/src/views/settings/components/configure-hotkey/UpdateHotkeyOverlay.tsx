@@ -13,7 +13,7 @@ import {
 import { IconCheck, IconRotate2, IconX } from '@tabler/icons-react';
 import React, { useEffect } from 'react';
 import { useRecordHotkeys } from 'react-hotkeys-hook';
-import formatHotkeyShortcut from '../../../shared/utils';
+import formatHotkeyShortcut from '../../../../../../shared/utils';
 
 type UpdateHotkeyOverlayProps = {
   opened: boolean;

@@ -1,8 +1,8 @@
 import { Box, Image, UnstyledButton } from '@mantine/core';
 import { IconPhotoEdit, IconPhotoPlus } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import ImagePath from '../../../shared/types/ImagePath';
-import fileToBase64 from '../services/utils';
+import ImagePath from '../../../../../../shared/types/ImagePath';
+import fileToBase64 from '../../../../services/utils';
 import '../styles/configureImageButton.css';
 
 type ConfigureImageButtonProps = {

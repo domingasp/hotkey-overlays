@@ -19,12 +19,12 @@ import {
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import HorizontalDividerWithLabel from './HorizontalDividerWithLabel';
-import UrlInput from './image-configuration/UrlInput';
-import LocalDriveInput from './image-configuration/LocalDriveInput';
-import CancelConfirmButtons from './CancelConfirmButtons';
-import ImagePath from '../../../shared/types/ImagePath';
-import fileToBase64 from '../services/utils';
+import HorizontalDividerWithLabel from '../../../../components/HorizontalDividerWithLabel';
+import UrlInput from './UrlInput';
+import LocalDriveInput from './LocalDriveInput';
+import CancelConfirmButtons from '../../../../components/CancelConfirmButtons';
+import ImagePath from '../../../../../../shared/types/ImagePath';
+import fileToBase64 from '../../../../services/utils';
 
 type ImageModalProps = {
   opened: boolean;
