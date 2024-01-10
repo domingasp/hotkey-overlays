@@ -20,11 +20,11 @@ import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
 import ImagePath from '../../../../../shared/types/ImagePath';
 import ConfigureImageButton from './configure-image/ConfigureImageButton';
-import '../styles/configureHotkeyButton.css';
 import UpdateHotkeyOverlay from './configure-hotkey/UpdateHotkeyOverlay';
 import formatHotkeyShortcut, {
   electronHotkeyToKeys,
 } from '../../../../../shared/utils';
+import './styles/configureHotkeyButton.css';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
