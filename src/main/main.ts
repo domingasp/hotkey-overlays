@@ -20,6 +20,7 @@ const icon = nativeImage.createFromDataURL(iconPng);
 let tray;
 let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
+let currentlyOpenedOverlayId: number | null = null;
 
 let isQuiting = false;
 
@@ -89,9 +90,11 @@ function toggleOverlayWindow(id: number) {
     overlayWindow.loadURL(`http://localhost:5173/overlay/${id}`);
 
     overlayWindow.setPosition(0, 0);
+    currentlyOpenedOverlayId = id;
   } else {
     overlayWindow.close();
     overlayWindow = null;
+    currentlyOpenedOverlayId = null;
   }
 }
 
@@ -143,6 +146,10 @@ async function updateOverlayImage(
     overlayToUpdate.imagePath = imagePath;
 
     store.set('overlays', overlays);
+    if (currentlyOpenedOverlayId === id) {
+      toggleOverlayWindow(id);
+      toggleOverlayWindow(id);
+    }
   }
 }
 
@@ -171,6 +178,12 @@ async function registerOverlayHotkeys() {
   const overlays = store.get('overlays');
   overlays.forEach((overlay) =>
     globalShortcut.register(overlay.hotkey, () => {
+      if (
+        currentlyOpenedOverlayId !== null &&
+        currentlyOpenedOverlayId !== overlay.id
+      ) {
+        toggleOverlayWindow(currentlyOpenedOverlayId);
+      }
       toggleOverlayWindow(overlay.id);
     })
   );
@@ -190,6 +203,9 @@ async function deleteOverlay(id: number) {
     overlays.splice(overlayToDelete, 1);
 
     store.set('overlays', overlays);
+    if (currentlyOpenedOverlayId === id) {
+      toggleOverlayWindow(-1);
+    }
   }
 }
 
