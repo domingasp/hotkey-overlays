@@ -8,7 +8,6 @@ import {
   Text,
   Tooltip,
   UnstyledButton,
-  rem,
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';

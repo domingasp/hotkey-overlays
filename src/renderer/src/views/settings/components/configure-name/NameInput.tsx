@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Text, TextInput, rem } from '@mantine/core';
+import { ActionIcon, Box, Text, TextInput } from '@mantine/core';
 import { Check } from 'react-feather';
 import { createRef, useEffect, useRef, useState } from 'react';
 

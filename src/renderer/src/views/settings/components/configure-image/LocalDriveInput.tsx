@@ -1,4 +1,4 @@
-import { Box, FileInput, Text, rem } from '@mantine/core';
+import { Box, FileInput, Text } from '@mantine/core';
 import { Search } from 'react-feather';
 import { forwardRef } from 'react';
 
