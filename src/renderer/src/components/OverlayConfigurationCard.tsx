@@ -10,7 +10,7 @@ import {
   UnstyledButton,
   rem,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCheck } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
@@ -100,16 +100,14 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
         {formatHotkeyShortcut(keysToRender).map((key, i) => (
-          <>
-            <Kbd key={key} size="sm">
-              {key}
-            </Kbd>
+          <React.Fragment key={key}>
+            <Kbd size="sm">{key}</Kbd>
             {keysToRender.length > 1 && i < keysToRender.length - 1 ? (
               <Text mx="0.3125rem"> + </Text>
             ) : (
               ''
             )}
-          </>
+          </React.Fragment>
         ))}
       </Flex>
     );
