@@ -10,6 +10,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     id: number,
     imagePath: ImagePath | undefined
   ) => ipcRenderer.invoke(channels.updateOverlayImage, id, imagePath),
+  [channels.updateOverlayHotkey]: (id: number, hotkey: string) =>
+    ipcRenderer.invoke(channels.updateOverlayHotkey, id, hotkey),
   [channels.base64FromImagePath]: (imagePath: string) =>
     ipcRenderer.invoke(channels.base64FromImagePath, imagePath),
 });

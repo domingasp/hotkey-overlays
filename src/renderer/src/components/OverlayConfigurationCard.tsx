@@ -82,8 +82,11 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   async function updateOverlayHotkey(newHotkey: string[]) {
     closeHotkeyOverlay();
     setHotkey(newHotkey);
-    const electronMapped = formatHotkeyShortcut(newHotkey, true);
-    console.log(electronMapped);
+    const electronMappedHotkey = formatHotkeyShortcut(newHotkey, true);
+    await (window as any).hotkeyOverlaysAPI.updateOverlayHotkey(
+      overlay.id,
+      electronMappedHotkey.join('+')
+    );
   }
 
   const renderHotkey = (keysToRender: string[]) => {

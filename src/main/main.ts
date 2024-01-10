@@ -91,6 +91,17 @@ async function updateOverlayImage(
   }
 }
 
+async function updateOverlayHotkey(id: number, hotkey: string) {
+  const overlays = store.get('overlays');
+  const overlayToUpdate = overlays.find((x) => x.id === id);
+
+  if (overlayToUpdate) {
+    overlayToUpdate.hotkey = hotkey;
+
+    store.set('overlays', overlays);
+  }
+}
+
 async function base64FromImagePath(imagePath: string) {
   try {
     const file = fs.readFileSync(imagePath);
@@ -182,6 +193,9 @@ app.whenReady().then(() => {
   );
   ipcMain.handle(channels.updateOverlayImage, (_event, id, imagePath) =>
     updateOverlayImage(id, imagePath)
+  );
+  ipcMain.handle(channels.updateOverlayHotkey, (_event, id, hotkey) =>
+    updateOverlayHotkey(id, hotkey)
   );
   ipcMain.handle(channels.base64FromImagePath, (_event, imagePath) =>
     base64FromImagePath(imagePath)
