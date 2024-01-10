@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { IconCheck, IconRotate2, IconX } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRecordHotkeys } from 'react-hotkeys-hook';
 import formatHotkeyShortcut from '../../../shared/utils';
 
@@ -66,7 +66,7 @@ function UpdateHotkeyOverlay({
             <Flex justify="center" px="xs" wrap="wrap" rowGap="xs">
               {keys.size === 0 && <Text>...</Text>}
               {formatHotkeyShortcut(Array.from(keys)).map((key, i) => (
-                <>
+                <React.Fragment key={key}>
                   <Kbd key={key} size="md">
                     {key}
                   </Kbd>
@@ -75,7 +75,7 @@ function UpdateHotkeyOverlay({
                   ) : (
                     ''
                   )}
-                </>
+                </React.Fragment>
               ))}
             </Flex>
 
