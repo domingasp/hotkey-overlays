@@ -11,7 +11,7 @@ import Store, { Schema } from 'electron-store';
 import path from 'node:path';
 import fs from 'fs';
 import channels from '../shared/channels';
-import appIconIco from '../../out/main/icon.png?asset';
+import appIconIco from '../../out/main/icon.ico?asset';
 import Overlay from '../shared/types/Overlay';
 import ImagePath from '../shared/types/ImagePath';
 
