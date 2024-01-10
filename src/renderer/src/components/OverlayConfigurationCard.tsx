@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Box,
   Flex,
   Group,
   Kbd,
@@ -11,7 +10,7 @@ import {
   UnstyledButton,
   rem,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCheck } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
@@ -47,6 +46,10 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
   ] = useDisclosure(false);
 
   const [isSavingName, setIsSavingName] = useState(false);
+
+  window.addEventListener('beforeunload', () => {
+    console.log('unloading');
+  });
 
   async function updateOverlayName() {
     setIsSavingName(true);
@@ -89,6 +92,14 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
     );
   }
 
+  async function registerOverlayHotkeys() {
+    await (window as any).hotkeyOverlaysAPI.registerOverlayHotkeys();
+  }
+
+  async function unregisterOverlayHotkeys() {
+    await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
+  }
+
   const renderHotkey = (keysToRender: string[]) => {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
@@ -107,6 +118,14 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
       </Flex>
     );
   };
+
+  useEffect(() => {
+    if (hotkeyOverlayOpened) {
+      unregisterOverlayHotkeys();
+    } else {
+      registerOverlayHotkeys();
+    }
+  }, [hotkeyOverlayOpened]);
 
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">

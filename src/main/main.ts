@@ -1,4 +1,12 @@
-import { BrowserWindow, Menu, Tray, app, ipcMain, nativeImage } from 'electron';
+import {
+  BrowserWindow,
+  Menu,
+  Tray,
+  app,
+  globalShortcut,
+  ipcMain,
+  nativeImage,
+} from 'electron';
 import Store, { Schema } from 'electron-store';
 import path from 'node:path';
 import fs from 'fs';
@@ -62,6 +70,28 @@ function createDefaultOverlay() {
   }
 }
 
+function toggleOverlayWindow(id: number) {
+  console.log(id);
+  // if (overlayWindow == null) {
+  //   overlayWindow = new BrowserWindow({
+  //     autoHideMenuBar: true,
+  //     transparent: true,
+  //     frame: false,
+  //     hasShadow: false,
+  //     alwaysOnTop: true,
+  //     skipTaskbar: true,
+  //   });
+  //   overlayWindow.setIgnoreMouseEvents(true);
+
+  //   overlayWindow.loadURL('http://localhost:5173/overlay');
+
+  //   overlayWindow.setPosition(0, 0);
+  // } else {
+  //   overlayWindow.close();
+  //   overlayWindow = null;
+  // }
+}
+
 async function getOverlays() {
   return store.get('overlays');
 }
@@ -110,6 +140,21 @@ async function base64FromImagePath(imagePath: string) {
   } catch {
     return undefined;
   }
+}
+
+async function registerOverlayHotkeys() {
+  const overlays = store.get('overlays');
+  overlays.forEach((overlay) =>
+    globalShortcut.register(overlay.hotkey, () => {
+      toggleOverlayWindow(overlay.id);
+    })
+  );
+  if (settingsWindow) settingsWindow.minimizable = true;
+}
+
+async function unregisterOverlayHotkeys() {
+  globalShortcut.unregisterAll();
+  if (settingsWindow) settingsWindow.minimizable = false;
 }
 
 function createTrayIron() {
@@ -165,27 +210,6 @@ function createSettingsWindow() {
   });
 }
 
-function toggleOverlayWindow() {
-  if (overlayWindow == null) {
-    overlayWindow = new BrowserWindow({
-      autoHideMenuBar: true,
-      transparent: true,
-      frame: false,
-      hasShadow: false,
-      alwaysOnTop: true,
-      skipTaskbar: true,
-    });
-    overlayWindow.setIgnoreMouseEvents(true);
-
-    overlayWindow.loadURL('http://localhost:5173/overlay');
-
-    overlayWindow.setPosition(0, 0);
-  } else {
-    overlayWindow.close();
-    overlayWindow = null;
-  }
-}
-
 app.whenReady().then(() => {
   ipcMain.handle(channels.getOverlays, getOverlays);
   ipcMain.handle(channels.updateOverlayName, (_event, id, name) =>
@@ -200,12 +224,17 @@ app.whenReady().then(() => {
   ipcMain.handle(channels.base64FromImagePath, (_event, imagePath) =>
     base64FromImagePath(imagePath)
   );
+  ipcMain.handle(channels.registerOverlayHotkeys, () =>
+    registerOverlayHotkeys()
+  );
+  ipcMain.handle(channels.unregisterOverlayHotkeys, () =>
+    unregisterOverlayHotkeys()
+  );
 
   createDefaultOverlay();
   createTrayIron();
   createSettingsWindow();
-
-  // globalShortcut.register('CmdOrCtrl+Shift+]', toggleOverlayWindow);
+  registerOverlayHotkeys();
 });
 
 app.on('window-all-closed', () => {
