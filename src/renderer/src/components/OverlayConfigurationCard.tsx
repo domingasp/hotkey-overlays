@@ -23,7 +23,9 @@ import ImagePath from '../../../shared/types/ImagePath';
 import ConfigureImageButton from './ConfigureImageButton';
 import '../styles/configureHotkeyButton.css';
 import UpdateHotkeyOverlay from './UpdateHotkeyOverlay';
-import formatHotkeyShortcut from '../../../shared/utils';
+import formatHotkeyShortcut, {
+  electronHotkeyToKeys,
+} from '../../../shared/utils';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -35,7 +37,9 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
     useDisclosure(false);
   const [imagePath, setImagePath] = useState(overlay.imagePath);
 
-  const [hotkey, setHotkey] = useState<string>(overlay.hotkey);
+  const [hotkey, setHotkey] = useState<string[]>(
+    electronHotkeyToKeys(overlay.hotkey)
+  );
 
   const [
     hotkeyOverlayOpened,
@@ -77,21 +81,20 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
 
   async function updateOverlayHotkey(newHotkey: string[]) {
     closeHotkeyOverlay();
+    setHotkey(newHotkey);
     const electronMapped = formatHotkeyShortcut(newHotkey, true);
-    setHotkey(electronMapped.join('+'));
+    console.log(electronMapped);
   }
 
-  const renderHotkey = (toRender: string) => {
-    const split = toRender.split('+');
-
+  const renderHotkey = (keysToRender: string[]) => {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
-        {formatHotkeyShortcut(split).map((key, i) => (
+        {formatHotkeyShortcut(keysToRender).map((key, i) => (
           <>
             <Kbd key={key} size="sm">
               {key}
             </Kbd>
-            {split.length > 1 && i < split.length - 1 ? (
+            {keysToRender.length > 1 && i < keysToRender.length - 1 ? (
               <Text mx="0.3125rem"> + </Text>
             ) : (
               ''

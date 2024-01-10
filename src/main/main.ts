@@ -55,7 +55,7 @@ function createDefaultOverlay() {
     overlays.push({
       id: 1,
       name: 'Default',
-      hotkey: 'CmdOrCtrl+Shift+]',
+      hotkey: 'Ctrl+Shift+]',
     });
 
     store.set('overlays', overlays);

@@ -4,9 +4,56 @@ function toTitleCase(str: string) {
   });
 }
 
-function electronHotkeyToMappedShortcut(hotkey: string) {}
+function electronHotkeyCharToKeyCode(char: string) {
+  switch (char) {
+    case '`':
+      return 'backquote';
+    case '-':
+      return 'minus';
+    case '=':
+      return 'equal';
+    case 'Numlock':
+      return 'numlock';
+    case 'numdiv':
+      return 'divide';
+    case 'nummult':
+      return 'multiply';
+    case 'numsub':
+      return 'subtract';
+    case 'numadd':
+      return 'add';
+    case 'numdec':
+      return 'decimal';
+    case '[':
+      return 'bracketleft';
+    case ']':
+      return 'bracketright';
+    case 'Capslock':
+      return 'capslock';
+    case ';':
+      return 'semicolon';
+    case "'":
+      return 'quote';
+    case '#':
+      return 'backslash';
+    case '\\':
+      return 'intlbackslash';
+    case ',':
+      return 'comma';
+    case '.':
+      return 'period';
+    case '/':
+      return 'slash';
+    case 'PageUp':
+      return 'pageup';
+    case 'PageDown':
+      return 'pagedown';
+    default:
+      return char.toLocaleLowerCase();
+  }
+}
 
-function mapKeyCodeToChar(key: string, forElectron = false) {
+function keyCodeToChar(key: string, forElectron = false) {
   switch (key) {
     case 'backquote':
       return '`';
@@ -55,6 +102,11 @@ function mapKeyCodeToChar(key: string, forElectron = false) {
   }
 }
 
+export function electronHotkeyToKeys(hotkey: string) {
+  const split = hotkey.split('+');
+  return split.map(electronHotkeyCharToKeyCode);
+}
+
 function formatHotkeyShortcut(keys: string[], forElectron = false) {
   let sortedKeys: string[] = [...keys];
   const modifiers: string[] = [];
@@ -77,7 +129,7 @@ function formatHotkeyShortcut(keys: string[], forElectron = false) {
     modifiers.push('Alt');
   }
 
-  sortedKeys = sortedKeys.map((key) => mapKeyCodeToChar(key, forElectron));
+  sortedKeys = sortedKeys.map((key) => keyCodeToChar(key, forElectron));
 
   return [...modifiers, ...sortedKeys];
 }
