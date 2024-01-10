@@ -1,12 +1,13 @@
 {
   "name": "hotkey-overlays",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "./out/main/main.js",
   "scripts": {
     "dev": "electron-vite dev -w",
     "build": "electron-vite build",
-    "preview": "electron-vite preview"
+    "preview": "electron-vite preview",
+    "build:win": "pnpm run build && electron-builder --win --config"
   },
   "dependencies": {
     "@babel/core": "^7.18.10",
@@ -29,6 +30,7 @@
     "@typescript-eslint/parser": "^5.32.0",
     "@vitejs/plugin-react": "^2.0.0",
     "electron": "^28.1.1",
+    "electron-builder": "^24.9.1",
     "electron-vite": "^1.0.29",
     "eslint": "^8.21.0",
     "eslint-config-airbnb": "^19.0.4",

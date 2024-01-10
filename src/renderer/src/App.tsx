@@ -1,8 +1,8 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createHashRouter } from 'react-router-dom';
 import Settings from './views/settings/Settings';
 import Overlay from './views/overlay/Overlay';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Settings />,

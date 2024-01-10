@@ -1,0 +1,18 @@
+appId: com.electron.hotkey-overlays,
+productName: Hotkey Overlays,
+directories:
+  buildResources: resources
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+win:
+  executableName: Hotkey Overlays
+nsis:
+  artifactName: Hotkey-Overlays-1.0.0-setup.exe
+  shortcutName: Hotkey Overlays
+  uninstallDisplayName: Hotkey Overlays
+  createDesktopShortcut: always

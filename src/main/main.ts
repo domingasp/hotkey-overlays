@@ -11,11 +11,16 @@ import Store, { Schema } from 'electron-store';
 import path from 'node:path';
 import fs from 'fs';
 import channels from '../shared/channels';
-import iconPng from '../images/icons/hotkey-overlays-logo.png';
+import appIconIco from '../../out/main/icon.png?asset';
 import Overlay from '../shared/types/Overlay';
 import ImagePath from '../shared/types/ImagePath';
 
-const icon = nativeImage.createFromDataURL(iconPng);
+let isDev = false;
+isDev = !app.isPackaged;
+
+const baseUrl = isDev
+  ? 'http://localhost:5173'
+  : path.join(__dirname, '../renderer', 'index.html');
 
 let tray;
 let settingsWindow: BrowserWindow | null;
@@ -87,7 +92,7 @@ function toggleOverlayWindow(id: number) {
     });
     overlayWindow.setIgnoreMouseEvents(true);
 
-    overlayWindow.loadURL(`http://localhost:5173/overlay/${id}`);
+    overlayWindow.loadURL(`${baseUrl}#/overlay/${id}`);
 
     overlayWindow.setPosition(0, 0);
     currentlyOpenedOverlayId = id;
@@ -210,7 +215,7 @@ async function deleteOverlay(id: number) {
 }
 
 function createTrayIron() {
-  tray = new Tray(icon);
+  tray = new Tray(nativeImage.createFromPath(appIconIco));
   tray.setToolTip('Hotkey Overlays');
 
   tray.setContextMenu(
@@ -237,15 +242,20 @@ function createSettingsWindow() {
     height: 750,
     width: 500,
     minWidth: 500,
-    icon,
     autoHideMenuBar: true,
     backgroundColor: '#242424',
+    icon: appIconIco,
     webPreferences: {
       preload: path.join(__dirname, '../preload', 'preload.js'),
     },
   });
 
-  settingsWindow.loadURL('http://localhost:5173');
+  settingsWindow.loadURL(baseUrl);
+
+  if (isDev) {
+    settingsWindow.webContents.openDevTools();
+  }
+
   settingsWindow.on('closed', () => {
     settingsWindow = null;
   });
