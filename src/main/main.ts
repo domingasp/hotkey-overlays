@@ -110,6 +110,17 @@ async function getOverlayImagePath(id: number) {
   return undefined;
 }
 
+async function addOverlay() {
+  const overlays = store.get('overlays');
+  overlays.push({
+    id: Math.max(...overlays.map((x) => x.id)) + 1,
+    name: 'Default',
+    hotkey: 'Ctrl+D',
+  });
+
+  store.set('overlays', overlays);
+}
+
 async function updateOverlayName(id: number, name: string) {
   const overlays = store.get('overlays');
   const overlayToUpdate = overlays.find((x) => x.id === id);
@@ -230,6 +241,7 @@ app.whenReady().then(() => {
   ipcMain.handle(channels.getOverlayImagePath, (_event, id) =>
     getOverlayImagePath(id)
   );
+  ipcMain.handle(channels.addOverlay, () => addOverlay());
   ipcMain.handle(channels.updateOverlayName, (_event, id, name) =>
     updateOverlayName(id, name)
   );
