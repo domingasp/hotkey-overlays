@@ -4,6 +4,8 @@ import ImagePath from '../shared/types/ImagePath';
 
 contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
+  [channels.getOverlayImagePath]: (id: number) =>
+    ipcRenderer.invoke(channels.getOverlayImagePath, id),
   [channels.updateOverlayName]: (id: number, name: string) =>
     ipcRenderer.invoke(channels.updateOverlayName, id, name),
   [channels.updateOverlayImage]: (

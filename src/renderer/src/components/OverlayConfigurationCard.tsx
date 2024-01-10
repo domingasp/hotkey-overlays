@@ -47,10 +47,6 @@ function OverlayConfigurationCard({ overlay }: OverlayConfigurationCardProps) {
 
   const [isSavingName, setIsSavingName] = useState(false);
 
-  window.addEventListener('beforeunload', () => {
-    console.log('unloading');
-  });
-
   async function updateOverlayName() {
     setIsSavingName(true);
     await (window as any).hotkeyOverlaysAPI.updateOverlayName(overlay.id, name);

@@ -1,0 +1,10 @@
+html,
+body,
+:root {
+  background-color: transparent;
+  color-scheme: auto;
+}
+
+#root {
+  height: 100%;
+}

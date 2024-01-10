@@ -71,29 +71,43 @@ function createDefaultOverlay() {
 }
 
 function toggleOverlayWindow(id: number) {
-  console.log(id);
-  // if (overlayWindow == null) {
-  //   overlayWindow = new BrowserWindow({
-  //     autoHideMenuBar: true,
-  //     transparent: true,
-  //     frame: false,
-  //     hasShadow: false,
-  //     alwaysOnTop: true,
-  //     skipTaskbar: true,
-  //   });
-  //   overlayWindow.setIgnoreMouseEvents(true);
+  if (overlayWindow == null) {
+    overlayWindow = new BrowserWindow({
+      autoHideMenuBar: true,
+      transparent: true,
+      frame: false,
+      fullscreen: true,
+      hasShadow: false,
+      alwaysOnTop: true,
+      skipTaskbar: true,
+      webPreferences: {
+        preload: path.join(__dirname, '../preload', 'preload.js'),
+      },
+    });
+    overlayWindow.setIgnoreMouseEvents(true);
 
-  //   overlayWindow.loadURL('http://localhost:5173/overlay');
+    overlayWindow.loadURL(`http://localhost:5173/overlay/${id}`);
 
-  //   overlayWindow.setPosition(0, 0);
-  // } else {
-  //   overlayWindow.close();
-  //   overlayWindow = null;
-  // }
+    overlayWindow.setPosition(0, 0);
+  } else {
+    overlayWindow.close();
+    overlayWindow = null;
+  }
 }
 
 async function getOverlays() {
   return store.get('overlays');
+}
+
+async function getOverlayImagePath(id: number) {
+  const overlays = store.get('overlays');
+  const overlay = overlays.find((x) => x.id === id);
+
+  if (overlay) {
+    return overlay.imagePath;
+  }
+
+  return undefined;
 }
 
 async function updateOverlayName(id: number, name: string) {
@@ -187,6 +201,7 @@ function createSettingsWindow() {
     minWidth: 500,
     icon,
     autoHideMenuBar: true,
+    backgroundColor: '#242424',
     webPreferences: {
       preload: path.join(__dirname, '../preload', 'preload.js'),
     },
@@ -212,6 +227,9 @@ function createSettingsWindow() {
 
 app.whenReady().then(() => {
   ipcMain.handle(channels.getOverlays, getOverlays);
+  ipcMain.handle(channels.getOverlayImagePath, (_event, id) =>
+    getOverlayImagePath(id)
+  );
   ipcMain.handle(channels.updateOverlayName, (_event, id, name) =>
     updateOverlayName(id, name)
   );

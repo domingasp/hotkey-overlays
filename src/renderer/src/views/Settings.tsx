@@ -17,7 +17,7 @@ function Settings() {
   }, []);
 
   return (
-    <Box>
+    <Box w="100%" p="lg" miw="442px">
       <Title order={2}>Overlay Configurations</Title>
       <Divider my="sm" color="gray" />
       <SimpleGrid cols={{ base: 1, sm: 2 }}>
