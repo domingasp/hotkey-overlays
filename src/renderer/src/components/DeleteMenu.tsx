@@ -3,10 +3,9 @@ import { IconDots, IconTrash } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 
 interface DeleteMenuProps extends ActionIconProps {
-  id: number;
   onDelete: () => void;
 }
-function DeleteMenu({ id, onDelete, pos, top, right }: DeleteMenuProps) {
+function DeleteMenu({ onDelete, pos, top, right }: DeleteMenuProps) {
   return (
     <Menu withinPortal position="left" shadow="sm">
       <Menu.Target>

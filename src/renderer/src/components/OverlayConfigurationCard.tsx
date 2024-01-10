@@ -128,7 +128,6 @@ function OverlayConfigurationCard({
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
       <DeleteMenu
-        id={overlay.id}
         onDelete={() => deleteOverlay(overlay.id)}
         pos="absolute"
         top="0.25rem"
