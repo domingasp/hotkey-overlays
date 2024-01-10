@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Center, Image } from '@mantine/core';
-import ImagePath from '../../../shared/types/ImagePath';
-import fileToBase64 from '../services/utils';
+import ImagePath from '../../../../shared/types/ImagePath';
+import fileToBase64 from '../../services/utils';
 
 function Overlay() {
   const { id } = useParams();

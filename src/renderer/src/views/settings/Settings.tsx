@@ -10,8 +10,8 @@ import {
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { IconPlus } from '@tabler/icons-react';
-import Overlay from '../../../shared/types/Overlay';
-import OverlayConfigurationCard from '../components/OverlayConfigurationCard';
+import Overlay from '../../../../shared/types/Overlay';
+import OverlayConfigurationCard from '../../components/OverlayConfigurationCard';
 
 function Settings() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);

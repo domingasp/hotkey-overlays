@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Settings from './views/Settings';
-import Overlay from './views/Overlay';
+import Settings from './views/settings/Settings';
+import Overlay from './views/overlay/Overlay';
 
 const router = createBrowserRouter([
   {
