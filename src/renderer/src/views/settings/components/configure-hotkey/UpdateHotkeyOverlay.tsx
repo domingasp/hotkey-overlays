@@ -10,7 +10,7 @@ import {
   Text,
   Tooltip,
 } from '@mantine/core';
-import { IconCheck, IconRotate2, IconX } from '@tabler/icons-react';
+import { X, RotateCcw, Check } from 'react-feather';
 import React, { useEffect } from 'react';
 import { useRecordHotkeys } from 'react-hotkeys-hook';
 import formatHotkeyShortcut from '../../../../../../shared/utils';
@@ -85,10 +85,7 @@ function UpdateHotkeyOverlay({
                 color="gray"
                 variant="outline"
                 size="xs"
-                leftSection={<IconX size={16} />}
-                styles={{
-                  section: { marginRight: '0.25rem' },
-                }}
+                leftSection={<X size={14} />}
               >
                 Cancel
               </Button>
@@ -101,10 +98,7 @@ function UpdateHotkeyOverlay({
                 color="red"
                 variant="outline"
                 size="xs"
-                leftSection={<IconRotate2 size={16} />}
-                styles={{
-                  section: { marginRight: '0.25rem' },
-                }}
+                leftSection={<RotateCcw size={14} />}
               >
                 Reset
               </Button>
@@ -126,10 +120,7 @@ function UpdateHotkeyOverlay({
                   color="green"
                   variant="outline"
                   size="xs"
-                  leftSection={<IconCheck size={16} />}
-                  styles={{
-                    section: { marginRight: '0.25rem' },
-                  }}
+                  leftSection={<Check size={14} />}
                   disabled={!isValidHotkey(keys)}
                   onClick={() => onSave(Array.from(keys))}
                 >

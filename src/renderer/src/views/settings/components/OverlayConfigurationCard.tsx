@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCheck } from '@tabler/icons-react';
+import { Check } from 'react-feather';
 import { notifications } from '@mantine/notifications';
 import Overlay from '../../../../../shared/types/Overlay';
 import DeleteMenu from '../../../components/DeleteMenu';
@@ -76,9 +76,7 @@ function OverlayConfigurationCard({
         </Text>
       ),
       withCloseButton: false,
-      icon: (
-        <IconCheck stroke={4} style={{ width: rem(14), height: rem(14) }} />
-      ),
+      icon: <Check size={14} />,
     });
   }
 

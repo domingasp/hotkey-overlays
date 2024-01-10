@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Text, TextInput, rem } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
+import { Check } from 'react-feather';
 import { createRef, useEffect, useRef, useState } from 'react';
 
 type NameInputProps = {
@@ -110,10 +110,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
               loading={isSaving}
               disabled={!isValid}
             >
-              <IconCheck
-                pointerEvents="none"
-                style={{ width: rem(14), height: rem(14) }}
-              />
+              <Check size={14} />
             </ActionIcon>
           )
         }

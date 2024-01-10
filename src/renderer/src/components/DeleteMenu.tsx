@@ -1,5 +1,5 @@
-import { ActionIcon, ActionIconProps, Menu, rem } from '@mantine/core';
-import { IconDots, IconTrash } from '@tabler/icons-react';
+import { ActionIcon, ActionIconProps, Menu } from '@mantine/core';
+import { MoreHorizontal, Trash } from 'react-feather';
 import { notifications } from '@mantine/notifications';
 
 interface DeleteMenuProps extends ActionIconProps {
@@ -16,16 +16,14 @@ function DeleteMenu({ onDelete, pos, top, right }: DeleteMenuProps) {
           right={right}
           top={top}
         >
-          <IconDots style={{ width: rem(14), height: rem(14) }} />
+          <MoreHorizontal size={14} />
         </ActionIcon>
       </Menu.Target>
 
       <Menu.Dropdown>
         <Menu.Item
           color="red"
-          leftSection={
-            <IconTrash style={{ width: rem(14), height: rem(14) }} />
-          }
+          leftSection={<Trash size={14} />}
           style={{ fontSize: '0.8rem' }}
           onClick={() => {
             notifications.clean();
@@ -33,7 +31,7 @@ function DeleteMenu({ onDelete, pos, top, right }: DeleteMenuProps) {
               color: 'red',
               message: `Deleted overlay`,
               withCloseButton: false,
-              icon: <IconTrash style={{ width: rem(14), height: rem(14) }} />,
+              icon: <Trash size={14} />,
             });
             onDelete();
           }}

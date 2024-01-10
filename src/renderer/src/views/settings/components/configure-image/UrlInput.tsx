@@ -1,5 +1,5 @@
 import { ActionIcon, TextInput } from '@mantine/core';
-import { IconX } from '@tabler/icons-react';
+import { X } from 'react-feather';
 import { createRef, forwardRef, useImperativeHandle } from 'react';
 
 type UrlInputProps = {
@@ -37,7 +37,7 @@ const UrlInput = forwardRef<HTMLInputElement, UrlInputProps>(function UrlInput(
             aria-label="Clear Url Field"
             disabled={disabled}
           >
-            <IconX size={19.6} />
+            <X size={19.6} />
           </ActionIcon>
         )
       }

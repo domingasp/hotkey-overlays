@@ -1,5 +1,5 @@
 import { Box, Image, UnstyledButton } from '@mantine/core';
-import { IconPhotoEdit, IconPhotoPlus } from '@tabler/icons-react';
+import { PlusSquare, Edit } from 'react-feather';
 import { useEffect, useState } from 'react';
 import ImagePath from '../../../../../../shared/types/ImagePath';
 import fileToBase64 from '../../../../services/utils';
@@ -52,7 +52,7 @@ function ConfigureImageButton({
         />
 
         {imgSrc === '' && (
-          <IconPhotoPlus
+          <PlusSquare
             className={`configure-img-icon configure-img--${
               imgSrc === '' ? 'add-img-icon' : ''
             }`}
@@ -60,7 +60,7 @@ function ConfigureImageButton({
         )}
 
         {imgSrc !== '' && (
-          <IconPhotoEdit
+          <Edit
             className={`configure-img-icon configure-img--${
               imgSrc === '' ? 'add-img-icon' : 'edit-img-icon'
             }`}

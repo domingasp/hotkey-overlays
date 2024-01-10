@@ -12,11 +12,7 @@ import {
   LoadingOverlay,
   Tooltip,
 } from '@mantine/core';
-import {
-  IconDeviceFloppy,
-  IconPhotoCancel,
-  IconPhotoOff,
-} from '@tabler/icons-react';
+import { AlertTriangle, HelpCircle, Save, CameraOff } from 'react-feather';
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from '../../../../components/HorizontalDividerWithLabel';
@@ -94,7 +90,7 @@ function ImageModal({
         color: 'red',
         message: 'Unsupported image type',
         withCloseButton: false,
-        icon: <IconPhotoCancel style={{ width: rem(14), height: rem(14) }} />,
+        icon: <AlertTriangle size={16} />,
         autoClose: 3000,
       });
     } else if (payload !== null) {
@@ -117,7 +113,7 @@ function ImageModal({
           color: 'red',
           message: 'Image not found',
           withCloseButton: false,
-          icon: <IconPhotoCancel style={{ width: rem(14), height: rem(14) }} />,
+          icon: <HelpCircle size={16} />,
           autoClose: 3000,
         });
       }
@@ -215,9 +211,7 @@ function ImageModal({
             <CancelConfirmButtons
               onCancel={close}
               onConfirm={save}
-              confirmIcon={
-                <IconDeviceFloppy size={18} style={{ marginTop: '2px' }} />
-              }
+              confirmIcon={<Save size={16} />}
               confirmDisabled={isLoadingImage || failedToLoadImage}
             />
 
@@ -245,11 +239,7 @@ function ImageModal({
 
               {failedToLoadImage && (
                 <Center h="100%">
-                  <IconPhotoOff
-                    color="var(--mantine-color-dark-3)"
-                    size={48}
-                    stroke={1.5}
-                  />
+                  <CameraOff color="var(--mantine-color-dark-3)" size={32} />
                 </Center>
               )}
 

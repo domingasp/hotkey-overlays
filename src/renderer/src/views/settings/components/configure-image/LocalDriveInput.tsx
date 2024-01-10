@@ -1,5 +1,5 @@
 import { Box, FileInput, Text, rem } from '@mantine/core';
-import { IconPhotoSearch } from '@tabler/icons-react';
+import { Search } from 'react-feather';
 import { forwardRef } from 'react';
 
 type LocalDriveInputProps = {
@@ -43,12 +43,7 @@ const LocalDriveInput = forwardRef<HTMLButtonElement, LocalDriveInputProps>(
             },
           }}
           placeholder="Find image"
-          leftSection={
-            <IconPhotoSearch
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          }
+          leftSection={<Search size={16} />}
           leftSectionPointerEvents="none"
           accept={acceptedFileTypes}
           disabled={disabled}

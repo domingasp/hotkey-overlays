@@ -1,15 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Box,
-  Button,
-  Divider,
-  Group,
-  SimpleGrid,
-  Title,
-  rem,
-} from '@mantine/core';
+import { Box, Button, Divider, Group, SimpleGrid, Title } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { IconPlus } from '@tabler/icons-react';
+import { Plus } from 'react-feather';
 import Overlay from '../../../../shared/types/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
 
@@ -43,9 +35,7 @@ function Settings() {
           variant="light"
           color="green"
           size="xs"
-          leftSection={
-            <IconPlus stroke={3} style={{ width: rem(14), height: rem(14) }} />
-          }
+          leftSection={<Plus size={18} />}
           styles={{
             section: {
               marginRight: '0.3125rem',
