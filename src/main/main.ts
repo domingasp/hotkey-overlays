@@ -82,15 +82,16 @@ function toggleOverlayWindow(id: number) {
       autoHideMenuBar: true,
       transparent: true,
       frame: false,
-      fullscreen: true,
+      resizable: false,
       hasShadow: false,
-      alwaysOnTop: true,
       skipTaskbar: true,
       webPreferences: {
         preload: path.join(__dirname, '../preload', 'preload.js'),
       },
     });
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
     overlayWindow.setIgnoreMouseEvents(true);
+    overlayWindow.maximize();
 
     overlayWindow.loadURL(`${baseUrl}#/overlay/${id}`);
 
