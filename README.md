@@ -28,3 +28,5 @@ The application automatically minimizes to the tray and the configured hotkeys c
 ## Limitations
 
 Unfortunately, it is not possible for overlays to open in front of exclusive fullscreen applications - make sure your applications are run using `borderless fullscreen`.
+
+When downloading the application you will recieve a security warning, the app is completely safe (check the source code) but it is not signed. If anyone has code signing certificates that would be appreciated to help ease the download and installation process.
