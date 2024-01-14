@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Draggable from 'react-draggable';
 import { ResizableBox } from 'react-resizable';
-import ImagePath from '../../../../shared/types/ImagePath';
+import ImagePath from '../../../../models/ImagePath';
 import fileToBase64 from '../../services/utils';
 import 'react-resizable/css/styles.css';
 

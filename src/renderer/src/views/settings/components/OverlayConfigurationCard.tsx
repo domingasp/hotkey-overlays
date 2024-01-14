@@ -15,11 +15,11 @@ import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
-import Overlay from '../../../../../shared/types/Overlay';
+import Overlay from '../../../../../models/Overlay';
 import DeleteMenu from '../../../components/DeleteMenu';
 import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
-import ImagePath from '../../../../../shared/types/ImagePath';
+import ImagePath from '../../../../../models/ImagePath';
 import ConfigureImageButton from './configure-image/ConfigureImageButton';
 import UpdateHotkeyOverlay from './configure-hotkey/UpdateHotkeyOverlay';
 import formatHotkeyShortcut, {

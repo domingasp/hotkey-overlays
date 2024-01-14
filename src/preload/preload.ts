@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import channels from '../shared/channels';
-import ImagePath from '../shared/types/ImagePath';
+import ImagePath from '../models/ImagePath';
 
 contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),

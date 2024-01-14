@@ -18,7 +18,7 @@ import HorizontalDividerWithLabel from '../../../../components/HorizontalDivider
 import UrlInput from './UrlInput';
 import LocalDriveInput from './LocalDriveInput';
 import CancelConfirmButtons from '../../../../components/CancelConfirmButtons';
-import ImagePath from '../../../../../../shared/types/ImagePath';
+import ImagePath from '../../../../../../models/ImagePath';
 import fileToBase64 from '../../../../services/utils';
 
 type ImageModalProps = {

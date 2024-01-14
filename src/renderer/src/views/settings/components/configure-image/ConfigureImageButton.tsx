@@ -1,7 +1,7 @@
 import { Box, Image, UnstyledButton } from '@mantine/core';
 import { PlusSquare, Edit } from 'react-feather';
 import { useEffect, useState } from 'react';
-import ImagePath from '../../../../../../shared/types/ImagePath';
+import ImagePath from '../../../../../../models/ImagePath';
 import fileToBase64 from '../../../../services/utils';
 import '../styles/configureImageButton.css';
 

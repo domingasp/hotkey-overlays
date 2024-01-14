@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { HelpCircle, Plus } from 'react-feather';
-import Overlay from '../../../../shared/types/Overlay';
+import Overlay from '../../../../models/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
 
 function Settings() {
