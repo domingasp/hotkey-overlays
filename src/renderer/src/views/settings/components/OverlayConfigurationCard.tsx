@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  ActionIcon,
+  Button,
   Flex,
   Group,
   Kbd,
@@ -11,7 +13,7 @@ import {
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { Check } from 'react-feather';
+import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
 import Overlay from '../../../../../shared/types/Overlay';
 import DeleteMenu from '../../../components/DeleteMenu';
@@ -132,6 +134,22 @@ function OverlayConfigurationCard({
       />
 
       <Group>
+        <Tooltip
+          label={<Text size="xs">Configure position and size</Text>}
+          color="blue"
+          position="bottom"
+          withArrow
+        >
+          <ActionIcon
+            h="unset"
+            style={{ alignSelf: 'stretch' }}
+            aria-label="Adjust overlay position and size"
+            disabled={imagePath === undefined}
+          >
+            <Maximize size={14} strokeWidth={3} />
+          </ActionIcon>
+        </Tooltip>
+
         <ConfigureImageButton imagePath={imagePath} onClick={openImageModel} />
 
         <ImageModal
