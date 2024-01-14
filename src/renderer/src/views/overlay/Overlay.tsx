@@ -29,8 +29,8 @@ function Overlay() {
   }, [imagePath]);
 
   return (
-    <Center h="100%">
-      <Image src={imgSrc} mah={300} />
+    <Center h="100%" style={{ overflow: 'hidden' }}>
+      <Image src={imgSrc} h={300} />
     </Center>
   );
 }

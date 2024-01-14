@@ -42,6 +42,10 @@ export async function deleteOverlay(id: number) {
 }
 
 // Overlay position + size configuration
+export async function openConfigureOverlayPositionSize(id: number) {
+  await (window as any).hotkeyOverlaysAPI.openConfigureOverlayPositionSize(id);
+}
+
 export async function closeConfigureOverlayPositionSizeWindow() {
   await (
     window as any

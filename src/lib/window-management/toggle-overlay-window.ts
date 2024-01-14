@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import path from 'node:path';
+import GenerateOverlayWindow from '../utils/overlay-window';
 
 function toggleOverlayWindow(
   id: number,
@@ -7,24 +7,10 @@ function toggleOverlayWindow(
   currentWindow: BrowserWindow | null
 ) {
   if (currentWindow == null) {
-    const overlayWindow = new BrowserWindow({
-      autoHideMenuBar: true,
-      transparent: true,
-      frame: false,
-      resizable: false,
-      hasShadow: false,
-      skipTaskbar: true,
-      webPreferences: {
-        preload: path.join(__dirname, '../preload', 'preload.js'),
-      },
-    });
-    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
+    const overlayWindow = GenerateOverlayWindow();
+
     overlayWindow.setIgnoreMouseEvents(true);
-    overlayWindow.maximize();
-
     overlayWindow.loadURL(`${baseUrl}#/overlay/${id}`);
-
-    overlayWindow.setPosition(0, 0);
 
     return overlayWindow;
   }

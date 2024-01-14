@@ -26,6 +26,7 @@ import formatHotkeyShortcut, {
 } from '../../../../../shared/utils';
 import './styles/configureHotkeyButton.css';
 import {
+  openConfigureOverlayPositionSize,
   registerOverlayHotkeys,
   unregisterOverlayHotkeys,
   updateOverlayHotkey,
@@ -95,12 +96,6 @@ function OverlayConfigurationCard({
     await updateOverlayHotkey(overlayId, electronMappedHotkey.join('+'));
   }
 
-  async function openConfigureOverlayPositionSize() {
-    await (window as any).hotkeyOverlaysAPI.openConfigureOverlayPositionSize(
-      overlay.id
-    );
-  }
-
   const renderHotkey = (keysToRender: string[]) => {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
@@ -147,7 +142,7 @@ function OverlayConfigurationCard({
             style={{ alignSelf: 'stretch' }}
             aria-label="Adjust overlay position and size"
             disabled={imagePath === undefined}
-            onClick={() => openConfigureOverlayPositionSize()}
+            onClick={() => openConfigureOverlayPositionSize(overlay.id)}
           >
             <Maximize size={14} strokeWidth={3} />
           </ActionIcon>
