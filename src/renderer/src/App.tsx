@@ -1,6 +1,7 @@
 import { RouterProvider, createHashRouter } from 'react-router-dom';
 import Settings from './views/settings/Settings';
 import Overlay from './views/overlay/Overlay';
+import ConfigureOverlayPositionSize from './views/configure-overlay-position-size/ConfigureOverlayPositionSize';
 
 const router = createHashRouter([
   {
@@ -10,6 +11,10 @@ const router = createHashRouter([
   {
     path: '/overlay/:id',
     element: <Overlay />,
+  },
+  {
+    path: '/overlay/:id/position-size',
+    element: <ConfigureOverlayPositionSize />,
   },
 ]);
 
