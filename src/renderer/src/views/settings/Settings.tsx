@@ -12,28 +12,29 @@ import { useState, useEffect } from 'react';
 import { HelpCircle, Plus } from 'react-feather';
 import Overlay from '../../../../models/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
+import {
+  addOverlay,
+  deleteOverlay,
+  getOverlays,
+} from '../../services/HotkeyOverlaysAPI';
+import fetchAndSetState from '../../services/utils';
 
 function Settings() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);
 
-  async function getOverlays() {
-    const res = await (window as any).hotkeyOverlaysAPI.getOverlays();
-    setOverlays(res);
-  }
-
-  async function addOverlay() {
-    await (window as any).hotkeyOverlaysAPI.addOverlay();
-    getOverlays();
-  }
-
-  async function deleteOverlay(id: number) {
-    await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
-    getOverlays();
-  }
-
   useEffect(() => {
-    getOverlays();
+    fetchAndSetState(getOverlays(), setOverlays);
   }, []);
+
+  const onAdd = async () => {
+    await addOverlay();
+    fetchAndSetState(getOverlays(), setOverlays);
+  };
+
+  const onDelete = async (id: number) => {
+    await deleteOverlay(id);
+    fetchAndSetState(getOverlays(), setOverlays);
+  };
 
   return (
     <Box w="100%" p="lg" miw="442px" pos="relative" mah={750}>
@@ -49,7 +50,7 @@ function Settings() {
               marginRight: '0.3125rem',
             },
           }}
-          onClick={() => addOverlay()}
+          onClick={onAdd}
         >
           Add
         </Button>
@@ -81,7 +82,7 @@ function Settings() {
           <OverlayConfigurationCard
             key={overlay.id}
             overlay={overlay}
-            deleteOverlay={(id) => deleteOverlay(id)}
+            deleteOverlay={onDelete}
           />
         ))}
       </SimpleGrid>

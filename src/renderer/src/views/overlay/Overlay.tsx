@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Center, Image } from '@mantine/core';
 import ImagePath from '../../../../models/ImagePath';
-import fileToBase64 from '../../services/utils';
+import {
+  fileToBase64,
+  getOverlayImagePath,
+} from '../../services/HotkeyOverlaysAPI';
+import fetchAndSetState from '../../services/utils';
 
 function Overlay() {
   const { id } = useParams();
@@ -10,28 +14,15 @@ function Overlay() {
   const [imgSrc, setImgSrc] = useState('');
 
   useEffect(() => {
-    async function getOverlayImagePath(idToFetch: number) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const res = await (window as any).hotkeyOverlaysAPI.getOverlayImagePath(
-        idToFetch
-      );
-      setImagePath(res);
-    }
-
     if (id) {
-      getOverlayImagePath(parseInt(id, 10));
+      const idAsNumber = parseInt(id, 10);
+      fetchAndSetState(getOverlayImagePath(idAsNumber), setImagePath);
     }
   }, []);
 
   useEffect(() => {
-    async function setImageSrcFromImagePath() {
-      if (imagePath) {
-        setImgSrc(await fileToBase64(imagePath.path, imagePath.type));
-      }
-    }
-
     if (imagePath && imagePath.type !== 'url') {
-      setImageSrcFromImagePath();
+      fetchAndSetState(fileToBase64(imagePath.path, imagePath.type), setImgSrc);
     } else {
       setImgSrc(imagePath?.path ?? '');
     }

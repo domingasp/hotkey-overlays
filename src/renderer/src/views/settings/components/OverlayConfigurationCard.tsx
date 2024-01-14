@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ActionIcon,
-  Button,
   Flex,
   Group,
   Kbd,
@@ -26,6 +25,13 @@ import formatHotkeyShortcut, {
   electronHotkeyToKeys,
 } from '../../../../../shared/utils';
 import './styles/configureHotkeyButton.css';
+import {
+  registerOverlayHotkeys,
+  unregisterOverlayHotkeys,
+  updateOverlayHotkey,
+  updateOverlayImage,
+  updateOverlayName,
+} from '../../../services/HotkeyOverlaysAPI';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -52,17 +58,17 @@ function OverlayConfigurationCard({
 
   const [isSavingName, setIsSavingName] = useState(false);
 
-  async function updateOverlayName() {
+  const onUpdateName = async (overlayId: number, newName: string) => {
     setIsSavingName(true);
-    await (window as any).hotkeyOverlaysAPI.updateOverlayName(overlay.id, name);
+    await updateOverlayName(overlayId, newName);
     setIsSavingName(false);
-  }
+  };
 
-  async function updateOverlayImage(path: ImagePath | undefined) {
-    await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
-      overlay.id,
-      path
-    );
+  const onUpdateImage = async (
+    overlayId: number,
+    newImagePath: ImagePath | undefined
+  ) => {
+    await updateOverlayImage(overlayId, newImagePath);
     closeImageModel();
 
     notifications.clean();
@@ -79,24 +85,14 @@ function OverlayConfigurationCard({
       withCloseButton: false,
       icon: <Check size={14} />,
     });
-  }
+  };
 
-  async function updateOverlayHotkey(newHotkey: string[]) {
+  async function onUpdateHotkey(overlayId: number, newHotkey: string[]) {
     closeHotkeyOverlay();
     setHotkey(newHotkey);
     const electronMappedHotkey = formatHotkeyShortcut(newHotkey, true);
-    await (window as any).hotkeyOverlaysAPI.updateOverlayHotkey(
-      overlay.id,
-      electronMappedHotkey.join('+')
-    );
-  }
 
-  async function registerOverlayHotkeys() {
-    await (window as any).hotkeyOverlaysAPI.registerOverlayHotkeys();
-  }
-
-  async function unregisterOverlayHotkeys() {
-    await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
+    await updateOverlayHotkey(overlayId, electronMappedHotkey.join('+'));
   }
 
   async function openConfigureOverlayPositionSize() {
@@ -164,14 +160,14 @@ function OverlayConfigurationCard({
           close={closeImageModel}
           imagePath={imagePath}
           setImagePath={setImagePath}
-          onSave={(path) => updateOverlayImage(path)}
+          onSave={(path) => onUpdateImage(overlay.id, path)}
         />
 
         {hotkeyOverlayOpened && (
           <UpdateHotkeyOverlay
             opened={hotkeyOverlayOpened}
             close={closeHotkeyOverlay}
-            onSave={(newHotkey) => updateOverlayHotkey(newHotkey)}
+            onSave={(newHotkey) => onUpdateHotkey(overlay.id, newHotkey)}
           />
         )}
 
@@ -180,7 +176,7 @@ function OverlayConfigurationCard({
             value={name}
             setValue={setName}
             isSaving={isSavingName}
-            onSave={() => updateOverlayName()}
+            onSave={() => onUpdateName(overlay.id, name)}
           />
 
           <Tooltip

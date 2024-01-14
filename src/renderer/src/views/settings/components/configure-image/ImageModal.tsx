@@ -19,7 +19,8 @@ import UrlInput from './UrlInput';
 import LocalDriveInput from './LocalDriveInput';
 import CancelConfirmButtons from '../../../../components/CancelConfirmButtons';
 import ImagePath from '../../../../../../models/ImagePath';
-import fileToBase64 from '../../../../services/utils';
+import fetchAndSetState from '../../../../services/utils';
+import { fileToBase64 } from '../../../../services/HotkeyOverlaysAPI';
 
 type ImageModalProps = {
   opened: boolean;
@@ -93,7 +94,7 @@ function ImageModal({
         autoClose: 3000,
       });
     } else if (payload !== null) {
-      setImgSrc(await fileToBase64(payload.path, payload.type));
+      fetchAndSetState(fileToBase64(payload.path, payload.type), setImgSrc);
     } else {
       setImgSrc('');
     }
@@ -102,22 +103,6 @@ function ImageModal({
   };
 
   useEffect(() => {
-    async function setImageFromFile(path: string, type: string) {
-      const imageAsString = await fileToBase64(path, type);
-      setImgSrc(imageAsString);
-
-      if (imageAsString === `data:${type};base64, undefined`) {
-        notifications.clean();
-        notifications.show({
-          color: 'red',
-          message: 'Image not found',
-          withCloseButton: false,
-          icon: <HelpCircle size={16} />,
-          autoClose: 3000,
-        });
-      }
-    }
-
     if (imgSrc === undefined || imgSrc === '') {
       setFailedToLoadImage(false);
     }
@@ -135,7 +120,10 @@ function ImageModal({
       setInitialLocalDriveValueLabel(imagePath.path.split('\\').pop() ?? '');
 
       if (opened || localDriveValue?.path !== '') {
-        setImageFromFile(imagePath.path, imagePath.type);
+        fetchAndSetState(
+          fileToBase64(imagePath.path, imagePath.type),
+          setImgSrc
+        );
       }
 
       if (!opened && localDriveValue?.path === '') {
@@ -154,6 +142,19 @@ function ImageModal({
       onChangeLocalDrive(localDriveValue);
     }
   }, [localDriveValue]);
+
+  useEffect(() => {
+    if (opened && imagePath?.type !== 'url' && imgSrc.includes('undefined')) {
+      notifications.clean();
+      notifications.show({
+        color: 'red',
+        message: 'Image not found',
+        withCloseButton: false,
+        icon: <HelpCircle size={16} />,
+        autoClose: 3000,
+      });
+    }
+  }, [imgSrc]);
 
   return (
     <Modal.Root opened={opened} onClose={close} centered>
