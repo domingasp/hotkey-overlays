@@ -1,4 +1,4 @@
-import { Box, Button, Center, Image, Overlay } from '@mantine/core';
+import { Button, Center, Image, Overlay } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Draggable from 'react-draggable';
@@ -6,11 +6,11 @@ import { ResizableBox } from 'react-resizable';
 import ImagePath from '../../../../models/ImagePath';
 import 'react-resizable/css/styles.css';
 import {
-  closeConfigureOverlayPositionSizeWindow,
   fileToBase64,
   getOverlayImagePath,
 } from '../../services/HotkeyOverlaysAPI';
 import fetchAndSetState from '../../services/utils';
+import StateButtons from './components/StateButtons';
 
 function ConfigureOverlayPositionSize() {
   const { id } = useParams();
@@ -38,11 +38,8 @@ function ConfigureOverlayPositionSize() {
 
   return (
     <Overlay backgroundOpacity={0.75}>
-      <Box pos="absolute" style={{ zIndex: 2 }}>
-        <Button onClick={() => closeConfigureOverlayPositionSizeWindow()}>
-          Cancel
-        </Button>
-      </Box>
+      <StateButtons />
+
       <Center
         h="100%"
         style={{
@@ -64,6 +61,7 @@ function ConfigureOverlayPositionSize() {
               setSize({ width: s.width, height: s.height });
             }}
             lockAspectRatio
+            handle={<Button>resize me</Button>}
           >
             <div className="handle">MOVE HANDLE</div>
             <Image src={imgSrc} />
