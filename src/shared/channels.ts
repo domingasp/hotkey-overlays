@@ -6,6 +6,9 @@ const channels = {
   updateOverlayImage: 'updateOverlayImage',
   updateOverlayHotkey: 'updateOverlayHotkey',
   deleteOverlay: 'deleteOverlay',
+  openConfigureOverlayPositionSize: 'openConfigureOverlayPositionSize',
+  closeConfigureOverlayPositionSizeWindow:
+    'closeConfigureOverlayPositionSizeWindow',
   base64FromImagePath: 'base64FromImagePath',
   registerOverlayHotkeys: 'registerOverlayHotkeys',
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',

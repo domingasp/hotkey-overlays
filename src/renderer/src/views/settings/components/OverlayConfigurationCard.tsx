@@ -99,6 +99,12 @@ function OverlayConfigurationCard({
     await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
   }
 
+  async function openConfigureOverlayPositionSize() {
+    await (window as any).hotkeyOverlaysAPI.openConfigureOverlayPositionSize(
+      overlay.id
+    );
+  }
+
   const renderHotkey = (keysToRender: string[]) => {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
@@ -145,6 +151,7 @@ function OverlayConfigurationCard({
             style={{ alignSelf: 'stretch' }}
             aria-label="Adjust overlay position and size"
             disabled={imagePath === undefined}
+            onClick={() => openConfigureOverlayPositionSize()}
           >
             <Maximize size={14} strokeWidth={3} />
           </ActionIcon>

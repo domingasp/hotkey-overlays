@@ -10,11 +10,8 @@ import {
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { HelpCircle, Plus } from 'react-feather';
-import Draggable from 'react-draggable';
-import { ResizableBox } from 'react-resizable';
 import Overlay from '../../../../shared/types/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
-import 'react-resizable/css/styles.css';
 
 function Settings() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);
@@ -37,10 +34,6 @@ function Settings() {
   useEffect(() => {
     getOverlays();
   }, []);
-
-  // TRAIL
-  const [sizze, setSizze] = useState({ width: 200, height: 200 });
-  const [poss, setPoss] = useState({ x: 20, y: 30 });
 
   return (
     <Box w="100%" p="lg" miw="442px" pos="relative" mah={750}>
@@ -75,31 +68,6 @@ function Settings() {
           No configured Overlays
         </Alert>
       )}
-
-      {/* TRIALING RESIZABLE ELEMENT */}
-      <Draggable
-        handle=".handle"
-        defaultPosition={poss}
-        grid={[5, 5]}
-        onStop={(_e, { x, y }) => {
-          setPoss({ x, y });
-        }}
-      >
-        <ResizableBox
-          height={sizze.height}
-          width={sizze.width}
-          onResize={(_event, { size }) => {
-            setSizze({ width: size.width, height: size.height });
-          }}
-          lockAspectRatio
-        >
-          <Alert h="100%">
-            <div className="handle">ONLY THIS</div>
-            {sizze.height} * {sizze.width} : x{poss.x} y{poss.y}
-          </Alert>
-        </ResizableBox>
-      </Draggable>
-      {/* END OF RESIZABLE */}
 
       <SimpleGrid
         cols={{ base: 1, sm: 2 }}

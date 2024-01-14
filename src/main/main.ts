@@ -27,6 +27,8 @@ let settingsWindow: BrowserWindow | null;
 let overlayWindow: BrowserWindow | null;
 let currentlyOpenedOverlayId: number | null = null;
 
+let configureOverlayPositionSizeWindow: BrowserWindow | null;
+
 let isQuiting = false;
 
 interface SchemaInterface {
@@ -215,6 +217,48 @@ async function deleteOverlay(id: number) {
   }
 }
 
+function openConfigureOverlayPositionSizeWindow(id: number) {
+  if (configureOverlayPositionSizeWindow == null) {
+    configureOverlayPositionSizeWindow = new BrowserWindow({
+      autoHideMenuBar: true,
+      transparent: true,
+      frame: false,
+      resizable: false,
+      hasShadow: false,
+      skipTaskbar: true,
+      webPreferences: {
+        preload: path.join(__dirname, '../preload', 'preload.js'),
+      },
+    });
+    configureOverlayPositionSizeWindow.setAlwaysOnTop(true, 'screen-saver');
+    configureOverlayPositionSizeWindow.maximize();
+
+    configureOverlayPositionSizeWindow.loadURL(
+      `${baseUrl}#/overlay/${id}/position-size`
+    );
+
+    configureOverlayPositionSizeWindow.setPosition(0, 0);
+  }
+}
+
+async function closeConfigureOverlayPositionSizeWindow() {
+  if (configureOverlayPositionSizeWindow !== null) {
+    configureOverlayPositionSizeWindow.close();
+    configureOverlayPositionSizeWindow = null;
+  }
+
+  await registerOverlayHotkeys();
+}
+
+async function openConfigureOverlayPositionSize(id: number) {
+  await unregisterOverlayHotkeys();
+  if (currentlyOpenedOverlayId !== null) {
+    toggleOverlayWindow(currentlyOpenedOverlayId);
+  }
+
+  openConfigureOverlayPositionSizeWindow(id);
+}
+
 function createTrayIron() {
   tray = new Tray(nativeImage.createFromPath(appIconIco));
   tray.setToolTip('Hotkey Overlays');
@@ -290,6 +334,13 @@ app.whenReady().then(() => {
     updateOverlayHotkey(id, hotkey)
   );
   ipcMain.handle(channels.deleteOverlay, (_event, id) => deleteOverlay(id));
+  ipcMain.handle(channels.openConfigureOverlayPositionSize, (_event, id) =>
+    openConfigureOverlayPositionSize(id)
+  );
+  ipcMain.handle(
+    channels.closeConfigureOverlayPositionSizeWindow,
+    closeConfigureOverlayPositionSizeWindow
+  );
   ipcMain.handle(channels.base64FromImagePath, (_event, imagePath) =>
     base64FromImagePath(imagePath)
   );
