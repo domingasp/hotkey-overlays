@@ -122,7 +122,7 @@ async function getOverlayImagePath(id: number) {
 async function addOverlay() {
   const overlays = store.get('overlays');
   overlays.push({
-    id: Math.max(...overlays.map((x) => x.id)) + 1,
+    id: overlays.length === 0 ? 1 : Math.max(...overlays.map((x) => x.id)) + 1,
     name: 'Default',
     hotkey: 'Ctrl+D',
   });

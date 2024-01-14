@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Divider, Group, SimpleGrid, Title } from '@mantine/core';
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  Group,
+  SimpleGrid,
+  Title,
+} from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { Plus } from 'react-feather';
+import { HelpCircle, Plus } from 'react-feather';
 import Overlay from '../../../../shared/types/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
 
@@ -47,6 +55,20 @@ function Settings() {
         </Button>
       </Group>
       <Divider my="sm" color="gray" />
+
+      {overlays.length === 0 && (
+        <Alert
+          icon={<HelpCircle size={16} />}
+          color="gray"
+          styles={{
+            wrapper: { justifyContent: 'center', alignItems: 'center' },
+            body: { flex: 'initial' },
+          }}
+        >
+          No configured Overlays
+        </Alert>
+      )}
+
       <SimpleGrid
         cols={{ base: 1, sm: 2 }}
         mah={540}
