@@ -103,7 +103,7 @@ function OverlayConfigurationCard({
 
   const renderHotkey = (keysToRender: string[]) => {
     return (
-      <Flex justify="center" wrap="wrap" rowGap="xs" maw="246px">
+      <Flex justify="center" wrap="wrap" rowGap="xs" maw="202px">
         {formatHotkeyShortcut(keysToRender).map((key, i) => (
           <React.Fragment key={key}>
             <Kbd size="sm">{key}</Kbd>

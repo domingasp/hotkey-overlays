@@ -39,7 +39,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
   useEffect(() => {
     if (span.current) {
       const minWidth = 116;
-      const maxWidth = 253;
+      const maxWidth = 190;
       let calculatedWidth = span.current.offsetWidth + 40;
       if (calculatedWidth < minWidth) calculatedWidth = minWidth;
       else if (calculatedWidth > maxWidth) calculatedWidth = maxWidth;
