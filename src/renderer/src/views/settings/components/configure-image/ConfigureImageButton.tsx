@@ -1,8 +1,9 @@
 import { Box, Image, UnstyledButton } from '@mantine/core';
 import { PlusSquare, Edit } from 'react-feather';
 import { useEffect, useState } from 'react';
-import ImagePath from '../../../../../../shared/types/ImagePath';
-import fileToBase64 from '../../../../services/utils';
+import ImagePath from '../../../../../../models/ImagePath';
+import { fileToBase64 } from '../../../../services/HotkeyOverlaysAPI';
+import fetchAndSetState from '../../../../services/utils';
 import '../styles/configureImageButton.css';
 
 type ConfigureImageButtonProps = {
@@ -16,13 +17,8 @@ function ConfigureImageButton({
   const [imgSrc, setImgSrc] = useState('');
 
   useEffect(() => {
-    async function setImageSrcFromImagePath() {
-      if (imagePath) {
-        setImgSrc(await fileToBase64(imagePath.path, imagePath.type));
-      }
-    }
     if (imagePath && imagePath.type !== 'url') {
-      setImageSrcFromImagePath();
+      fetchAndSetState(fileToBase64(imagePath.path, imagePath.type), setImgSrc);
     } else {
       setImgSrc(imagePath?.path ?? '');
     }

@@ -1,9 +1,12 @@
-const fileToBase64 = async (path: string, type: string) => {
-  const encodedImage: string =
-    await // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).hotkeyOverlaysAPI.base64FromImagePath(path);
+import { Dispatch, SetStateAction } from 'react';
 
-  return `data:${type};base64, ${encodedImage}`;
-};
+/* eslint-disable @typescript-eslint/no-explicit-any */
+async function fetchAndSetState<T>(
+  result: Promise<T>,
+  setState: Dispatch<SetStateAction<T>>
+) {
+  const res = await result;
+  setState(res);
+}
 
-export default fileToBase64;
+export default fetchAndSetState;

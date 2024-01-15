@@ -1,31 +1,68 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Divider, Group, SimpleGrid, Title } from '@mantine/core';
-import { useState, useEffect } from 'react';
-import { Plus } from 'react-feather';
-import Overlay from '../../../../shared/types/Overlay';
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  Group,
+  SimpleGrid,
+  Text,
+  Title,
+} from '@mantine/core';
+import { useState, useEffect, useRef } from 'react';
+import { Check, HelpCircle, Plus, X } from 'react-feather';
+import { notifications } from '@mantine/notifications';
+import Overlay from '../../../../models/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
+import {
+  addOverlay,
+  deleteOverlay,
+  getOverlays,
+} from '../../services/HotkeyOverlaysAPI';
+import fetchAndSetState from '../../services/utils';
+import { channelsToRenderer } from '../../../../shared/channels';
+import Notification from '../../../../models/Notification';
 
 function Settings() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);
 
-  async function getOverlays() {
-    const res = await (window as any).hotkeyOverlaysAPI.getOverlays();
-    setOverlays(res);
-  }
-
-  async function addOverlay() {
-    await (window as any).hotkeyOverlaysAPI.addOverlay();
-    getOverlays();
-  }
-
-  async function deleteOverlay(id: number) {
-    await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
-    getOverlays();
-  }
+  const isShowingUpdateNotif = useRef(false);
+  const showingUpdateNotifTimerId = useRef<NodeJS.Timeout | undefined>();
 
   useEffect(() => {
-    getOverlays();
+    fetchAndSetState(getOverlays(), setOverlays);
+
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.sendNotification,
+      ({ type, message }: Notification) => {
+        if (isShowingUpdateNotif.current === false) {
+          notifications.show({
+            color: type === 'success' ? 'green' : 'red',
+            message: <Text size="sm">{message}</Text>,
+            withCloseButton: false,
+            icon: type === 'success' ? <Check size={14} /> : <X size={14} />,
+          });
+        }
+
+        isShowingUpdateNotif.current = true;
+        showingUpdateNotifTimerId.current = setTimeout(() => {
+          isShowingUpdateNotif.current = false;
+        }, 2500);
+      }
+    );
+
+    return () => clearTimeout(showingUpdateNotifTimerId.current);
   }, []);
+
+  const onAdd = async () => {
+    await addOverlay();
+    fetchAndSetState(getOverlays(), setOverlays);
+  };
+
+  const onDelete = async (id: number) => {
+    await deleteOverlay(id);
+    fetchAndSetState(getOverlays(), setOverlays);
+  };
 
   return (
     <Box w="100%" p="lg" miw="442px" pos="relative" mah={750}>
@@ -41,12 +78,26 @@ function Settings() {
               marginRight: '0.3125rem',
             },
           }}
-          onClick={() => addOverlay()}
+          onClick={onAdd}
         >
           Add
         </Button>
       </Group>
       <Divider my="sm" color="gray" />
+
+      {overlays.length === 0 && (
+        <Alert
+          icon={<HelpCircle size={16} />}
+          color="gray"
+          styles={{
+            wrapper: { justifyContent: 'center', alignItems: 'center' },
+            body: { flex: 'initial' },
+          }}
+        >
+          No configured Overlays
+        </Alert>
+      )}
+
       <SimpleGrid
         cols={{ base: 1, sm: 2 }}
         mah={540}
@@ -59,7 +110,7 @@ function Settings() {
           <OverlayConfigurationCard
             key={overlay.id}
             overlay={overlay}
-            deleteOverlay={(id) => deleteOverlay(id)}
+            deleteOverlay={onDelete}
           />
         ))}
       </SimpleGrid>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  ActionIcon,
   Flex,
   Group,
   Kbd,
@@ -11,19 +12,29 @@ import {
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { Check } from 'react-feather';
+import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
-import Overlay from '../../../../../shared/types/Overlay';
+import Overlay from '../../../../../models/Overlay';
 import DeleteMenu from '../../../components/DeleteMenu';
 import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
-import ImagePath from '../../../../../shared/types/ImagePath';
+import ImagePath from '../../../../../models/ImagePath';
 import ConfigureImageButton from './configure-image/ConfigureImageButton';
 import UpdateHotkeyOverlay from './configure-hotkey/UpdateHotkeyOverlay';
 import formatHotkeyShortcut, {
   electronHotkeyToKeys,
 } from '../../../../../shared/utils';
 import './styles/configureHotkeyButton.css';
+import {
+  openConfigureOverlayPositionSize,
+  registerOverlayHotkeys,
+  reopenAllOpenedOverlays,
+  unregisterOverlayHotkeys,
+  updateOverlayHotkey,
+  updateOverlayImage,
+  updateOverlayName,
+} from '../../../services/HotkeyOverlaysAPI';
+import Size from '../../../../../models/Size';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -50,17 +61,20 @@ function OverlayConfigurationCard({
 
   const [isSavingName, setIsSavingName] = useState(false);
 
-  async function updateOverlayName() {
+  const onUpdateName = async (overlayId: number, newName: string) => {
     setIsSavingName(true);
-    await (window as any).hotkeyOverlaysAPI.updateOverlayName(overlay.id, name);
+    await updateOverlayName(overlayId, newName);
     setIsSavingName(false);
-  }
+  };
 
-  async function updateOverlayImage(path: ImagePath | undefined) {
-    await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
-      overlay.id,
-      path
-    );
+  const onUpdateImage = async (
+    overlayId: number,
+    newImagePath: ImagePath | undefined,
+    initialSize: Size
+  ) => {
+    await updateOverlayImage(overlayId, newImagePath, initialSize);
+    reopenAllOpenedOverlays();
+
     closeImageModel();
 
     notifications.clean();
@@ -77,24 +91,14 @@ function OverlayConfigurationCard({
       withCloseButton: false,
       icon: <Check size={14} />,
     });
-  }
+  };
 
-  async function updateOverlayHotkey(newHotkey: string[]) {
+  async function onUpdateHotkey(overlayId: number, newHotkey: string[]) {
     closeHotkeyOverlay();
     setHotkey(newHotkey);
     const electronMappedHotkey = formatHotkeyShortcut(newHotkey, true);
-    await (window as any).hotkeyOverlaysAPI.updateOverlayHotkey(
-      overlay.id,
-      electronMappedHotkey.join('+')
-    );
-  }
 
-  async function registerOverlayHotkeys() {
-    await (window as any).hotkeyOverlaysAPI.registerOverlayHotkeys();
-  }
-
-  async function unregisterOverlayHotkeys() {
-    await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
+    await updateOverlayHotkey(overlayId, electronMappedHotkey.join('+'));
   }
 
   const renderHotkey = (keysToRender: string[]) => {
@@ -132,6 +136,24 @@ function OverlayConfigurationCard({
       />
 
       <Group>
+        <Tooltip
+          label={<Text size="xs">Configure position and size</Text>}
+          color="blue"
+          position="bottom"
+          disabled={imagePath === undefined}
+          withArrow
+        >
+          <ActionIcon
+            h="unset"
+            style={{ alignSelf: 'stretch' }}
+            aria-label="Adjust overlay position and size"
+            disabled={imagePath === undefined}
+            onClick={() => openConfigureOverlayPositionSize(overlay.id)}
+          >
+            <Maximize size={14} strokeWidth={3} />
+          </ActionIcon>
+        </Tooltip>
+
         <ConfigureImageButton imagePath={imagePath} onClick={openImageModel} />
 
         <ImageModal
@@ -139,14 +161,14 @@ function OverlayConfigurationCard({
           close={closeImageModel}
           imagePath={imagePath}
           setImagePath={setImagePath}
-          onSave={(path) => updateOverlayImage(path)}
+          onSave={(path, size) => onUpdateImage(overlay.id, path, size)}
         />
 
         {hotkeyOverlayOpened && (
           <UpdateHotkeyOverlay
             opened={hotkeyOverlayOpened}
             close={closeHotkeyOverlay}
-            onSave={(newHotkey) => updateOverlayHotkey(newHotkey)}
+            onSave={(newHotkey) => onUpdateHotkey(overlay.id, newHotkey)}
           />
         )}
 
@@ -155,7 +177,7 @@ function OverlayConfigurationCard({
             value={name}
             setValue={setName}
             isSaving={isSavingName}
-            onSave={() => updateOverlayName()}
+            onSave={() => onUpdateName(overlay.id, name)}
           />
 
           <Tooltip
