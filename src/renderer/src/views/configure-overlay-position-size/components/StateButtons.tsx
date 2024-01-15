@@ -4,8 +4,10 @@ import { closeConfigureOverlayPositionSizeWindow } from '../../../services/Hotke
 
 type StateButtonsProps = {
   onDefaults: () => void;
+  onReset: () => void;
+  onSave: () => void;
 };
-function StateButtons({ onDefaults }: StateButtonsProps) {
+function StateButtons({ onDefaults, onReset, onSave }: StateButtonsProps) {
   return (
     <Box
       pos="absolute"
@@ -41,9 +43,7 @@ function StateButtons({ onDefaults }: StateButtonsProps) {
         </Button>
 
         <Button
-          onClick={() => {
-            console.log('SET UNDO VALUES');
-          }}
+          onClick={() => onReset()}
           color="red"
           size="xs"
           leftSection={<RotateCcw size={14} />}
@@ -56,7 +56,7 @@ function StateButtons({ onDefaults }: StateButtonsProps) {
           color="green"
           size="xs"
           leftSection={<Check size={14} />}
-          onClick={() => console.log('save')}
+          onClick={() => onSave()}
           variant="light"
         >
           Save

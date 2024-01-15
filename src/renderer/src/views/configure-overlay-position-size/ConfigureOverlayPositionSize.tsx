@@ -6,10 +6,12 @@ import { ResizableBox } from 'react-resizable';
 import ImagePath from '../../../../models/ImagePath';
 import 'react-resizable/css/styles.css';
 import {
+  closeConfigureOverlayPositionSizeWindow,
   fileToBase64,
   getOverlayImagePath,
   getOverlayPosition,
   getOverlaySize,
+  updateOverlayPositionSize,
 } from '../../services/HotkeyOverlaysAPI';
 import fetchAndSetState from '../../services/utils';
 import StateButtons from './components/StateButtons';
@@ -58,6 +60,13 @@ function ConfigureOverlayPositionSize() {
     setNewSize(sizes.current);
   }, [sizes]);
 
+  const onSave = async () => {
+    if (id) {
+      await updateOverlayPositionSize(parseInt(id, 10), newPosition, newSize);
+      closeConfigureOverlayPositionSizeWindow();
+    }
+  };
+
   return (
     <Overlay backgroundOpacity={0.75}>
       <StateButtons
@@ -65,6 +74,11 @@ function ConfigureOverlayPositionSize() {
           setNewPosition({ x: 0, y: 0 });
           setNewSize(sizes.default);
         }}
+        onReset={() => {
+          setNewPosition(position);
+          setNewSize(sizes.current);
+        }}
+        onSave={() => onSave()}
       />
 
       <Center

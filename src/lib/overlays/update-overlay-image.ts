@@ -15,7 +15,7 @@ async function updateOverlayImage(
   if (overlayToUpdate) {
     overlayToUpdate.imagePath = imagePath;
 
-    // New default size if image is updated
+    // New default size if image is updates
     overlayToUpdate.sizes.default = size;
     overlayToUpdate.sizes.current = size;
 
