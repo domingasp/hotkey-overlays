@@ -21,6 +21,7 @@ import CancelConfirmButtons from '../../../../components/CancelConfirmButtons';
 import ImagePath from '../../../../../../models/ImagePath';
 import fetchAndSetState from '../../../../services/utils';
 import { fileToBase64 } from '../../../../services/HotkeyOverlaysAPI';
+import Size from '../../../../../../models/Size';
 
 type ImageModalProps = {
   opened: boolean;
@@ -28,10 +29,7 @@ type ImageModalProps = {
 
   imagePath: ImagePath | undefined;
   setImagePath: (imagePath: ImagePath | undefined) => void;
-  onSave: (
-    path: ImagePath | undefined,
-    size: { width: number; height: number }
-  ) => void;
+  onSave: (path: ImagePath | undefined, size: Size) => void;
 };
 function ImageModal({
   opened,

@@ -1,6 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import channels from '../shared/channels';
 import ImagePath from '../models/ImagePath';
+import Position from '../models/Position';
+import Size from '../models/Size';
 
 contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
@@ -16,8 +18,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
   [channels.updateOverlayImage]: (
     id: number,
     imagePath: ImagePath | undefined,
-    position: { x: number; y: number },
-    size: { width: number; height: number }
+    position: Position,
+    size: Size
   ) =>
     ipcRenderer.invoke(
       channels.updateOverlayImage,

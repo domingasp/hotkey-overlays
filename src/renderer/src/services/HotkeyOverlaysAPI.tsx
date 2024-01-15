@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import ImagePath from '../../../models/ImagePath';
+import Position from '../../../models/Position';
+import Size from '../../../models/Size';
 
 // Basic Overlay Configuration
 export async function getOverlays() {
@@ -18,10 +20,7 @@ export async function getOverlayImagePath(
   return res;
 }
 
-export async function getOverlayPosition(idToFetch: number): Promise<{
-  x: number;
-  y: number;
-}> {
+export async function getOverlayPosition(idToFetch: number): Promise<Position> {
   const res = await (window as any).hotkeyOverlaysAPI.getOverlayPosition(
     idToFetch
   );
@@ -29,10 +28,7 @@ export async function getOverlayPosition(idToFetch: number): Promise<{
   return res;
 }
 
-export async function getOverlaySize(idToFetch: number): Promise<{
-  width: number;
-  height: number;
-}> {
+export async function getOverlaySize(idToFetch: number): Promise<Size> {
   const res = await (window as any).hotkeyOverlaysAPI.getOverlaySize(idToFetch);
 
   return res;
@@ -49,7 +45,7 @@ export async function updateOverlayName(id: number, name: string) {
 export async function updateOverlayImage(
   id: number,
   imagePath: ImagePath | undefined,
-  size: { width: number; height: number }
+  size: Size
 ) {
   await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
     id,

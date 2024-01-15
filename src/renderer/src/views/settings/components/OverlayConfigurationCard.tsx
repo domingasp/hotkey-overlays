@@ -33,6 +33,7 @@ import {
   updateOverlayImage,
   updateOverlayName,
 } from '../../../services/HotkeyOverlaysAPI';
+import Size from '../../../../../models/Size';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -68,7 +69,7 @@ function OverlayConfigurationCard({
   const onUpdateImage = async (
     overlayId: number,
     newImagePath: ImagePath | undefined,
-    initialSize: { width: number; height: number }
+    initialSize: Size
   ) => {
     await updateOverlayImage(overlayId, newImagePath, initialSize);
     closeImageModel();
