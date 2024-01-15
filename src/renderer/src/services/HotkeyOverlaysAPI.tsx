@@ -106,3 +106,7 @@ export async function registerOverlayHotkeys() {
 export async function unregisterOverlayHotkeys() {
   await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
 }
+
+export async function reopenAllOpenedOverlays() {
+  await (window as any).hotkeyOverlaysAPI.reopenAllOpenedOverlays();
+}

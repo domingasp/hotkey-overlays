@@ -28,6 +28,7 @@ import './styles/configureHotkeyButton.css';
 import {
   openConfigureOverlayPositionSize,
   registerOverlayHotkeys,
+  reopenAllOpenedOverlays,
   unregisterOverlayHotkeys,
   updateOverlayHotkey,
   updateOverlayImage,
@@ -72,6 +73,8 @@ function OverlayConfigurationCard({
     initialSize: Size
   ) => {
     await updateOverlayImage(overlayId, newImagePath, initialSize);
+    reopenAllOpenedOverlays();
+
     closeImageModel();
 
     notifications.clean();

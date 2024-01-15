@@ -19,6 +19,7 @@ import closeConfigureOverlayPositionSizeWindow from '../lib/overlays/close-confi
 import getOverlaySize from '../lib/overlays/get-overlay-size';
 import getOverlayPosition from '../lib/overlays/get-overlay-position';
 import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-size';
+import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-overlays';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -201,8 +202,19 @@ app.whenReady().then(() => {
     updateOverlayHotkey(store, id, hotkey)
   );
 
-  ipcMain.handle(channels.updateOverlayPositionSize, (_, id, position, size) =>
-    updateOverlayPositionSize(store, settingsWindow, id, position, size)
+  ipcMain.handle(
+    channels.updateOverlayPositionSize,
+    async (_, id, position, size) => {
+      await updateOverlayPositionSize(
+        store,
+        settingsWindow,
+        id,
+        position,
+        size
+      );
+
+      reopenAllOpenedOverlays(baseUrl, overlayWindows);
+    }
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => deleteOverlay(store, id));
@@ -239,6 +251,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle(channels.unregisterOverlayHotkeys, () =>
     unregisterOverlayHotkeys(settingsWindow)
+  );
+
+  ipcMain.handle(channels.reopenAllOpenedOverlays, () =>
+    reopenAllOpenedOverlays(baseUrl, overlayWindows)
   );
 });
 

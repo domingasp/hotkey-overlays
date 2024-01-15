@@ -15,6 +15,7 @@ const channels = {
   base64FromImagePath: 'base64FromImagePath',
   registerOverlayHotkeys: 'registerOverlayHotkeys',
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',
+  reopenAllOpenedOverlays: 'reopenAllOpenedOverlays',
 };
 
 export const channelsToRenderer = {
