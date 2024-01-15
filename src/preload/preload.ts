@@ -1,10 +1,21 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron';
 import channels from '../shared/channels';
 import ImagePath from '../models/ImagePath';
 import Position from '../models/Position';
 import Size from '../models/Size';
 
 contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
+  ipcRenderer: {
+    on(channel: string, func: (...arg: unknown[]) => void) {
+      const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
+        func(...args);
+      ipcRenderer.on(channel, subscription);
+
+      return () => {
+        ipcRenderer.removeListener(channel, subscription);
+      };
+    },
+  },
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
   [channels.getOverlayImagePath]: (id: number) =>
     ipcRenderer.invoke(channels.getOverlayImagePath, id),

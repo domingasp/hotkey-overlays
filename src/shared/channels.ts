@@ -17,4 +17,8 @@ const channels = {
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',
 };
 
+export const channelsToRenderer = {
+  sendNotification: 'sendNotification',
+};
+
 export default channels;

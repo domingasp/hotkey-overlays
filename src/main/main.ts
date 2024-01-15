@@ -202,7 +202,7 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(channels.updateOverlayPositionSize, (_, id, position, size) =>
-    updateOverlayPositionSize(store, id, position, size)
+    updateOverlayPositionSize(store, settingsWindow, id, position, size)
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => deleteOverlay(store, id));
