@@ -46,6 +46,7 @@ function Overlay() {
         height={sizes.current.height}
         width={sizes.current.width}
         lockAspectRatio
+        handle={<div />}
       >
         <Draggable position={position}>
           <Box>

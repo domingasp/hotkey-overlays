@@ -217,7 +217,11 @@ app.whenReady().then(() => {
     }
   );
 
-  ipcMain.handle(channels.deleteOverlay, (_, id) => deleteOverlay(store, id));
+  ipcMain.handle(channels.deleteOverlay, (_, id) => {
+    unregisterOverlayHotkeys(settingsWindow);
+    deleteOverlay(store, overlayWindows, id);
+    registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow);
+  });
 
   // Overlay position + size configuration
   ipcMain.handle(channels.openConfigureOverlayPositionSize, async (_, id) => {
