@@ -2,7 +2,10 @@ import { Group, Button, Box } from '@mantine/core';
 import { Check, Loader, RotateCcw, X } from 'react-feather';
 import { closeConfigureOverlayPositionSizeWindow } from '../../../services/HotkeyOverlaysAPI';
 
-function StateButtons() {
+type StateButtonsProps = {
+  onDefaults: () => void;
+};
+function StateButtons({ onDefaults }: StateButtonsProps) {
   return (
     <Box
       pos="absolute"
@@ -18,9 +21,7 @@ function StateButtons() {
     >
       <Group align="flex-start">
         <Button
-          onClick={() => {
-            console.log('SET DEFAULT VALUES');
-          }}
+          onClick={() => onDefaults()}
           color="blue"
           size="xs"
           leftSection={<Loader size={14} />}

@@ -60,7 +60,12 @@ function ConfigureOverlayPositionSize() {
 
   return (
     <Overlay backgroundOpacity={0.75}>
-      <StateButtons />
+      <StateButtons
+        onDefaults={() => {
+          setNewPosition({ x: 0, y: 0 });
+          setNewSize(sizes.default);
+        }}
+      />
 
       <Center
         h="100%"
@@ -72,8 +77,8 @@ function ConfigureOverlayPositionSize() {
         <ResizableBox
           height={newSize.height}
           width={newSize.width}
-          onResize={(_event, { size }) => {
-            console.log(size);
+          onResizeStop={(_event, { size }) => {
+            setNewSize(size);
           }}
           lockAspectRatio
           draggableOpts={{ grid: [10, 10] }}
@@ -81,9 +86,10 @@ function ConfigureOverlayPositionSize() {
         >
           <Draggable
             defaultPosition={newPosition}
+            position={newPosition}
             grid={[5, 5]}
             onStop={(_e, { x, y }) => {
-              console.log(x, y);
+              setNewPosition({ x, y });
             }}
           >
             <Box>
