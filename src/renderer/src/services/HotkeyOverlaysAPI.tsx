@@ -28,7 +28,9 @@ export async function getOverlayPosition(idToFetch: number): Promise<Position> {
   return res;
 }
 
-export async function getOverlaySize(idToFetch: number): Promise<Size> {
+export async function getOverlaySize(
+  idToFetch: number
+): Promise<{ default: Size; current: Size }> {
   const res = await (window as any).hotkeyOverlaysAPI.getOverlaySize(idToFetch);
 
   return res;

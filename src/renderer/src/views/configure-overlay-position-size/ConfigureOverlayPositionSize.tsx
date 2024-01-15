@@ -14,6 +14,8 @@ import {
 import fetchAndSetState from '../../services/utils';
 import StateButtons from './components/StateButtons';
 import ResizeHandle from './components/ResizeHandle';
+import Size from '../../../../models/Size';
+import Position from '../../../../models/Position';
 
 function ConfigureOverlayPositionSize() {
   const { id } = useParams();
@@ -22,13 +24,20 @@ function ConfigureOverlayPositionSize() {
   const [imgSrc, setImgSrc] = useState('');
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [sizes, setSizes] = useState({
+    default: { width: 0, height: 0 },
+    current: { width: 0, height: 0 },
+  });
+
+  // For tracking changes made by user
+  const [newPosition, setNewPosition] = useState<Position>({ x: 0, y: 0 });
+  const [newSize, setNewSize] = useState<Size>({ width: 0, height: 0 });
 
   useEffect(() => {
     if (id) {
       const idAsNumber = parseInt(id, 10);
       fetchAndSetState(getOverlayImagePath(idAsNumber), setImagePath);
-      fetchAndSetState(getOverlaySize(idAsNumber), setSize);
+      fetchAndSetState(getOverlaySize(idAsNumber), setSizes);
       fetchAndSetState(getOverlayPosition(idAsNumber), setPosition);
     }
   }, []);
@@ -40,6 +49,14 @@ function ConfigureOverlayPositionSize() {
       setImgSrc(imagePath?.path ?? '');
     }
   }, [imagePath]);
+
+  useEffect(() => {
+    setNewPosition(position);
+  }, [position]);
+
+  useEffect(() => {
+    setNewSize(sizes.current);
+  }, [sizes]);
 
   return (
     <Overlay backgroundOpacity={0.75}>
@@ -53,15 +70,17 @@ function ConfigureOverlayPositionSize() {
         }}
       >
         <ResizableBox
-          height={size.height}
-          width={size.width}
-          // onResize={(_event, { size: s }) => {}}
+          height={newSize.height}
+          width={newSize.width}
+          onResize={(_event, { size }) => {
+            console.log(size);
+          }}
           lockAspectRatio
           draggableOpts={{ grid: [10, 10] }}
           handle={<ResizeHandle />}
         >
           <Draggable
-            defaultPosition={position}
+            defaultPosition={newPosition}
             grid={[5, 5]}
             onStop={(_e, { x, y }) => {
               console.log(x, y);

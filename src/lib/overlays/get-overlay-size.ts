@@ -6,7 +6,7 @@ async function getOverlaySize(store: Store<SchemaInterface>, id: number) {
   const overlay = overlays.find((x) => x.id === id);
 
   if (overlay) {
-    return overlay.size;
+    return overlay.sizes;
   }
 
   return undefined;

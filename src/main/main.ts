@@ -63,11 +63,23 @@ const schema: Schema<SchemaInterface> = {
             y: { type: 'number' },
           },
         },
-        height: {
+        sizes: {
           type: 'object',
           properties: {
-            width: { type: 'number' },
-            height: { type: 'number' },
+            default: {
+              type: 'object',
+              properties: {
+                width: { type: 'number' },
+                height: { type: 'number' },
+              },
+            },
+            current: {
+              type: 'object',
+              properties: {
+                width: { type: 'number' },
+                height: { type: 'number' },
+              },
+            },
           },
         },
       },
@@ -86,7 +98,10 @@ function createDefaultOverlayInStore() {
       name: 'Default',
       hotkey: 'Ctrl+Shift+]',
       position: { x: 0, y: 0 },
-      size: { height: 0, width: 0 },
+      sizes: {
+        default: { width: 0, height: 0 },
+        current: { width: 0, height: 0 },
+      },
     });
 
     store.set('overlays', overlays);

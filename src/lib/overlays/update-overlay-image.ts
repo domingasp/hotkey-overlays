@@ -7,14 +7,17 @@ async function updateOverlayImage(
   store: Store<SchemaInterface>,
   id: number,
   imagePath: ImagePath | undefined,
-  initialSize: Size
+  size: Size
 ) {
   const overlays = store.get('overlays');
   const overlayToUpdate = overlays.find((x) => x.id === id);
 
   if (overlayToUpdate) {
     overlayToUpdate.imagePath = imagePath;
-    overlayToUpdate.size = initialSize;
+
+    // New default size if image is updated
+    overlayToUpdate.sizes.default = size;
+    overlayToUpdate.sizes.current = size;
 
     store.set('overlays', overlays);
   }
