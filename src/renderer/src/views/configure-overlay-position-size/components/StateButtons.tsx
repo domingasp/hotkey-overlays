@@ -16,12 +16,12 @@ function StateButtons({ onDefaults, onReset, onSave }: StateButtonsProps) {
       right={0}
       ml="auto"
       mr="auto"
-      w={400}
+      w={425}
       bg="dark.9"
       style={{ zIndex: 2, borderRadius: 'var(--mantine-radius-sm)' }}
       p="xs"
     >
-      <Group align="flex-start">
+      <Group align="flex-start" justify="center">
         <Button
           onClick={() => onDefaults()}
           color="blue"
