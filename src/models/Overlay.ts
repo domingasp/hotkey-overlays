@@ -6,7 +6,7 @@ type Overlay = {
   hotkey: string;
   imagePath?: ImagePath;
   position: { x: number; y: number };
-  height: number;
+  size: { width: number; height: number };
 };
 
 export default Overlay;

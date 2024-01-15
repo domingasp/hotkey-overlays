@@ -16,6 +16,8 @@ import unregisterOverlayHotkeys from '../lib/global-hotkeys/unregister-hotkeys';
 import deleteOverlay from '../lib/overlays/delete-overlay';
 import openConfigureOverlayPositionSize from '../lib/overlays/open-configure-overlay-position-size';
 import closeConfigureOverlayPositionSizeWindow from '../lib/overlays/close-configure-overlay-position-size';
+import getOverlaySize from '../lib/overlays/get-overlay-size';
+import getOverlayPosition from '../lib/overlays/get-overlay-position';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -62,7 +64,11 @@ const schema: Schema<SchemaInterface> = {
           },
         },
         height: {
-          type: 'number',
+          type: 'object',
+          properties: {
+            width: { type: 'number' },
+            height: { type: 'number' },
+          },
         },
       },
       required: ['name', 'hotkey'],
@@ -80,7 +86,7 @@ function createDefaultOverlayInStore() {
       name: 'Default',
       hotkey: 'Ctrl+Shift+]',
       position: { x: 0, y: 0 },
-      height: 200,
+      size: { height: 0, width: 0 },
     });
 
     store.set('overlays', overlays);
@@ -159,14 +165,20 @@ app.whenReady().then(() => {
     getOverlayImagePath(store, id)
   );
 
+  ipcMain.handle(channels.getOverlaySize, (_, id) => getOverlaySize(store, id));
+
+  ipcMain.handle(channels.getOverlayPosition, (_, id) =>
+    getOverlayPosition(store, id)
+  );
+
   ipcMain.handle(channels.addOverlay, () => addOverlay(store));
 
   ipcMain.handle(channels.updateOverlayName, (_, id, name) =>
     updateOverlayName(store, id, name)
   );
 
-  ipcMain.handle(channels.updateOverlayImage, (_, id, imagePath) =>
-    updateOverlayImage(store, id, imagePath)
+  ipcMain.handle(channels.updateOverlayImage, (_, id, imagePath, size) =>
+    updateOverlayImage(store, id, imagePath, size)
   );
 
   ipcMain.handle(channels.updateOverlayHotkey, (_, id, hotkey) =>

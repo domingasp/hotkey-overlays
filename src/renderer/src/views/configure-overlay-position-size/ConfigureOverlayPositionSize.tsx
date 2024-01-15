@@ -1,4 +1,4 @@
-import { Button, Center, Image, Overlay } from '@mantine/core';
+import { Box, Center, Image, Overlay } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Draggable from 'react-draggable';
@@ -8,9 +8,12 @@ import 'react-resizable/css/styles.css';
 import {
   fileToBase64,
   getOverlayImagePath,
+  getOverlayPosition,
+  getOverlaySize,
 } from '../../services/HotkeyOverlaysAPI';
 import fetchAndSetState from '../../services/utils';
 import StateButtons from './components/StateButtons';
+import ResizeHandle from './components/ResizeHandle';
 
 function ConfigureOverlayPositionSize() {
   const { id } = useParams();
@@ -18,13 +21,15 @@ function ConfigureOverlayPositionSize() {
   const [imagePath, setImagePath] = useState<ImagePath | undefined>();
   const [imgSrc, setImgSrc] = useState('');
 
-  const [pos, setPos] = useState({ x: 20, y: 30 });
-  const [size, setSize] = useState({ width: 200, height: 200 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     if (id) {
       const idAsNumber = parseInt(id, 10);
       fetchAndSetState(getOverlayImagePath(idAsNumber), setImagePath);
+      fetchAndSetState(getOverlaySize(idAsNumber), setSize);
+      fetchAndSetState(getOverlayPosition(idAsNumber), setPosition);
     }
   }, []);
 
@@ -44,29 +49,32 @@ function ConfigureOverlayPositionSize() {
         h="100%"
         style={{
           overflow: 'hidden',
+          position: 'relative',
         }}
       >
-        <Draggable
-          handle=".handle"
-          defaultPosition={pos}
-          grid={[5, 5]}
-          onStop={(_e, { x, y }) => {
-            setPos({ x, y });
-          }}
+        <ResizableBox
+          height={size.height}
+          width={size.width}
+          // onResize={(_event, { size: s }) => {}}
+          lockAspectRatio
+          draggableOpts={{ grid: [10, 10] }}
+          handle={<ResizeHandle />}
         >
-          <ResizableBox
-            height={size.height}
-            width={size.width}
-            onResize={(_event, { size: s }) => {
-              setSize({ width: s.width, height: s.height });
+          <Draggable
+            defaultPosition={position}
+            grid={[5, 5]}
+            onStop={(_e, { x, y }) => {
+              console.log(x, y);
             }}
-            lockAspectRatio
-            handle={<Button>resize me</Button>}
           >
-            <div className="handle">MOVE HANDLE</div>
-            <Image src={imgSrc} />
-          </ResizableBox>
-        </Draggable>
+            <Box>
+              <Image
+                src={imgSrc}
+                style={{ userSelect: 'none', pointerEvents: 'none' }}
+              />
+            </Box>
+          </Draggable>
+        </ResizableBox>
       </Center>
     </Overlay>
   );

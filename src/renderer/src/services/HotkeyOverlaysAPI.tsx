@@ -18,6 +18,26 @@ export async function getOverlayImagePath(
   return res;
 }
 
+export async function getOverlayPosition(idToFetch: number): Promise<{
+  x: number;
+  y: number;
+}> {
+  const res = await (window as any).hotkeyOverlaysAPI.getOverlayPosition(
+    idToFetch
+  );
+
+  return res;
+}
+
+export async function getOverlaySize(idToFetch: number): Promise<{
+  width: number;
+  height: number;
+}> {
+  const res = await (window as any).hotkeyOverlaysAPI.getOverlaySize(idToFetch);
+
+  return res;
+}
+
 export async function addOverlay() {
   await (window as any).hotkeyOverlaysAPI.addOverlay();
 }
@@ -28,9 +48,14 @@ export async function updateOverlayName(id: number, name: string) {
 
 export async function updateOverlayImage(
   id: number,
-  imagePath: ImagePath | undefined
+  imagePath: ImagePath | undefined,
+  size: { width: number; height: number }
 ) {
-  await (window as any).hotkeyOverlaysAPI.updateOverlayImage(id, imagePath);
+  await (window as any).hotkeyOverlaysAPI.updateOverlayImage(
+    id,
+    imagePath,
+    size
+  );
 }
 
 export async function updateOverlayHotkey(id: number, hotkey: string) {

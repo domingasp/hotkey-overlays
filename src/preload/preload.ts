@@ -6,13 +6,26 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
   [channels.getOverlayImagePath]: (id: number) =>
     ipcRenderer.invoke(channels.getOverlayImagePath, id),
+  [channels.getOverlaySize]: (id: number) =>
+    ipcRenderer.invoke(channels.getOverlaySize, id),
+  [channels.getOverlayPosition]: (id: number) =>
+    ipcRenderer.invoke(channels.getOverlayPosition, id),
   [channels.addOverlay]: () => ipcRenderer.invoke(channels.addOverlay),
   [channels.updateOverlayName]: (id: number, name: string) =>
     ipcRenderer.invoke(channels.updateOverlayName, id, name),
   [channels.updateOverlayImage]: (
     id: number,
-    imagePath: ImagePath | undefined
-  ) => ipcRenderer.invoke(channels.updateOverlayImage, id, imagePath),
+    imagePath: ImagePath | undefined,
+    position: { x: number; y: number },
+    size: { width: number; height: number }
+  ) =>
+    ipcRenderer.invoke(
+      channels.updateOverlayImage,
+      id,
+      imagePath,
+      position,
+      size
+    ),
   [channels.updateOverlayHotkey]: (id: number, hotkey: string) =>
     ipcRenderer.invoke(channels.updateOverlayHotkey, id, hotkey),
   [channels.deleteOverlay]: (id: number) =>

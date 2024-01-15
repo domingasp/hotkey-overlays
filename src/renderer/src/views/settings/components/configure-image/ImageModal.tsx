@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { AlertTriangle, HelpCircle, Save, CameraOff } from 'react-feather';
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import HorizontalDividerWithLabel from '../../../../components/HorizontalDividerWithLabel';
 import UrlInput from './UrlInput';
@@ -28,7 +28,10 @@ type ImageModalProps = {
 
   imagePath: ImagePath | undefined;
   setImagePath: (imagePath: ImagePath | undefined) => void;
-  onSave: (path: ImagePath | undefined) => void;
+  onSave: (
+    path: ImagePath | undefined,
+    size: { width: number; height: number }
+  ) => void;
 };
 function ImageModal({
   opened,
@@ -48,6 +51,8 @@ function ImageModal({
   const [imgSrc, setImgSrc] = useState('');
 
   const [isLoadingImage, setIsLoadingImage] = useState(false);
+
+  const imageRef = createRef<HTMLImageElement>();
 
   const save = () => {
     let path: ImagePath | undefined;
@@ -71,7 +76,11 @@ function ImageModal({
     }
 
     setImagePath(path);
-    onSave(path);
+
+    if (imageRef.current) {
+      const size = imageRef.current?.getBoundingClientRect();
+      onSave(path, { width: size.width, height: size.height });
+    }
   };
 
   const onChangeUrl = (newUrl: string) => {
@@ -244,6 +253,7 @@ function ImageModal({
               )}
 
               <Image
+                ref={imageRef}
                 h={200}
                 fit="contain"
                 src={imgSrc}

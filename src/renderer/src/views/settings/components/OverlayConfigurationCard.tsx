@@ -67,9 +67,10 @@ function OverlayConfigurationCard({
 
   const onUpdateImage = async (
     overlayId: number,
-    newImagePath: ImagePath | undefined
+    newImagePath: ImagePath | undefined,
+    initialSize: { width: number; height: number }
   ) => {
-    await updateOverlayImage(overlayId, newImagePath);
+    await updateOverlayImage(overlayId, newImagePath, initialSize);
     closeImageModel();
 
     notifications.clean();
@@ -135,6 +136,7 @@ function OverlayConfigurationCard({
           label={<Text size="xs">Configure position and size</Text>}
           color="blue"
           position="bottom"
+          disabled={imagePath === undefined}
           withArrow
         >
           <ActionIcon
@@ -155,7 +157,7 @@ function OverlayConfigurationCard({
           close={closeImageModel}
           imagePath={imagePath}
           setImagePath={setImagePath}
-          onSave={(path) => onUpdateImage(overlay.id, path)}
+          onSave={(path, size) => onUpdateImage(overlay.id, path, size)}
         />
 
         {hotkeyOverlayOpened && (
