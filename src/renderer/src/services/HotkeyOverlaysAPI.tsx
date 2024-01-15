@@ -60,6 +60,18 @@ export async function updateOverlayHotkey(id: number, hotkey: string) {
   await (window as any).hotkeyOverlaysAPI.updateOverlayHotkey(id, hotkey);
 }
 
+export async function updateOverlayPositionSize(
+  id: number,
+  position: Position,
+  size: Size
+) {
+  await (window as any).hotkeyOverlaysAPI.updateOverlayPositionSize(
+    id,
+    position,
+    size
+  );
+}
+
 export async function deleteOverlay(id: number) {
   await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
 }

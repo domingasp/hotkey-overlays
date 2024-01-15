@@ -18,6 +18,7 @@ import openConfigureOverlayPositionSize from '../lib/overlays/open-configure-ove
 import closeConfigureOverlayPositionSizeWindow from '../lib/overlays/close-configure-overlay-position-size';
 import getOverlaySize from '../lib/overlays/get-overlay-size';
 import getOverlayPosition from '../lib/overlays/get-overlay-position';
+import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-size';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -198,6 +199,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle(channels.updateOverlayHotkey, (_, id, hotkey) =>
     updateOverlayHotkey(store, id, hotkey)
+  );
+
+  ipcMain.handle(channels.updateOverlayPositionSize, (_, id, position, size) =>
+    updateOverlayPositionSize(store, id, position, size)
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => deleteOverlay(store, id));
