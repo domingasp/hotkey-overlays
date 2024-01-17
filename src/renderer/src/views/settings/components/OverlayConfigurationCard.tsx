@@ -37,6 +37,7 @@ import {
 import Size from '../../../../../models/Size';
 import ActionsMenu from './actions-menu/ActionsMenu';
 import ConfigureAutoTurnOff from './configure-auto-turn-off/ConfigureAutoTurnOff';
+import AutoTurnOffIndicator from './configure-auto-turn-off/AutoTurnOffIndicator';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -153,6 +154,9 @@ function OverlayConfigurationCard({
         right="0.25rem"
       />
 
+      {autoTurnOffValue && autoTurnOffValue !== '00:00:00' && (
+        <AutoTurnOffIndicator value={autoTurnOffValue} />
+      )}
       <ConfigureAutoTurnOff
         opened={autoTurnOffModalOpened}
         close={closeAutoTurnOffModel}
