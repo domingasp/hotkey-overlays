@@ -21,6 +21,8 @@ import getOverlayPosition from '../lib/overlays/get-overlay-position';
 import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-size';
 import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-overlays';
 import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-off';
+import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
+import toggleOverlayWindow from '../lib/window-management/toggle-overlay-window';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -190,6 +192,10 @@ app.whenReady().then(() => {
     getOverlayPosition(store, id)
   );
 
+  ipcMain.handle(channels.getOverlayAutoTurnOff, (_, id) =>
+    getOverlayAutoTurnOff(store, id)
+  );
+
   ipcMain.handle(channels.addOverlay, () => addOverlay(store));
 
   ipcMain.handle(channels.updateOverlayName, (_, id, name) =>
@@ -266,6 +272,14 @@ app.whenReady().then(() => {
   ipcMain.handle(channels.reopenAllOpenedOverlays, () =>
     reopenAllOpenedOverlays(baseUrl, overlayWindows)
   );
+
+  ipcMain.handle(channels.toggleOverlayWindow, (_, id: number) => {
+    overlayWindows[id] = toggleOverlayWindow(
+      id,
+      baseUrl,
+      overlayWindows[id] ?? null
+    );
+  });
 });
 
 app.on('window-all-closed', () => {

@@ -36,6 +36,16 @@ export async function getOverlaySize(
   return res;
 }
 
+export async function getOverlayAutoTurnOff(
+  idToFetch: number
+): Promise<string | undefined> {
+  const res = await (window as any).hotkeyOverlaysAPI.getOverlayAutoTurnOff(
+    idToFetch
+  );
+
+  return res;
+}
+
 export async function addOverlay() {
   await (window as any).hotkeyOverlaysAPI.addOverlay();
 }
@@ -113,4 +123,8 @@ export async function unregisterOverlayHotkeys() {
 
 export async function reopenAllOpenedOverlays() {
   await (window as any).hotkeyOverlaysAPI.reopenAllOpenedOverlays();
+}
+
+export async function toggleOverlayWindow(id: number) {
+  await (window as any).hotkeyOverlaysAPI.toggleOverlayWindow(id);
 }

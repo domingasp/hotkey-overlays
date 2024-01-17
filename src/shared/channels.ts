@@ -3,6 +3,7 @@ const channels = {
   getOverlayImagePath: 'getOverlayImagePath',
   getOverlaySize: 'getOverlaySize',
   getOverlayPosition: 'getOverlayPosition',
+  getOverlayAutoTurnOff: 'getOverlayAutoTurnOff',
   addOverlay: 'addOverlay',
   updateOverlayName: 'updateOverlayName',
   updateOverlayImage: 'updateOverlayImage',
@@ -17,6 +18,7 @@ const channels = {
   registerOverlayHotkeys: 'registerOverlayHotkeys',
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',
   reopenAllOpenedOverlays: 'reopenAllOpenedOverlays',
+  toggleOverlayWindow: 'toggleOverlayWindow',
 };
 
 export const channelsToRenderer = {

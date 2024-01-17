@@ -6,9 +6,11 @@ import { ResizableBox } from 'react-resizable';
 import ImagePath from '../../../../models/ImagePath';
 import {
   fileToBase64,
+  getOverlayAutoTurnOff,
   getOverlayImagePath,
   getOverlayPosition,
   getOverlaySize,
+  toggleOverlayWindow,
 } from '../../services/HotkeyOverlaysAPI';
 import fetchAndSetState from '../../services/utils';
 
@@ -23,12 +25,15 @@ function Overlay() {
     current: { width: 0, height: 0 },
   });
 
+  const [autoTurnOff, setAutoTurnOff] = useState<string | undefined>();
+
   useEffect(() => {
     if (id) {
       const idAsNumber = parseInt(id, 10);
       fetchAndSetState(getOverlayImagePath(idAsNumber), setImagePath);
       fetchAndSetState(getOverlaySize(idAsNumber), setSizes);
       fetchAndSetState(getOverlayPosition(idAsNumber), setPosition);
+      fetchAndSetState(getOverlayAutoTurnOff(idAsNumber), setAutoTurnOff);
     }
   }, []);
 
@@ -39,6 +44,20 @@ function Overlay() {
       setImgSrc(imagePath?.path ?? '');
     }
   }, [imagePath]);
+
+  useEffect(() => {
+    if (id && autoTurnOff && autoTurnOff !== '00:00:00') {
+      const split = autoTurnOff.split(':');
+      const hoursAsSeconds = parseInt(split[0], 10) * 3600;
+      const minutesAsSeconds = parseInt(split[1], 10) * 60;
+      const totalTime =
+        hoursAsSeconds + minutesAsSeconds + parseInt(split[2], 10);
+
+      setTimeout(() => {
+        toggleOverlayWindow(parseInt(id, 10));
+      }, totalTime * 1000);
+    }
+  }, [autoTurnOff]);
 
   return (
     <Center h="100%" style={{ overflow: 'hidden', position: 'relative' }}>
