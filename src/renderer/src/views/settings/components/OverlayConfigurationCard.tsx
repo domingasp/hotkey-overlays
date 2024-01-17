@@ -35,6 +35,7 @@ import {
 } from '../../../services/HotkeyOverlaysAPI';
 import Size from '../../../../../models/Size';
 import ActionsMenu from './actions-menu/ActionsMenu';
+import ConfigureAutoTurnOff from './configure-auto-turn-off/ConfigureAutoTurnOff';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -57,6 +58,11 @@ function OverlayConfigurationCard({
   const [
     hotkeyOverlayOpened,
     { open: openHotkeyOverlay, close: closeHotkeyOverlay },
+  ] = useDisclosure(false);
+
+  const [
+    autoTurnOffModalOpened,
+    { open: openAutoTurnOffModel, close: closeAutoTurnOffModel },
   ] = useDisclosure(false);
 
   const [isSavingName, setIsSavingName] = useState(false);
@@ -129,10 +135,16 @@ function OverlayConfigurationCard({
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
       <ActionsMenu
+        onAutoTurnOff={() => openAutoTurnOffModel()}
         onDelete={() => deleteOverlay(overlay.id)}
         pos="absolute"
         top="0.25rem"
         right="0.25rem"
+      />
+
+      <ConfigureAutoTurnOff
+        opened={autoTurnOffModalOpened}
+        close={closeAutoTurnOffModel}
       />
 
       <Group>
