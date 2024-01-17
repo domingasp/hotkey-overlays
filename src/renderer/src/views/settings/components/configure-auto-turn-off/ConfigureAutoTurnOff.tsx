@@ -7,11 +7,22 @@ import CancelConfirmButtons from '../../../../components/CancelConfirmButtons';
 type ConfigureAutoTurnOffProps = {
   opened: boolean;
   close: () => void;
+  value: string | undefined;
 };
-function ConfigureAutoTurnOff({ opened, close }: ConfigureAutoTurnOffProps) {
+function ConfigureAutoTurnOff({
+  opened,
+  close,
+  value,
+}: ConfigureAutoTurnOffProps) {
   const [autoTurnOff, setAutoTurnOff] = useState<string>('00:00:00');
   const [isValid, setIsValid] = useState(false);
   const valueRegex = /\d\d:\d\d:\d\d/;
+
+  useEffect(() => {
+    if (opened) {
+      setAutoTurnOff(value ?? '00:00:00');
+    }
+  }, [opened]);
 
   useEffect(() => {
     setIsValid(autoTurnOff.match(valueRegex) !== null);

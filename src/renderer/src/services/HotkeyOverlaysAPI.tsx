@@ -72,6 +72,10 @@ export async function updateOverlayPositionSize(
   );
 }
 
+export async function updateOverlayAutoTurnOff(id: number, time: string) {
+  await (window as any).hotkeyOverlaysAPI.updateOverlayAutoTurnOff(id, time);
+}
+
 export async function deleteOverlay(id: number) {
   await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
 }

@@ -20,6 +20,7 @@ import getOverlaySize from '../lib/overlays/get-overlay-size';
 import getOverlayPosition from '../lib/overlays/get-overlay-position';
 import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-size';
 import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-overlays';
+import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-off';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -84,7 +85,7 @@ const schema: Schema<SchemaInterface> = {
             },
           },
         },
-        turnOffAfter: { type: 'number' },
+        autoTurnOff: { type: 'string' },
       },
       required: ['name', 'hotkey'],
     },
@@ -216,6 +217,10 @@ app.whenReady().then(() => {
 
       reopenAllOpenedOverlays(baseUrl, overlayWindows);
     }
+  );
+
+  ipcMain.handle(channels.updateOverlayAutoTurnOff, (_, id, time) =>
+    updateOverlayAutoTurnOff(store, id, time)
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => {

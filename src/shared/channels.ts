@@ -8,6 +8,7 @@ const channels = {
   updateOverlayImage: 'updateOverlayImage',
   updateOverlayHotkey: 'updateOverlayHotkey',
   updateOverlayPositionSize: 'updateOverlayPositionSize',
+  updateOverlayAutoTurnOff: 'updateOverlayAutoTurnOff',
   deleteOverlay: 'deleteOverlay',
   openConfigureOverlayPositionSize: 'openConfigureOverlayPositionSize',
   closeConfigureOverlayPositionSizeWindow:

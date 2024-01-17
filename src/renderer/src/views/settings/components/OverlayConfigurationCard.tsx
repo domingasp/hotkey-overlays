@@ -64,6 +64,9 @@ function OverlayConfigurationCard({
     autoTurnOffModalOpened,
     { open: openAutoTurnOffModel, close: closeAutoTurnOffModel },
   ] = useDisclosure(false);
+  const [autoTurnOffValue, setAutoTurnOffValue] = useState<string | undefined>(
+    overlay.autoTurnOff
+  );
 
   const [isSavingName, setIsSavingName] = useState(false);
 
@@ -145,6 +148,7 @@ function OverlayConfigurationCard({
       <ConfigureAutoTurnOff
         opened={autoTurnOffModalOpened}
         close={closeAutoTurnOffModel}
+        value={autoTurnOffValue}
       />
 
       <Group>
