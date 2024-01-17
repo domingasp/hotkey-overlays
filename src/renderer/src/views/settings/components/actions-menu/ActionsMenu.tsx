@@ -1,13 +1,20 @@
 import { ActionIcon, ActionIconProps, Menu } from '@mantine/core';
-import { MoreHorizontal, Trash } from 'react-feather';
+import { Clock, MoreHorizontal, Trash } from 'react-feather';
 import { notifications } from '@mantine/notifications';
 
-interface DeleteMenuProps extends ActionIconProps {
+interface ActionsMenuProps extends ActionIconProps {
+  onAutoTurnOff: () => void;
   onDelete: () => void;
 }
-function DeleteMenu({ onDelete, pos, top, right }: DeleteMenuProps) {
+function ActionsMenu({
+  onAutoTurnOff,
+  onDelete,
+  pos,
+  top,
+  right,
+}: ActionsMenuProps) {
   return (
-    <Menu withinPortal position="left" shadow="sm">
+    <Menu withinPortal position="left" shadow="sm" withArrow>
       <Menu.Target>
         <ActionIcon
           variant="subtle"
@@ -22,8 +29,20 @@ function DeleteMenu({ onDelete, pos, top, right }: DeleteMenuProps) {
 
       <Menu.Dropdown>
         <Menu.Item
+          leftSection={<Clock size={12} />}
+          style={{ fontSize: '0.8rem' }}
+          onClick={() => {
+            onAutoTurnOff();
+          }}
+        >
+          Auto Turn Off
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Item
           color="red"
-          leftSection={<Trash size={14} />}
+          leftSection={<Trash size={12} />}
           style={{ fontSize: '0.8rem' }}
           onClick={() => {
             notifications.clean();
@@ -43,4 +62,4 @@ function DeleteMenu({ onDelete, pos, top, right }: DeleteMenuProps) {
   );
 }
 
-export default DeleteMenu;
+export default ActionsMenu;

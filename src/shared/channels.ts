@@ -3,11 +3,13 @@ const channels = {
   getOverlayImagePath: 'getOverlayImagePath',
   getOverlaySize: 'getOverlaySize',
   getOverlayPosition: 'getOverlayPosition',
+  getOverlayAutoTurnOff: 'getOverlayAutoTurnOff',
   addOverlay: 'addOverlay',
   updateOverlayName: 'updateOverlayName',
   updateOverlayImage: 'updateOverlayImage',
   updateOverlayHotkey: 'updateOverlayHotkey',
   updateOverlayPositionSize: 'updateOverlayPositionSize',
+  updateOverlayAutoTurnOff: 'updateOverlayAutoTurnOff',
   deleteOverlay: 'deleteOverlay',
   openConfigureOverlayPositionSize: 'openConfigureOverlayPositionSize',
   closeConfigureOverlayPositionSizeWindow:
@@ -16,6 +18,7 @@ const channels = {
   registerOverlayHotkeys: 'registerOverlayHotkeys',
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',
   reopenAllOpenedOverlays: 'reopenAllOpenedOverlays',
+  toggleOverlayWindow: 'toggleOverlayWindow',
 };
 
 export const channelsToRenderer = {

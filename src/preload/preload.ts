@@ -23,6 +23,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     ipcRenderer.invoke(channels.getOverlaySize, id),
   [channels.getOverlayPosition]: (id: number) =>
     ipcRenderer.invoke(channels.getOverlayPosition, id),
+  [channels.getOverlayAutoTurnOff]: (id: number) =>
+    ipcRenderer.invoke(channels.getOverlayAutoTurnOff, id),
   [channels.addOverlay]: () => ipcRenderer.invoke(channels.addOverlay),
   [channels.updateOverlayName]: (id: number, name: string) =>
     ipcRenderer.invoke(channels.updateOverlayName, id, name),
@@ -47,6 +49,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     size: Size
   ) =>
     ipcRenderer.invoke(channels.updateOverlayPositionSize, id, position, size),
+  [channels.updateOverlayAutoTurnOff]: (id: number, time: string) =>
+    ipcRenderer.invoke(channels.updateOverlayAutoTurnOff, id, time),
   [channels.deleteOverlay]: (id: number) =>
     ipcRenderer.invoke(channels.deleteOverlay, id),
   [channels.openConfigureOverlayPositionSize]: (id: number) =>
@@ -61,4 +65,6 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     ipcRenderer.invoke(channels.unregisterOverlayHotkeys),
   [channels.reopenAllOpenedOverlays]: () =>
     ipcRenderer.invoke(channels.reopenAllOpenedOverlays),
+  [channels.toggleOverlayWindow]: (id: number) =>
+    ipcRenderer.invoke(channels.toggleOverlayWindow, id),
 });

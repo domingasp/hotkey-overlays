@@ -15,7 +15,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
 import Overlay from '../../../../../models/Overlay';
-import DeleteMenu from '../../../components/DeleteMenu';
 import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
 import ImagePath from '../../../../../models/ImagePath';
@@ -30,11 +29,15 @@ import {
   registerOverlayHotkeys,
   reopenAllOpenedOverlays,
   unregisterOverlayHotkeys,
+  updateOverlayAutoTurnOff,
   updateOverlayHotkey,
   updateOverlayImage,
   updateOverlayName,
 } from '../../../services/HotkeyOverlaysAPI';
 import Size from '../../../../../models/Size';
+import ActionsMenu from './actions-menu/ActionsMenu';
+import ConfigureAutoTurnOff from './configure-auto-turn-off/ConfigureAutoTurnOff';
+import AutoTurnOffIndicator from './configure-auto-turn-off/AutoTurnOffIndicator';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -58,6 +61,14 @@ function OverlayConfigurationCard({
     hotkeyOverlayOpened,
     { open: openHotkeyOverlay, close: closeHotkeyOverlay },
   ] = useDisclosure(false);
+
+  const [
+    autoTurnOffModalOpened,
+    { open: openAutoTurnOffModel, close: closeAutoTurnOffModel },
+  ] = useDisclosure(false);
+  const [autoTurnOffValue, setAutoTurnOffValue] = useState<string | undefined>(
+    overlay.autoTurnOff
+  );
 
   const [isSavingName, setIsSavingName] = useState(false);
 
@@ -101,6 +112,13 @@ function OverlayConfigurationCard({
     await updateOverlayHotkey(overlayId, electronMappedHotkey.join('+'));
   }
 
+  async function onUpdateOverlayAutoTurnOff(overlayId: number, time: string) {
+    await updateOverlayAutoTurnOff(overlayId, time);
+    setAutoTurnOffValue(time);
+
+    closeAutoTurnOffModel();
+  }
+
   const renderHotkey = (keysToRender: string[]) => {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="202px">
@@ -128,11 +146,24 @@ function OverlayConfigurationCard({
 
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
-      <DeleteMenu
+      <ActionsMenu
+        onAutoTurnOff={() => openAutoTurnOffModel()}
         onDelete={() => deleteOverlay(overlay.id)}
         pos="absolute"
         top="0.25rem"
         right="0.25rem"
+      />
+
+      {autoTurnOffValue && autoTurnOffValue !== '00:00:00' && (
+        <AutoTurnOffIndicator value={autoTurnOffValue} />
+      )}
+      <ConfigureAutoTurnOff
+        opened={autoTurnOffModalOpened}
+        close={closeAutoTurnOffModel}
+        value={autoTurnOffValue}
+        onSave={(value: string) =>
+          onUpdateOverlayAutoTurnOff(overlay.id, value)
+        }
       />
 
       <Group>

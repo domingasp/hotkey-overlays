@@ -11,6 +11,9 @@ dependencies:
   '@mantine/core':
     specifier: ^7.4.0
     version: 7.4.0(@mantine/hooks@7.4.0)(@types/react@18.0.15)(react-dom@18.2.0)(react@18.2.0)
+  '@mantine/dates':
+    specifier: ^7.4.1
+    version: 7.4.1(@mantine/core@7.4.0)(@mantine/hooks@7.4.0)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0)
   '@mantine/hooks':
     specifier: ^7.4.0
     version: 7.4.0(react@18.2.0)
@@ -20,6 +23,9 @@ dependencies:
   '@types/react-resizable':
     specifier: ^3.0.7
     version: 3.0.7
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   electron-store:
     specifier: ^8.1.0
     version: 8.1.0
@@ -1055,6 +1061,23 @@ packages:
       - '@types/react'
     dev: false
 
+  /@mantine/dates@7.4.1(@mantine/core@7.4.0)(@mantine/hooks@7.4.0)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-a7DNeJmLCgnFbd9NAEQ/LP998zLFPu8IWVjtJY/YJ4OUIDLEPi56OzuopA3epVzGkMcEvL4Ak78Z23KfZPJepg==}
+    peerDependencies:
+      '@mantine/core': 7.4.1
+      '@mantine/hooks': 7.4.1
+      dayjs: '>=1.0.0'
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@mantine/core': 7.4.0(@mantine/hooks@7.4.0)(@types/react@18.0.15)(react-dom@18.2.0)(react@18.2.0)
+      '@mantine/hooks': 7.4.0(react@18.2.0)
+      clsx: 2.0.0
+      dayjs: 1.11.10
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@mantine/hooks@7.4.0(react@18.2.0):
     resolution: {integrity: sha512-Swv23D8XmZqE2hohPBcff+ITwv5l8UlwiiEGMhL+ceUvJLnPzdwlW21qnLBtRtZWyQQ59TAav4M0GFGd93JS8Q==}
     peerDependencies:
@@ -1983,6 +2006,10 @@ packages:
   /damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
+
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
+    dev: false
 
   /debounce-fn@4.0.0:
     resolution: {integrity: sha512-8pYCQiL9Xdcg0UPSD3d+0KMlOjp+KGU5EPwYddgzQ7DATsg4fuUDjQtsYLmWjnk2obnNHgV3vE2Y4jejSOJVBQ==}

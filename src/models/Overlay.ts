@@ -12,6 +12,7 @@ type Overlay = {
     default: Size;
     current: Size;
   };
+  autoTurnOff?: string;
 };
 
 export default Overlay;
