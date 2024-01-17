@@ -22,7 +22,7 @@ function ActionsMenu({ onDelete, pos, top, right }: ActionsMenuProps) {
 
       <Menu.Dropdown>
         <Menu.Item
-          leftSection={<Clock size={14} />}
+          leftSection={<Clock size={12} />}
           style={{ fontSize: '0.8rem' }}
           onClick={() => {
             console.log('abc');
@@ -35,7 +35,7 @@ function ActionsMenu({ onDelete, pos, top, right }: ActionsMenuProps) {
 
         <Menu.Item
           color="red"
-          leftSection={<Trash size={14} />}
+          leftSection={<Trash size={12} />}
           style={{ fontSize: '0.8rem' }}
           onClick={() => {
             notifications.clean();
