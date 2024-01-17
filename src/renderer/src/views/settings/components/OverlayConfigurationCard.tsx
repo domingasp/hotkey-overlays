@@ -15,7 +15,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
 import Overlay from '../../../../../models/Overlay';
-import DeleteMenu from '../../../components/DeleteMenu';
 import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
 import ImagePath from '../../../../../models/ImagePath';
@@ -35,6 +34,7 @@ import {
   updateOverlayName,
 } from '../../../services/HotkeyOverlaysAPI';
 import Size from '../../../../../models/Size';
+import ActionsMenu from './actions-menu/ActionsMenu';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
@@ -128,7 +128,7 @@ function OverlayConfigurationCard({
 
   return (
     <Paper bg="dark.6" p="md" radius="md" pos="relative">
-      <DeleteMenu
+      <ActionsMenu
         onDelete={() => deleteOverlay(overlay.id)}
         pos="absolute"
         top="0.25rem"
