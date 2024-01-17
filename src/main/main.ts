@@ -84,6 +84,7 @@ const schema: Schema<SchemaInterface> = {
             },
           },
         },
+        turnOffAfter: { type: 'number' },
       },
       required: ['name', 'hotkey'],
     },
