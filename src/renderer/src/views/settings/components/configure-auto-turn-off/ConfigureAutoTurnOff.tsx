@@ -8,25 +8,27 @@ type ConfigureAutoTurnOffProps = {
   opened: boolean;
   close: () => void;
   value: string | undefined;
+  onSave: (value: string) => void;
 };
 function ConfigureAutoTurnOff({
   opened,
   close,
   value,
+  onSave,
 }: ConfigureAutoTurnOffProps) {
-  const [autoTurnOff, setAutoTurnOff] = useState<string>('00:00:00');
+  const [autoTurnOffValue, setAutoTurnOffValue] = useState<string>('00:00:00');
   const [isValid, setIsValid] = useState(false);
   const valueRegex = /\d\d:\d\d:\d\d/;
 
   useEffect(() => {
     if (opened) {
-      setAutoTurnOff(value ?? '00:00:00');
+      setAutoTurnOffValue(value ?? '00:00:00');
     }
   }, [opened]);
 
   useEffect(() => {
-    setIsValid(autoTurnOff.match(valueRegex) !== null);
-  }, [autoTurnOff]);
+    setIsValid(autoTurnOffValue.match(valueRegex) !== null);
+  }, [autoTurnOffValue]);
 
   return (
     <Modal.Root opened={opened} onClose={close} centered>
@@ -41,8 +43,8 @@ function ConfigureAutoTurnOff({
             <TimeInput
               label="Automatically Turn Off After (H:M:s)"
               withSeconds
-              value={autoTurnOff}
-              onChange={(event) => setAutoTurnOff(event.target.value)}
+              value={autoTurnOffValue}
+              onChange={(event) => setAutoTurnOffValue(event.target.value)}
               styles={{
                 input: {
                   textAlign: 'center',
@@ -52,7 +54,9 @@ function ConfigureAutoTurnOff({
 
             <CancelConfirmButtons
               onCancel={close}
-              onConfirm={() => {}}
+              onConfirm={() => {
+                onSave(autoTurnOffValue);
+              }}
               confirmIcon={<Save size={16} />}
               confirmDisabled={!isValid}
             />

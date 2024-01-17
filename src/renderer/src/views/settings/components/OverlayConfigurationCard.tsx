@@ -29,6 +29,7 @@ import {
   registerOverlayHotkeys,
   reopenAllOpenedOverlays,
   unregisterOverlayHotkeys,
+  updateOverlayAutoTurnOff,
   updateOverlayHotkey,
   updateOverlayImage,
   updateOverlayName,
@@ -110,6 +111,13 @@ function OverlayConfigurationCard({
     await updateOverlayHotkey(overlayId, electronMappedHotkey.join('+'));
   }
 
+  async function onUpdateOverlayAutoTurnOff(overlayId: number, time: string) {
+    await updateOverlayAutoTurnOff(overlayId, time);
+    setAutoTurnOffValue(time);
+
+    closeAutoTurnOffModel();
+  }
+
   const renderHotkey = (keysToRender: string[]) => {
     return (
       <Flex justify="center" wrap="wrap" rowGap="xs" maw="202px">
@@ -149,6 +157,9 @@ function OverlayConfigurationCard({
         opened={autoTurnOffModalOpened}
         close={closeAutoTurnOffModel}
         value={autoTurnOffValue}
+        onSave={(value: string) =>
+          onUpdateOverlayAutoTurnOff(overlay.id, value)
+        }
       />
 
       <Group>
