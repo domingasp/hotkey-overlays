@@ -12,6 +12,9 @@ function toggleOverlayWindow(
     overlayWindow.setIgnoreMouseEvents(true);
     overlayWindow.loadURL(`${baseUrl}#/overlay/${id}`);
 
+    overlayWindow.setFocusable(false);
+    overlayWindow.showInactive();
+
     return overlayWindow;
   }
 
