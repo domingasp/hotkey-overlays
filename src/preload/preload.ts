@@ -15,8 +15,13 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
         ipcRenderer.removeListener(channel, subscription);
       };
     },
+    removeAllListeners(channel: string) {
+      ipcRenderer.removeAllListeners(channel);
+    },
   },
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
+  [channels.getOverlay]: (id: number) =>
+    ipcRenderer.invoke(channels.getOverlay, id),
   [channels.getOverlayImagePath]: (id: number) =>
     ipcRenderer.invoke(channels.getOverlayImagePath, id),
   [channels.getOverlaySize]: (id: number) =>
@@ -51,6 +56,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     ipcRenderer.invoke(channels.updateOverlayPositionSize, id, position, size),
   [channels.updateOverlayAutoTurnOff]: (id: number, time: string) =>
     ipcRenderer.invoke(channels.updateOverlayAutoTurnOff, id, time),
+  [channels.updateOverlayOrder]: (order: { id: number; order: number }[]) =>
+    ipcRenderer.invoke(channels.updateOverlayOrder, order),
   [channels.deleteOverlay]: (id: number) =>
     ipcRenderer.invoke(channels.deleteOverlay, id),
   [channels.openConfigureOverlayPositionSize]: (id: number) =>
@@ -63,8 +70,4 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     ipcRenderer.invoke(channels.registerOverlayHotkeys),
   [channels.unregisterOverlayHotkeys]: () =>
     ipcRenderer.invoke(channels.unregisterOverlayHotkeys),
-  [channels.reopenAllOpenedOverlays]: () =>
-    ipcRenderer.invoke(channels.reopenAllOpenedOverlays),
-  [channels.toggleOverlayWindow]: (id: number) =>
-    ipcRenderer.invoke(channels.toggleOverlayWindow, id),
 });

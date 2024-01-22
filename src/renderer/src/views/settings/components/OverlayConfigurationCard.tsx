@@ -14,7 +14,8 @@ import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
-import Overlay from '../../../../../models/Overlay';
+import { DraggableProvidedDragHandleProps } from 'react-beautiful-dnd';
+import { Overlay } from '../../../../../models/Overlay';
 import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
 import ImagePath from '../../../../../models/ImagePath';
@@ -27,7 +28,6 @@ import './styles/configureHotkeyButton.css';
 import {
   openConfigureOverlayPositionSize,
   registerOverlayHotkeys,
-  reopenAllOpenedOverlays,
   unregisterOverlayHotkeys,
   updateOverlayAutoTurnOff,
   updateOverlayHotkey,
@@ -38,14 +38,17 @@ import Size from '../../../../../models/Size';
 import ActionsMenu from './actions-menu/ActionsMenu';
 import ConfigureAutoTurnOff from './configure-auto-turn-off/ConfigureAutoTurnOff';
 import AutoTurnOffIndicator from './configure-auto-turn-off/AutoTurnOffIndicator';
+import MoveHandle from './move-handle/MoveHandle';
 
 type OverlayConfigurationCardProps = {
   overlay: Overlay;
   deleteOverlay: (id: number) => void;
+  draggableHandleProps: DraggableProvidedDragHandleProps | null | undefined;
 };
 function OverlayConfigurationCard({
   overlay,
   deleteOverlay,
+  draggableHandleProps,
 }: OverlayConfigurationCardProps) {
   const [name, setName] = useState(overlay.name);
 
@@ -84,7 +87,6 @@ function OverlayConfigurationCard({
     initialSize: Size
   ) => {
     await updateOverlayImage(overlayId, newImagePath, initialSize);
-    reopenAllOpenedOverlays();
 
     closeImageModel();
 
@@ -165,6 +167,8 @@ function OverlayConfigurationCard({
           onUpdateOverlayAutoTurnOff(overlay.id, value)
         }
       />
+
+      <MoveHandle draggableHandleProps={draggableHandleProps} />
 
       <Group>
         <Tooltip

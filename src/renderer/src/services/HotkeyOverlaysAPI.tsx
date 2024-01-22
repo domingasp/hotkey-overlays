@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import ImagePath from '../../../models/ImagePath';
+import { Overlay } from '../../../models/Overlay';
 import Position from '../../../models/Position';
 import Size from '../../../models/Size';
 
 // Basic Overlay Configuration
 export async function getOverlays() {
   const res = await (window as any).hotkeyOverlaysAPI.getOverlays();
+  return res;
+}
+
+export async function getOverlay(id: number): Promise<Overlay> {
+  const res = await (window as any).hotkeyOverlaysAPI.getOverlay(id);
   return res;
 }
 
@@ -86,6 +92,12 @@ export async function updateOverlayAutoTurnOff(id: number, time: string) {
   await (window as any).hotkeyOverlaysAPI.updateOverlayAutoTurnOff(id, time);
 }
 
+export async function updateOverlayOrder(
+  order: { id: number; order: number }[]
+) {
+  await (window as any).hotkeyOverlaysAPI.updateOverlayOrder(order);
+}
+
 export async function deleteOverlay(id: number) {
   await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
 }
@@ -119,12 +131,4 @@ export async function registerOverlayHotkeys() {
 
 export async function unregisterOverlayHotkeys() {
   await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
-}
-
-export async function reopenAllOpenedOverlays() {
-  await (window as any).hotkeyOverlaysAPI.reopenAllOpenedOverlays();
-}
-
-export async function toggleOverlayWindow(id: number) {
-  await (window as any).hotkeyOverlaysAPI.toggleOverlayWindow(id);
 }

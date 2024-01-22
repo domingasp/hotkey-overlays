@@ -13,16 +13,17 @@ import updateOverlayImage from '../lib/overlays/update-overlay-image';
 import base64FromImagePath from '../lib/utils/base64-from-image-path';
 import registerOverlayHotkeys from '../lib/global-hotkeys/register-hotkeys';
 import unregisterOverlayHotkeys from '../lib/global-hotkeys/unregister-hotkeys';
-import deleteOverlay from '../lib/overlays/delete-overlay';
 import openConfigureOverlayPositionSize from '../lib/overlays/open-configure-overlay-position-size';
 import closeConfigureOverlayPositionSizeWindow from '../lib/overlays/close-configure-overlay-position-size';
 import getOverlaySize from '../lib/overlays/get-overlay-size';
 import getOverlayPosition from '../lib/overlays/get-overlay-position';
 import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-size';
-import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-overlays';
 import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-off';
 import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
-import toggleOverlayWindow from '../lib/window-management/toggle-overlay-window';
+import GenerateOverlayWindow from '../lib/utils/overlay-window';
+import getOverlay from '../lib/overlays/get-overlay';
+import deleteOverlay from '../lib/overlays/delete-overlay';
+import updateOverlayOrder from '../lib/overlays/update-overlay-order';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -35,9 +36,8 @@ let isQuiting = false;
 
 let tray;
 let settingsWindow: BrowserWindow | null;
+let overlayWindow: BrowserWindow | null;
 let configureOverlayPositionSizeWindow: BrowserWindow | null = null;
-
-const overlayWindows: { [id: string]: BrowserWindow | null } = {};
 
 const schema: Schema<SchemaInterface> = {
   overlays: {
@@ -88,6 +88,7 @@ const schema: Schema<SchemaInterface> = {
           },
         },
         autoTurnOff: { type: 'string' },
+        order: { type: 'number' },
       },
       required: ['name', 'hotkey'],
     },
@@ -108,6 +109,7 @@ function createDefaultOverlayInStore() {
         default: { width: 0, height: 0 },
         current: { width: 0, height: 0 },
       },
+      order: 1,
     });
 
     store.set('overlays', overlays);
@@ -141,7 +143,7 @@ function createSettingsWindow() {
   settingsWindow = new BrowserWindow({
     height: 750,
     width: 500,
-    minWidth: 500,
+    resizable: false,
     autoHideMenuBar: true,
     backgroundColor: '#242424',
     icon: appIconIco,
@@ -173,14 +175,30 @@ function createSettingsWindow() {
   });
 }
 
+function createOverlayWindow() {
+  overlayWindow = GenerateOverlayWindow();
+  overlayWindow.setIgnoreMouseEvents(true);
+  overlayWindow.loadURL(`${baseUrl}#/overlay-display`);
+
+  if (IS_DEV) {
+    overlayWindow.webContents.openDevTools();
+  }
+
+  overlayWindow.setFocusable(false);
+  overlayWindow.showInactive();
+}
+
 app.whenReady().then(() => {
   createDefaultOverlayInStore();
   createTrayIron();
   createSettingsWindow();
-  registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow);
+  createOverlayWindow();
+  registerOverlayHotkeys(store, overlayWindow, settingsWindow);
 
   // Basic Overlay Configuration
   ipcMain.handle(channels.getOverlays, () => getOverlays(store));
+
+  ipcMain.handle(channels.getOverlay, (_, id: number) => getOverlay(store, id));
 
   ipcMain.handle(channels.getOverlayImagePath, (_, id) =>
     getOverlayImagePath(store, id)
@@ -203,7 +221,7 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(channels.updateOverlayImage, (_, id, imagePath, size) =>
-    updateOverlayImage(store, id, imagePath, size)
+    updateOverlayImage(store, overlayWindow, id, imagePath, size)
   );
 
   ipcMain.handle(channels.updateOverlayHotkey, (_, id, hotkey) =>
@@ -216,23 +234,26 @@ app.whenReady().then(() => {
       await updateOverlayPositionSize(
         store,
         settingsWindow,
+        overlayWindow,
         id,
         position,
         size
       );
-
-      reopenAllOpenedOverlays(baseUrl, overlayWindows);
     }
   );
 
   ipcMain.handle(channels.updateOverlayAutoTurnOff, (_, id, time) =>
-    updateOverlayAutoTurnOff(store, id, time)
+    updateOverlayAutoTurnOff(store, overlayWindow, id, time)
+  );
+
+  ipcMain.handle(channels.updateOverlayOrder, (_, order) =>
+    updateOverlayOrder(store, overlayWindow, order)
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => {
     unregisterOverlayHotkeys(settingsWindow);
-    deleteOverlay(store, overlayWindows, id);
-    registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow);
+    deleteOverlay(store, overlayWindow, id);
+    registerOverlayHotkeys(store, overlayWindow, settingsWindow);
   });
 
   // Overlay position + size configuration
@@ -251,7 +272,7 @@ app.whenReady().then(() => {
         configureOverlayPositionSizeWindow,
         store,
         baseUrl,
-        overlayWindows,
+        overlayWindow,
         settingsWindow
       );
   });
@@ -262,24 +283,12 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(channels.registerOverlayHotkeys, () =>
-    registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow)
+    registerOverlayHotkeys(store, overlayWindow, settingsWindow)
   );
 
   ipcMain.handle(channels.unregisterOverlayHotkeys, () =>
     unregisterOverlayHotkeys(settingsWindow)
   );
-
-  ipcMain.handle(channels.reopenAllOpenedOverlays, () =>
-    reopenAllOpenedOverlays(baseUrl, overlayWindows)
-  );
-
-  ipcMain.handle(channels.toggleOverlayWindow, (_, id: number) => {
-    overlayWindows[id] = toggleOverlayWindow(
-      id,
-      baseUrl,
-      overlayWindows[id] ?? null
-    );
-  });
 });
 
 app.on('window-all-closed', () => {

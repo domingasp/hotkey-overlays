@@ -9,7 +9,7 @@ const router = createHashRouter([
     element: <Settings />,
   },
   {
-    path: '/overlay/:id',
+    path: '/overlay-display',
     element: <Overlay />,
   },
   {

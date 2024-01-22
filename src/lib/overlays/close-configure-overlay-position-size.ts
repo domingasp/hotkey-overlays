@@ -7,14 +7,14 @@ async function closeConfigureOverlayPositionSizeWindow(
   configurePositionSizeWindow: BrowserWindow | null,
   store: Store<SchemaInterface>,
   baseUrl: string,
-  overlayWindows: { [id: string]: BrowserWindow | null },
+  overlayWindow: BrowserWindow | null,
   settingsWindow: BrowserWindow | null
 ) {
   if (configurePositionSizeWindow !== null) {
     configurePositionSizeWindow.close();
   }
 
-  await registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow);
+  await registerOverlayHotkeys(store, overlayWindow, settingsWindow);
 
   return null;
 }

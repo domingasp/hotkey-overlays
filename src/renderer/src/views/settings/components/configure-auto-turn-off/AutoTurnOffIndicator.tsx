@@ -12,7 +12,7 @@ function AutoTurnOffIndicator({ value }: AutoTurnOffIndicatorProps) {
       position="bottom"
       withArrow
     >
-      <Box pos="absolute" top="0.3125rem" right="2.5rem">
+      <Box pos="absolute" top="2.125rem" right="0.6875rem">
         <Clock size={14} />
       </Box>
     </Tooltip>

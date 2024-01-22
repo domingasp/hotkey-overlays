@@ -32,11 +32,7 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
     validateField(newValue);
   };
 
-  useEffect(() => {
-    return () => clearTimeout(inputFieldBlurTimer.current);
-  }, []);
-
-  useEffect(() => {
+  const calculateWidth = () => {
     if (span.current) {
       const minWidth = 116;
       const maxWidth = 190;
@@ -46,6 +42,14 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
 
       setWidth(calculatedWidth);
     }
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(inputFieldBlurTimer.current);
+  }, []);
+
+  useEffect(() => {
+    calculateWidth();
   }, [value]);
 
   useEffect(() => {
@@ -69,8 +73,8 @@ function NameInput({ value, setValue, isSaving, onSave }: NameInputProps) {
           visibility: 'hidden',
           pointerEvents: 'none',
           position: 'absolute',
+          whiteSpace: 'nowrap',
         }}
-        span
       >
         {value}
       </Text>

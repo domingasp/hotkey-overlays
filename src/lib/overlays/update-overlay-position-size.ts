@@ -4,10 +4,12 @@ import SchemaInterface from '../../models/SchemaInterface';
 import Size from '../../models/Size';
 import Position from '../../models/Position';
 import { channelsToRenderer } from '../../shared/channels';
+import sendOverlayUpdated from '../utils/send-overlay-updated';
 
 async function updateOverlayPositionSize(
   store: Store<SchemaInterface>,
   settingsWindow: BrowserWindow | null,
+  overlayWindow: BrowserWindow | null,
   id: number,
   position: Position,
   size: Size
@@ -20,6 +22,7 @@ async function updateOverlayPositionSize(
     overlayToUpdate.sizes.current = size;
 
     store.set('overlays', overlays);
+    sendOverlayUpdated(overlayWindow, id);
   }
 
   if (settingsWindow !== null) {

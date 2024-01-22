@@ -1,81 +1,92 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Center, Image } from '@mantine/core';
-import Draggable from 'react-draggable';
-import { ResizableBox } from 'react-resizable';
-import ImagePath from '../../../../models/ImagePath';
-import {
-  fileToBase64,
-  getOverlayAutoTurnOff,
-  getOverlayImagePath,
-  getOverlayPosition,
-  getOverlaySize,
-  toggleOverlayWindow,
-} from '../../services/HotkeyOverlaysAPI';
-import fetchAndSetState from '../../services/utils';
+import { Center } from '@mantine/core';
+import { channelsToRenderer } from '../../../../shared/channels';
+import { Overlay as OverlayType } from '../../../../models/Overlay';
+import { getOverlay } from '../../services/HotkeyOverlaysAPI';
+import OverlayRender from './overlay-render/OverlayRender';
 
 function Overlay() {
-  const { id } = useParams();
-  const [imagePath, setImagePath] = useState<ImagePath | undefined>();
-  const [imgSrc, setImgSrc] = useState('');
+  const [visibleOverlays, setVisibleOverlays] = useState<OverlayType[]>([]);
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [sizes, setSizes] = useState({
-    default: { width: 0, height: 0 },
-    current: { width: 0, height: 0 },
-  });
+  const overlayToggled = (overlay: OverlayType) => {
+    const overlayIdx = visibleOverlays.findIndex((x) => x.id === overlay.id);
 
-  const [autoTurnOff, setAutoTurnOff] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (id) {
-      const idAsNumber = parseInt(id, 10);
-      fetchAndSetState(getOverlayImagePath(idAsNumber), setImagePath);
-      fetchAndSetState(getOverlaySize(idAsNumber), setSizes);
-      fetchAndSetState(getOverlayPosition(idAsNumber), setPosition);
-      fetchAndSetState(getOverlayAutoTurnOff(idAsNumber), setAutoTurnOff);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (imagePath && imagePath.type !== 'url') {
-      fetchAndSetState(fileToBase64(imagePath.path, imagePath.type), setImgSrc);
+    if (overlayIdx === -1) {
+      setVisibleOverlays((curr) => [...curr, overlay]);
     } else {
-      setImgSrc(imagePath?.path ?? '');
+      const spliced = visibleOverlays.slice();
+      spliced.splice(overlayIdx, 1);
+      setVisibleOverlays(spliced);
     }
-  }, [imagePath]);
+  };
+
+  const overlayUpdated = async (id: number) => {
+    const overlay = await getOverlay(id);
+    setVisibleOverlays((curr) => curr.map((x) => (x.id === id ? overlay : x)));
+  };
+
+  const overlayRemoved = (id: number) => {
+    const overlayIdx = visibleOverlays.findIndex((x) => x.id === id);
+    if (overlayIdx !== -1) {
+      const spliced = visibleOverlays.slice();
+      spliced.splice(overlayIdx, 1);
+      setVisibleOverlays(spliced);
+    }
+  };
 
   useEffect(() => {
-    if (id && autoTurnOff && autoTurnOff !== '00:00:00') {
-      const split = autoTurnOff.split(':');
-      const hoursAsSeconds = parseInt(split[0], 10) * 3600;
-      const minutesAsSeconds = parseInt(split[1], 10) * 60;
-      const totalTime =
-        hoursAsSeconds + minutesAsSeconds + parseInt(split[2], 10);
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.toggleOverlay,
+      async (id: number) => {
+        const overlay = await getOverlay(id);
+        overlayToggled(overlay);
+      }
+    );
 
-      setTimeout(() => {
-        toggleOverlayWindow(parseInt(id, 10));
-      }, totalTime * 1000);
-    }
-  }, [autoTurnOff]);
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.overlayUpdated,
+      async (id: number) => {
+        overlayUpdated(id);
+      }
+    );
+
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.overlayDeleted,
+      async (id: number) => {
+        overlayRemoved(id);
+      }
+    );
+
+    return () => {
+      (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
+        channelsToRenderer.toggleOverlay
+      );
+
+      (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
+        channelsToRenderer.overlayUpdated
+      );
+
+      (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
+        channelsToRenderer.overlayDeleted
+      );
+    };
+  }, [visibleOverlays]);
 
   return (
     <Center h="100%" style={{ overflow: 'hidden', position: 'relative' }}>
-      <ResizableBox
-        height={sizes.current.height}
-        width={sizes.current.width}
-        lockAspectRatio
-        handle={<div />}
-      >
-        <Draggable position={position}>
-          <Box>
-            <Image
-              src={imgSrc}
-              style={{ userSelect: 'none', pointerEvents: 'none' }}
-            />
-          </Box>
-        </Draggable>
-      </ResizableBox>
+      {visibleOverlays
+        .sort((a, b) => b.order - a.order)
+        .map((overlay) => (
+          <OverlayRender
+            key={overlay.id}
+            imagePath={overlay.imagePath}
+            position={overlay.position}
+            sizes={overlay.sizes}
+            autoTurnOff={overlay.autoTurnOff}
+            onAutoTurnOff={() => overlayToggled(overlay)}
+          />
+        ))}
     </Center>
   );
 }
