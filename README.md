@@ -13,17 +13,10 @@
 - Use images from your local drive or any URL.
 - Allows clickthrough to applications beneath any opened overlay.
 - Configure the position and size of your overlays.
+- Reorder your overlays to make sure the correct overlays are always displayed.
 
 <p align="center">
-  <img src="https://github.com/domingasp/hotkey-overlays/assets/33369675/9a8d5584-1544-4b1a-a89f-5158db4b73cd" />
-</p>
-
-<p align="center">
-  <img height="300px" src="https://github.com/domingasp/hotkey-overlays/assets/33369675/0dc395c0-6d85-4de1-bcaf-f55f3f26eb22" />
-</p>
-
-<p align="center">
-  <img height="300px" src="https://github.com/domingasp/hotkey-overlays/assets/33369675/59261e6d-2620-40b7-ae6a-2da5735a79a1" />
+  <img height="500px" src="https://github.com/domingasp/hotkey-overlays/assets/33369675/53588a16-d09d-4ecb-b32c-706f3211c5e9" />
 </p>
 
 ## Usage
@@ -34,6 +27,7 @@ The application automatically minimizes to the tray and the configured hotkeys c
 - Click the configured hotkey to configure a new one.
 - Click the image button to replace it.
 - Click the blue button next to the image to adjust position and size.
+- Use the move icon to rearrange your Overlays. This affects the render order, top of the list renders on top of all the others.
 
 ## Limitations
 
