@@ -2,15 +2,19 @@ import { useEffect, useState } from 'react';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 import { Box, Image } from '@mantine/core';
-import Overlay from '../../../../../models/Overlay';
 import fetchAndSetState from '../../../services/utils';
 import { fileToBase64 } from '../../../services/HotkeyOverlaysAPI';
 import ImagePath from '../../../../../models/ImagePath';
+import { Overlay } from '../../../../../models/Overlay';
 
 type OverlayRenderProps = {
   overlay: Overlay;
+  onAutoTurnOff: () => void;
 };
-const OverlayRender = function OverlayRender({ overlay }: OverlayRenderProps) {
+const OverlayRender = function OverlayRender({
+  overlay,
+  onAutoTurnOff,
+}: OverlayRenderProps) {
   const [imagePath, setImagePath] = useState<ImagePath | undefined>();
   const [imgSrc, setImgSrc] = useState('');
 
@@ -37,19 +41,23 @@ const OverlayRender = function OverlayRender({ overlay }: OverlayRenderProps) {
     }
   }, [imagePath]);
 
-  // useEffect(() => {
-  //   if (id && autoTurnOff && autoTurnOff !== '00:00:00') {
-  //     const split = autoTurnOff.split(':');
-  //     const hoursAsSeconds = parseInt(split[0], 10) * 3600;
-  //     const minutesAsSeconds = parseInt(split[1], 10) * 60;
-  //     const totalTime =
-  //       hoursAsSeconds + minutesAsSeconds + parseInt(split[2], 10);
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined;
 
-  //     setTimeout(() => {
-  //       toggleOverlayWindow(parseInt(id, 10));
-  //     }, totalTime * 1000);
-  //   }
-  // }, [autoTurnOff]);
+    if (autoTurnOff && autoTurnOff !== '00:00:00') {
+      const split = autoTurnOff.split(':');
+      const hoursAsSeconds = parseInt(split[0], 10) * 3600;
+      const minutesAsSeconds = parseInt(split[1], 10) * 60;
+      const totalTime =
+        hoursAsSeconds + minutesAsSeconds + parseInt(split[2], 10);
+
+      timer = setTimeout(() => {
+        onAutoTurnOff();
+      }, totalTime * 1000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [autoTurnOff]);
 
   return (
     <ResizableBox

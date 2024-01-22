@@ -40,7 +40,11 @@ function Overlay() {
   return (
     <Center h="100%" style={{ overflow: 'hidden', position: 'relative' }}>
       {visibleOverlays.map((overlay) => (
-        <OverlayRender key={overlay.id} overlay={overlay} />
+        <OverlayRender
+          key={overlay.id}
+          overlay={overlay}
+          onAutoTurnOff={() => overlayToggled(overlay)}
+        />
       ))}
     </Center>
   );
