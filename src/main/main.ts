@@ -23,6 +23,7 @@ import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-
 import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-off';
 import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
 import toggleOverlayWindow from '../lib/window-management/toggle-overlay-window';
+import GenerateOverlayWindow from '../lib/utils/overlay-window';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -35,9 +36,8 @@ let isQuiting = false;
 
 let tray;
 let settingsWindow: BrowserWindow | null;
+let overlayWindow: BrowserWindow | null;
 let configureOverlayPositionSizeWindow: BrowserWindow | null = null;
-
-const overlayWindows: { [id: string]: BrowserWindow | null } = {};
 
 const schema: Schema<SchemaInterface> = {
   overlays: {
@@ -173,11 +173,21 @@ function createSettingsWindow() {
   });
 }
 
+function createOverlayWindow() {
+  overlayWindow = GenerateOverlayWindow();
+  overlayWindow.setIgnoreMouseEvents(true);
+  overlayWindow.loadURL(`${baseUrl}#/overlay-display`);
+
+  overlayWindow.setFocusable(false);
+  overlayWindow.showInactive();
+}
+
 app.whenReady().then(() => {
   createDefaultOverlayInStore();
   createTrayIron();
   createSettingsWindow();
-  registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow);
+  createOverlayWindow();
+  registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow);
 
   // Basic Overlay Configuration
   ipcMain.handle(channels.getOverlays, () => getOverlays(store));
@@ -221,7 +231,7 @@ app.whenReady().then(() => {
         size
       );
 
-      reopenAllOpenedOverlays(baseUrl, overlayWindows);
+      // reopenAllOpenedOverlays(baseUrl, overlayWindows);
     }
   );
 
@@ -231,8 +241,8 @@ app.whenReady().then(() => {
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => {
     unregisterOverlayHotkeys(settingsWindow);
-    deleteOverlay(store, overlayWindows, id);
-    registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow);
+    // deleteOverlay(store, overlayWindows, id);
+    registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow);
   });
 
   // Overlay position + size configuration
@@ -251,7 +261,7 @@ app.whenReady().then(() => {
         configureOverlayPositionSizeWindow,
         store,
         baseUrl,
-        overlayWindows,
+        overlayWindow,
         settingsWindow
       );
   });
@@ -262,24 +272,26 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(channels.registerOverlayHotkeys, () =>
-    registerOverlayHotkeys(store, baseUrl, overlayWindows, settingsWindow)
+    registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow)
   );
 
   ipcMain.handle(channels.unregisterOverlayHotkeys, () =>
     unregisterOverlayHotkeys(settingsWindow)
   );
 
-  ipcMain.handle(channels.reopenAllOpenedOverlays, () =>
-    reopenAllOpenedOverlays(baseUrl, overlayWindows)
+  ipcMain.handle(
+    channels.reopenAllOpenedOverlays,
+    () => {}
+    // reopenAllOpenedOverlays(baseUrl, overlayWindows)
   );
 
-  ipcMain.handle(channels.toggleOverlayWindow, (_, id: number) => {
-    overlayWindows[id] = toggleOverlayWindow(
-      id,
-      baseUrl,
-      overlayWindows[id] ?? null
-    );
-  });
+  // ipcMain.handle(channels.toggleOverlayWindow, (_, id: number) => {
+  //   overlayWindows[id] = toggleOverlayWindow(
+  //     id,
+  //     baseUrl,
+  //     overlayWindows[id] ?? null
+  //   );
+  // });
 });
 
 app.on('window-all-closed', () => {
