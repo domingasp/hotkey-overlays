@@ -31,6 +31,7 @@ function Overlay() {
     );
 
     return () =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
         channelsToRenderer.toggleOverlay
       );

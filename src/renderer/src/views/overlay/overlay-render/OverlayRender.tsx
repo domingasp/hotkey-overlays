@@ -57,6 +57,9 @@ const OverlayRender = function OverlayRender({ overlay }: OverlayRenderProps) {
       width={sizes.current.width}
       lockAspectRatio
       handle={<div />}
+      style={{
+        position: 'absolute',
+      }}
     >
       <Draggable position={position}>
         <Box>
