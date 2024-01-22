@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import toggleOverlayWindow from './toggle-overlay-window';
+import toggleOverlayWindow from './toggle-overlay';
 
 async function reopenAllOpenedOverlays(
   baseUrl: string,

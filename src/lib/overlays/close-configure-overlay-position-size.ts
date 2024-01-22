@@ -14,7 +14,7 @@ async function closeConfigureOverlayPositionSizeWindow(
     configurePositionSizeWindow.close();
   }
 
-  await registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow);
+  await registerOverlayHotkeys(store, overlayWindow, settingsWindow);
 
   return null;
 }

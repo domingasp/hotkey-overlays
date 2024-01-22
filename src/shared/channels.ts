@@ -18,10 +18,10 @@ const channels = {
   registerOverlayHotkeys: 'registerOverlayHotkeys',
   unregisterOverlayHotkeys: 'unregisterOverlayHotkeys',
   reopenAllOpenedOverlays: 'reopenAllOpenedOverlays',
-  toggleOverlayWindow: 'toggleOverlayWindow',
 };
 
 export const channelsToRenderer = {
+  toggleOverlay: 'toggleOverlay',
   sendNotification: 'sendNotification',
 };
 

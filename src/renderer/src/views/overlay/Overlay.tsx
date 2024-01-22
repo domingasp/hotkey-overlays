@@ -13,6 +13,7 @@ import {
   toggleOverlayWindow,
 } from '../../services/HotkeyOverlaysAPI';
 import fetchAndSetState from '../../services/utils';
+import { channelsToRenderer } from '../../../../shared/channels';
 
 function Overlay() {
   // const [imagePath, setImagePath] = useState<ImagePath | undefined>();
@@ -57,6 +58,15 @@ function Overlay() {
   //     }, totalTime * 1000);
   //   }
   // }, [autoTurnOff]);
+
+  useEffect(() => {
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.toggleOverlay,
+      (id: number) => {
+        console.log(id);
+      }
+    );
+  }, []);
 
   return (
     <Center h="100%" style={{ overflow: 'hidden', position: 'relative' }}>

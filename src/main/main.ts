@@ -22,7 +22,7 @@ import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-s
 import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-overlays';
 import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-off';
 import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
-import toggleOverlayWindow from '../lib/window-management/toggle-overlay-window';
+import toggleOverlayWindow from '../lib/window-management/toggle-overlay';
 import GenerateOverlayWindow from '../lib/utils/overlay-window';
 
 let IS_DEV = false;
@@ -178,6 +178,10 @@ function createOverlayWindow() {
   overlayWindow.setIgnoreMouseEvents(true);
   overlayWindow.loadURL(`${baseUrl}#/overlay-display`);
 
+  if (IS_DEV) {
+    overlayWindow.webContents.openDevTools();
+  }
+
   overlayWindow.setFocusable(false);
   overlayWindow.showInactive();
 }
@@ -187,7 +191,7 @@ app.whenReady().then(() => {
   createTrayIron();
   createSettingsWindow();
   createOverlayWindow();
-  registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow);
+  registerOverlayHotkeys(store, overlayWindow, settingsWindow);
 
   // Basic Overlay Configuration
   ipcMain.handle(channels.getOverlays, () => getOverlays(store));
@@ -242,7 +246,7 @@ app.whenReady().then(() => {
   ipcMain.handle(channels.deleteOverlay, (_, id) => {
     unregisterOverlayHotkeys(settingsWindow);
     // deleteOverlay(store, overlayWindows, id);
-    registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow);
+    registerOverlayHotkeys(store, overlayWindow, settingsWindow);
   });
 
   // Overlay position + size configuration
@@ -272,7 +276,7 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(channels.registerOverlayHotkeys, () =>
-    registerOverlayHotkeys(store, baseUrl, overlayWindow, settingsWindow)
+    registerOverlayHotkeys(store, overlayWindow, settingsWindow)
   );
 
   ipcMain.handle(channels.unregisterOverlayHotkeys, () =>
@@ -284,14 +288,6 @@ app.whenReady().then(() => {
     () => {}
     // reopenAllOpenedOverlays(baseUrl, overlayWindows)
   );
-
-  // ipcMain.handle(channels.toggleOverlayWindow, (_, id: number) => {
-  //   overlayWindows[id] = toggleOverlayWindow(
-  //     id,
-  //     baseUrl,
-  //     overlayWindows[id] ?? null
-  //   );
-  // });
 });
 
 app.on('window-all-closed', () => {

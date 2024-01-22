@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import GenerateOverlayWindow from '../utils/overlay-window';
 
-function toggleOverlayWindow(
+function toggleOverlay(
   id: number,
   baseUrl: string,
   currentWindow: BrowserWindow | null
@@ -22,4 +22,4 @@ function toggleOverlayWindow(
   return null;
 }
 
-export default toggleOverlayWindow;
+export default toggleOverlay;
