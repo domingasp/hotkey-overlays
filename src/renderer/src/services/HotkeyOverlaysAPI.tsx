@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import ImagePath from '../../../models/ImagePath';
+import { Overlay } from '../../../models/Overlay';
 import Position from '../../../models/Position';
 import Size from '../../../models/Size';
 
@@ -10,7 +11,7 @@ export async function getOverlays() {
   return res;
 }
 
-export async function getOverlay(id: number) {
+export async function getOverlay(id: number): Promise<Overlay> {
   const res = await (window as any).hotkeyOverlaysAPI.getOverlay(id);
   return res;
 }
@@ -124,12 +125,4 @@ export async function registerOverlayHotkeys() {
 
 export async function unregisterOverlayHotkeys() {
   await (window as any).hotkeyOverlaysAPI.unregisterOverlayHotkeys();
-}
-
-export async function reopenAllOpenedOverlays() {
-  await (window as any).hotkeyOverlaysAPI.reopenAllOpenedOverlays();
-}
-
-export async function toggleOverlayWindow(id: number) {
-  await (window as any).hotkeyOverlaysAPI.toggleOverlayWindow(id);
 }

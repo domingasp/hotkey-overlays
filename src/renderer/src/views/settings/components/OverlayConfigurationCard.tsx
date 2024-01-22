@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Check, Maximize } from 'react-feather';
 import { notifications } from '@mantine/notifications';
-import Overlay from '../../../../../models/Overlay';
+import { Overlay } from '../../../../../models/Overlay';
 import NameInput from './configure-name/NameInput';
 import ImageModal from './configure-image/ImageModal';
 import ImagePath from '../../../../../models/ImagePath';
@@ -27,7 +27,6 @@ import './styles/configureHotkeyButton.css';
 import {
   openConfigureOverlayPositionSize,
   registerOverlayHotkeys,
-  reopenAllOpenedOverlays,
   unregisterOverlayHotkeys,
   updateOverlayAutoTurnOff,
   updateOverlayHotkey,
@@ -84,7 +83,6 @@ function OverlayConfigurationCard({
     initialSize: Size
   ) => {
     await updateOverlayImage(overlayId, newImagePath, initialSize);
-    reopenAllOpenedOverlays();
 
     closeImageModel();
 

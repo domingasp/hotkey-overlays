@@ -218,7 +218,7 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(channels.updateOverlayImage, (_, id, imagePath, size) =>
-    updateOverlayImage(store, id, imagePath, size)
+    updateOverlayImage(store, overlayWindow, id, imagePath, size)
   );
 
   ipcMain.handle(channels.updateOverlayHotkey, (_, id, hotkey) =>
@@ -231,17 +231,16 @@ app.whenReady().then(() => {
       await updateOverlayPositionSize(
         store,
         settingsWindow,
+        overlayWindow,
         id,
         position,
         size
       );
-
-      // reopenAllOpenedOverlays(baseUrl, overlayWindows);
     }
   );
 
   ipcMain.handle(channels.updateOverlayAutoTurnOff, (_, id, time) =>
-    updateOverlayAutoTurnOff(store, id, time)
+    updateOverlayAutoTurnOff(store, overlayWindow, id, time)
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => {
@@ -282,12 +281,6 @@ app.whenReady().then(() => {
 
   ipcMain.handle(channels.unregisterOverlayHotkeys, () =>
     unregisterOverlayHotkeys(settingsWindow)
-  );
-
-  ipcMain.handle(
-    channels.reopenAllOpenedOverlays,
-    () => {}
-    // reopenAllOpenedOverlays(baseUrl, overlayWindows)
   );
 });
 

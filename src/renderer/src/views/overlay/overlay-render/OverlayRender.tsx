@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
@@ -5,33 +6,24 @@ import { Box, Image } from '@mantine/core';
 import fetchAndSetState from '../../../services/utils';
 import { fileToBase64 } from '../../../services/HotkeyOverlaysAPI';
 import ImagePath from '../../../../../models/ImagePath';
-import { Overlay } from '../../../../../models/Overlay';
+import Position from '../../../../../models/Position';
+import Size from '../../../../../models/Size';
 
 type OverlayRenderProps = {
-  overlay: Overlay;
+  imagePath: ImagePath | undefined;
+  position: Position;
+  sizes: { default: Size; current: Size };
+  autoTurnOff: string | undefined;
   onAutoTurnOff: () => void;
 };
 const OverlayRender = function OverlayRender({
-  overlay,
+  imagePath,
+  position,
+  sizes,
+  autoTurnOff,
   onAutoTurnOff,
 }: OverlayRenderProps) {
-  const [imagePath, setImagePath] = useState<ImagePath | undefined>();
   const [imgSrc, setImgSrc] = useState('');
-
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [sizes, setSizes] = useState({
-    default: { width: 0, height: 0 },
-    current: { width: 0, height: 0 },
-  });
-
-  const [autoTurnOff, setAutoTurnOff] = useState<string | undefined>();
-
-  useEffect(() => {
-    setImagePath(overlay.imagePath);
-    setSizes(overlay.sizes);
-    setPosition(overlay.position);
-    setAutoTurnOff(overlay.autoTurnOff);
-  }, []);
 
   useEffect(() => {
     if (imagePath && imagePath.type !== 'url') {

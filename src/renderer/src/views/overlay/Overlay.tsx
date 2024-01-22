@@ -21,7 +21,12 @@ function Overlay() {
     }
   };
 
-  const removeOverlay = (id: number) => {
+  const overlayUpdated = async (id: number) => {
+    const overlay = await getOverlay(id);
+    setVisibleOverlays((curr) => curr.map((x) => (x.id === id ? overlay : x)));
+  };
+
+  const overlayRemoved = (id: number) => {
     const overlayIdx = visibleOverlays.findIndex((x) => x.id === id);
     if (overlayIdx !== -1) {
       const spliced = visibleOverlays.slice();
@@ -40,9 +45,16 @@ function Overlay() {
     );
 
     (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.overlayUpdated,
+      async (id: number) => {
+        overlayUpdated(id);
+      }
+    );
+
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
       channelsToRenderer.overlayDeleted,
       async (id: number) => {
-        removeOverlay(id);
+        overlayRemoved(id);
       }
     );
 
@@ -50,6 +62,11 @@ function Overlay() {
       (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
         channelsToRenderer.toggleOverlay
       );
+
+      (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
+        channelsToRenderer.overlayUpdated
+      );
+
       (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
         channelsToRenderer.overlayDeleted
       );
@@ -61,7 +78,10 @@ function Overlay() {
       {visibleOverlays.map((overlay) => (
         <OverlayRender
           key={overlay.id}
-          overlay={overlay}
+          imagePath={overlay.imagePath}
+          position={overlay.position}
+          sizes={overlay.sizes}
+          autoTurnOff={overlay.autoTurnOff}
           onAutoTurnOff={() => overlayToggled(overlay)}
         />
       ))}

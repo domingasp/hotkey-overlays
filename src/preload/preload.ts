@@ -68,6 +68,4 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     ipcRenderer.invoke(channels.registerOverlayHotkeys),
   [channels.unregisterOverlayHotkeys]: () =>
     ipcRenderer.invoke(channels.unregisterOverlayHotkeys),
-  [channels.reopenAllOpenedOverlays]: () =>
-    ipcRenderer.invoke(channels.reopenAllOpenedOverlays),
 });
