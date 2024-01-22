@@ -23,6 +23,7 @@ const channels = {
 
 export const channelsToRenderer = {
   toggleOverlay: 'toggleOverlay',
+  overlayDeleted: 'overlayDeleted',
   sendNotification: 'sendNotification',
 };
 

@@ -1,10 +1,11 @@
 import Store from 'electron-store';
 import { BrowserWindow } from 'electron';
 import SchemaInterface from '../../models/SchemaInterface';
+import { channelsToRenderer } from '../../shared/channels';
 
 async function deleteOverlay(
   store: Store<SchemaInterface>,
-  overlayWindows: { [id: string]: BrowserWindow | null },
+  overlayWindow: BrowserWindow | null,
   id: number
 ) {
   const overlays = store.get('overlays');
@@ -12,17 +13,10 @@ async function deleteOverlay(
 
   if (overlayToDelete > -1) {
     overlays.splice(overlayToDelete, 1);
-
     store.set('overlays', overlays);
 
-    const idAsStr = id.toString();
-    if (overlayWindows[idAsStr] !== undefined) {
-      const window = overlayWindows[idAsStr];
-      if (window !== null) {
-        window.close();
-      }
-
-      delete overlayWindows[idAsStr];
+    if (overlayWindow !== null) {
+      overlayWindow.webContents.send(channelsToRenderer.overlayDeleted, id);
     }
   }
 }

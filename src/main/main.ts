@@ -22,6 +22,7 @@ import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-o
 import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
 import GenerateOverlayWindow from '../lib/utils/overlay-window';
 import getOverlay from '../lib/overlays/get-overlay';
+import deleteOverlay from '../lib/overlays/delete-overlay';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -245,7 +246,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => {
     unregisterOverlayHotkeys(settingsWindow);
-    // deleteOverlay(store, overlayWindows, id);
+    deleteOverlay(store, overlayWindow, id);
     registerOverlayHotkeys(store, overlayWindow, settingsWindow);
   });
 

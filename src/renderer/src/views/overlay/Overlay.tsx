@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Center } from '@mantine/core';
 import { channelsToRenderer } from '../../../../shared/channels';
@@ -20,8 +21,16 @@ function Overlay() {
     }
   };
 
+  const removeOverlay = (id: number) => {
+    const overlayIdx = visibleOverlays.findIndex((x) => x.id === id);
+    if (overlayIdx !== -1) {
+      const spliced = visibleOverlays.slice();
+      spliced.splice(overlayIdx, 1);
+      setVisibleOverlays(spliced);
+    }
+  };
+
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
       channelsToRenderer.toggleOverlay,
       async (id: number) => {
@@ -30,11 +39,21 @@ function Overlay() {
       }
     );
 
-    return () =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
+      channelsToRenderer.overlayDeleted,
+      async (id: number) => {
+        removeOverlay(id);
+      }
+    );
+
+    return () => {
       (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
         channelsToRenderer.toggleOverlay
       );
+      (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
+        channelsToRenderer.overlayDeleted
+      );
+    };
   }, [visibleOverlays]);
 
   return (
