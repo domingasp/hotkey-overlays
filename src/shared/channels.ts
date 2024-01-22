@@ -1,5 +1,6 @@
 const channels = {
   getOverlays: 'getOverlays',
+  getOverlay: 'getOverlay',
   getOverlayImagePath: 'getOverlayImagePath',
   getOverlaySize: 'getOverlaySize',
   getOverlayPosition: 'getOverlayPosition',

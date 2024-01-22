@@ -17,6 +17,8 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
     },
   },
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
+  [channels.getOverlay]: (id: number) =>
+    ipcRenderer.invoke(channels.getOverlay, id),
   [channels.getOverlayImagePath]: (id: number) =>
     ipcRenderer.invoke(channels.getOverlayImagePath, id),
   [channels.getOverlaySize]: (id: number) =>

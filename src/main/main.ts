@@ -24,6 +24,7 @@ import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-o
 import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
 import toggleOverlayWindow from '../lib/window-management/toggle-overlay';
 import GenerateOverlayWindow from '../lib/utils/overlay-window';
+import getOverlay from '../lib/overlays/get-overlay';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -195,6 +196,8 @@ app.whenReady().then(() => {
 
   // Basic Overlay Configuration
   ipcMain.handle(channels.getOverlays, () => getOverlays(store));
+
+  ipcMain.handle(channels.getOverlay, (_, id: number) => getOverlay(store, id));
 
   ipcMain.handle(channels.getOverlayImagePath, (_, id) =>
     getOverlayImagePath(store, id)
