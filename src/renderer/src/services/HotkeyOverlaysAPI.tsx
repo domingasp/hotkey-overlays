@@ -10,6 +10,11 @@ export async function getOverlays() {
   return res;
 }
 
+export async function getOverlay(id: number) {
+  const res = await (window as any).hotkeyOverlaysAPI.getOverlay(id);
+  return res;
+}
+
 export async function getOverlayImagePath(
   idToFetch: number
 ): Promise<ImagePath | undefined> {

@@ -1,91 +1,46 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Center, Image } from '@mantine/core';
-import Draggable from 'react-draggable';
-import { ResizableBox } from 'react-resizable';
-import ImagePath from '../../../../models/ImagePath';
-import {
-  fileToBase64,
-  getOverlayAutoTurnOff,
-  getOverlayImagePath,
-  getOverlayPosition,
-  getOverlaySize,
-  toggleOverlayWindow,
-} from '../../services/HotkeyOverlaysAPI';
-import fetchAndSetState from '../../services/utils';
+import { Center } from '@mantine/core';
 import { channelsToRenderer } from '../../../../shared/channels';
+import { Overlay as OverlayType } from '../../../../models/Overlay';
+import { getOverlay } from '../../services/HotkeyOverlaysAPI';
+import OverlayRender from './overlay-render/OverlayRender';
 
 function Overlay() {
-  // const [imagePath, setImagePath] = useState<ImagePath | undefined>();
-  // const [imgSrc, setImgSrc] = useState('');
+  const [visibleOverlays, setVisibleOverlays] = useState<OverlayType[]>([]);
 
-  // const [position, setPosition] = useState({ x: 0, y: 0 });
-  // const [sizes, setSizes] = useState({
-  //   default: { width: 0, height: 0 },
-  //   current: { width: 0, height: 0 },
-  // });
+  const overlayToggled = (overlay: OverlayType) => {
+    const overlayIdx = visibleOverlays.findIndex((x) => x.id === overlay.id);
 
-  // const [autoTurnOff, setAutoTurnOff] = useState<string | undefined>();
-
-  // useEffect(() => {
-  //   if (id) {
-  //     const idAsNumber = parseInt(id, 10);
-  //     fetchAndSetState(getOverlayImagePath(idAsNumber), setImagePath);
-  //     fetchAndSetState(getOverlaySize(idAsNumber), setSizes);
-  //     fetchAndSetState(getOverlayPosition(idAsNumber), setPosition);
-  //     fetchAndSetState(getOverlayAutoTurnOff(idAsNumber), setAutoTurnOff);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (imagePath && imagePath.type !== 'url') {
-  //     fetchAndSetState(fileToBase64(imagePath.path, imagePath.type), setImgSrc);
-  //   } else {
-  //     setImgSrc(imagePath?.path ?? '');
-  //   }
-  // }, [imagePath]);
-
-  // useEffect(() => {
-  //   if (id && autoTurnOff && autoTurnOff !== '00:00:00') {
-  //     const split = autoTurnOff.split(':');
-  //     const hoursAsSeconds = parseInt(split[0], 10) * 3600;
-  //     const minutesAsSeconds = parseInt(split[1], 10) * 60;
-  //     const totalTime =
-  //       hoursAsSeconds + minutesAsSeconds + parseInt(split[2], 10);
-
-  //     setTimeout(() => {
-  //       toggleOverlayWindow(parseInt(id, 10));
-  //     }, totalTime * 1000);
-  //   }
-  // }, [autoTurnOff]);
+    if (overlayIdx === -1) {
+      setVisibleOverlays((curr) => [...curr, overlay]);
+    } else {
+      const spliced = visibleOverlays.slice();
+      spliced.splice(overlayIdx, 1);
+      setVisibleOverlays(spliced);
+    }
+  };
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).hotkeyOverlaysAPI.ipcRenderer.on(
       channelsToRenderer.toggleOverlay,
-      (id: number) => {
-        console.log(id);
+      async (id: number) => {
+        const overlay = await getOverlay(id);
+        overlayToggled(overlay);
       }
     );
-  }, []);
+
+    return () =>
+      (window as any).hotkeyOverlaysAPI.ipcRenderer.removeAllListeners(
+        channelsToRenderer.toggleOverlay
+      );
+  }, [visibleOverlays]);
 
   return (
     <Center h="100%" style={{ overflow: 'hidden', position: 'relative' }}>
-      {/* <ResizableBox
-        height={sizes.current.height}
-        width={sizes.current.width}
-        lockAspectRatio
-        handle={<div />}
-      >
-        <Draggable position={position}>
-          <Box>
-            <Image
-              src={imgSrc}
-              style={{ userSelect: 'none', pointerEvents: 'none' }}
-            />
-          </Box>
-        </Draggable>
-      </ResizableBox> */}
-      OVERLAY
+      {visibleOverlays.map((overlay) => (
+        <OverlayRender key={overlay.id} overlay={overlay} />
+      ))}
     </Center>
   );
 }

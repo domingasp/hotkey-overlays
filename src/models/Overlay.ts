@@ -2,7 +2,7 @@ import ImagePath from './ImagePath';
 import Position from './Position';
 import Size from './Size';
 
-type Overlay = {
+export type Overlay = {
   id: number;
   name: string;
   hotkey: string;

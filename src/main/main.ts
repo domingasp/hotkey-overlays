@@ -13,16 +13,13 @@ import updateOverlayImage from '../lib/overlays/update-overlay-image';
 import base64FromImagePath from '../lib/utils/base64-from-image-path';
 import registerOverlayHotkeys from '../lib/global-hotkeys/register-hotkeys';
 import unregisterOverlayHotkeys from '../lib/global-hotkeys/unregister-hotkeys';
-import deleteOverlay from '../lib/overlays/delete-overlay';
 import openConfigureOverlayPositionSize from '../lib/overlays/open-configure-overlay-position-size';
 import closeConfigureOverlayPositionSizeWindow from '../lib/overlays/close-configure-overlay-position-size';
 import getOverlaySize from '../lib/overlays/get-overlay-size';
 import getOverlayPosition from '../lib/overlays/get-overlay-position';
 import updateOverlayPositionSize from '../lib/overlays/update-overlay-position-size';
-import reopenAllOpenedOverlays from '../lib/window-management/reopen-all-opened-overlays';
 import updateOverlayAutoTurnOff from '../lib/overlays/update-overlay-auto-turn-off';
 import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
-import toggleOverlayWindow from '../lib/window-management/toggle-overlay';
 import GenerateOverlayWindow from '../lib/utils/overlay-window';
 import getOverlay from '../lib/overlays/get-overlay';
 

@@ -12,7 +12,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { Check, HelpCircle, Plus, X } from 'react-feather';
 import { notifications } from '@mantine/notifications';
-import Overlay from '../../../../models/Overlay';
+import { Overlay } from '../../../../models/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
 import {
   addOverlay,

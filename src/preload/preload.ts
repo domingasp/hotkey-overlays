@@ -15,6 +15,9 @@ contextBridge.exposeInMainWorld('hotkeyOverlaysAPI', {
         ipcRenderer.removeListener(channel, subscription);
       };
     },
+    removeAllListeners(channel: string) {
+      ipcRenderer.removeAllListeners(channel);
+    },
   },
   [channels.getOverlays]: () => ipcRenderer.invoke(channels.getOverlays),
   [channels.getOverlay]: (id: number) =>
