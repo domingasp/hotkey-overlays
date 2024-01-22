@@ -92,6 +92,12 @@ export async function updateOverlayAutoTurnOff(id: number, time: string) {
   await (window as any).hotkeyOverlaysAPI.updateOverlayAutoTurnOff(id, time);
 }
 
+export async function updateOverlayOrder(
+  order: { id: number; order: number }[]
+) {
+  await (window as any).hotkeyOverlaysAPI.updateOverlayOrder(order);
+}
+
 export async function deleteOverlay(id: number) {
   await (window as any).hotkeyOverlaysAPI.deleteOverlay(id);
 }

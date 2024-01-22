@@ -23,6 +23,7 @@ import getOverlayAutoTurnOff from '../lib/overlays/get-overlay-auto-turn-off';
 import GenerateOverlayWindow from '../lib/utils/overlay-window';
 import getOverlay from '../lib/overlays/get-overlay';
 import deleteOverlay from '../lib/overlays/delete-overlay';
+import updateOverlayOrder from '../lib/overlays/update-overlay-order';
 
 let IS_DEV = false;
 IS_DEV = !app.isPackaged;
@@ -87,6 +88,7 @@ const schema: Schema<SchemaInterface> = {
           },
         },
         autoTurnOff: { type: 'string' },
+        order: { type: 'number' },
       },
       required: ['name', 'hotkey'],
     },
@@ -107,6 +109,7 @@ function createDefaultOverlayInStore() {
         default: { width: 0, height: 0 },
         current: { width: 0, height: 0 },
       },
+      order: 1,
     });
 
     store.set('overlays', overlays);
@@ -241,6 +244,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle(channels.updateOverlayAutoTurnOff, (_, id, time) =>
     updateOverlayAutoTurnOff(store, overlayWindow, id, time)
+  );
+
+  ipcMain.handle(channels.updateOverlayOrder, (_, order) =>
+    updateOverlayOrder(store, overlayWindow, order)
   );
 
   ipcMain.handle(channels.deleteOverlay, (_, id) => {

@@ -12,6 +12,7 @@ async function addOverlay(store: Store<SchemaInterface>) {
       default: { width: 0, height: 0 },
       current: { width: 0, height: 0 },
     },
+    order: overlays.length + 1,
   });
 
   store.set('overlays', overlays);

@@ -13,6 +13,7 @@ export type Overlay = {
     current: Size;
   };
   autoTurnOff?: string;
+  order: number;
 };
 
 export default Overlay;

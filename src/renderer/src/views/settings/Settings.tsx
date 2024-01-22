@@ -18,6 +18,7 @@ import {
   addOverlay,
   deleteOverlay,
   getOverlays,
+  updateOverlayOrder,
 } from '../../services/HotkeyOverlaysAPI';
 import fetchAndSetState from '../../services/utils';
 import { channelsToRenderer } from '../../../../shared/channels';
@@ -94,6 +95,7 @@ function Settings() {
     );
 
     setOverlays(items);
+    updateOverlayOrder(items.map((x, i) => ({ id: x.id, order: i + 1 })));
   };
 
   return (

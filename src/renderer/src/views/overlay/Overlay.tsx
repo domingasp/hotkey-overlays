@@ -75,16 +75,18 @@ function Overlay() {
 
   return (
     <Center h="100%" style={{ overflow: 'hidden', position: 'relative' }}>
-      {visibleOverlays.map((overlay) => (
-        <OverlayRender
-          key={overlay.id}
-          imagePath={overlay.imagePath}
-          position={overlay.position}
-          sizes={overlay.sizes}
-          autoTurnOff={overlay.autoTurnOff}
-          onAutoTurnOff={() => overlayToggled(overlay)}
-        />
-      ))}
+      {visibleOverlays
+        .sort((a, b) => b.order - a.order)
+        .map((overlay) => (
+          <OverlayRender
+            key={overlay.id}
+            imagePath={overlay.imagePath}
+            position={overlay.position}
+            sizes={overlay.sizes}
+            autoTurnOff={overlay.autoTurnOff}
+            onAutoTurnOff={() => overlayToggled(overlay)}
+          />
+        ))}
     </Center>
   );
 }
