@@ -1,17 +1,17 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  Group,
-  SimpleGrid,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Alert, Box, Button, Divider, Group, Text, Title } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
 import { Check, HelpCircle, Plus, X } from 'react-feather';
 import { notifications } from '@mantine/notifications';
+import {
+  DragDropContext,
+  Draggable,
+  DraggingStyle,
+  DropResult,
+  Droppable,
+  NotDraggingStyle,
+} from 'react-beautiful-dnd';
 import { Overlay } from '../../../../models/Overlay';
 import OverlayConfigurationCard from './components/OverlayConfigurationCard';
 import {
@@ -23,11 +23,21 @@ import fetchAndSetState from '../../services/utils';
 import { channelsToRenderer } from '../../../../shared/channels';
 import Notification from '../../../../models/Notification';
 
+function reorder<T>(list: T[], startIndex: number, endIndex: number) {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+}
+
 function Settings() {
   const [overlays, setOverlays] = useState<Overlay[]>([]);
 
   const isShowingUpdateNotif = useRef(false);
   const showingUpdateNotifTimerId = useRef<NodeJS.Timeout | undefined>();
+
+  const grid = 8;
 
   useEffect(() => {
     fetchAndSetState(getOverlays(), setOverlays);
@@ -64,6 +74,28 @@ function Settings() {
     fetchAndSetState(getOverlays(), setOverlays);
   };
 
+  const getItemStyle = (
+    draggableStyle: DraggingStyle | NotDraggingStyle | undefined
+  ): React.CSSProperties => ({
+    userSelect: 'none',
+    margin: `0 0 ${grid}px 0`,
+    ...draggableStyle,
+  });
+
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      overlays,
+      result.source.index,
+      result.destination.index
+    );
+
+    setOverlays(items);
+  };
+
   return (
     <Box w="100%" p="lg" miw="442px" pos="relative" mah={750}>
       <Group justify="space-between">
@@ -98,22 +130,40 @@ function Settings() {
         </Alert>
       )}
 
-      <SimpleGrid
-        cols={{ base: 1, sm: 2 }}
-        mah={540}
-        style={{
-          overflowY: 'auto',
-          overflowX: 'hidden',
-        }}
-      >
-        {overlays.map((overlay) => (
-          <OverlayConfigurationCard
-            key={overlay.id}
-            overlay={overlay}
-            deleteOverlay={onDelete}
-          />
-        ))}
-      </SimpleGrid>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(dropProvided) => (
+            <div
+              {...dropProvided.droppableProps}
+              ref={dropProvided.innerRef}
+              style={{ padding: grid }}
+            >
+              {overlays.map((overlay, idx) => (
+                <Draggable
+                  key={overlay.id}
+                  draggableId={overlay.id.toString()}
+                  index={idx}
+                >
+                  {(dragProvided) => (
+                    <div
+                      ref={dragProvided.innerRef}
+                      {...dragProvided.draggableProps}
+                      style={getItemStyle(dragProvided.draggableProps.style)}
+                    >
+                      <OverlayConfigurationCard
+                        overlay={overlay}
+                        deleteOverlay={onDelete}
+                        draggableHandleProps={dragProvided.dragHandleProps}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {dropProvided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </Box>
   );
 }
